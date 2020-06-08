@@ -1,0 +1,137 @@
+.login-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    flex-direction: row;
+}
+
+.login-left {
+    width: 385px;
+    height: auto;
+    order: 1;
+}
+
+.login-left-wrapper {
+    margin: 50px 0px 50px 42px;
+}
+
+.login-form-label {
+    font-size: 14px;
+    color: rgb(61, 79, 88);
+    position: relative;
+    height: 16px;
+    font-weight: bold;
+    line-height: 16px;
+    letter-spacing: 0.02em;
+}
+
+.login-form-input input {
+    padding: 1px 2px;
+    height: 40px;
+    width: 300px;
+    font-size: 16px;
+    display: block;
+    margin-top: 5px;
+    padding-left: 12px;
+    box-sizing: border-box;
+    letter-spacing: 0.04em;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(184, 196, 194);
+    border-image: initial;
+    border-radius: 2px;
+    background: rgb(255, 255, 255);
+}
+
+.login-form-fieldset {
+    margin-bottom: 16px;
+}
+
+.login-button-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.sign-up {
+    margin-left: 15px;
+}
+
+.login-right {
+    width: calc(100vw - 385px);
+    order: 2;
+    background-color: rgb(33, 49, 58);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-right-container {
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    position: absolute;
+    margin: auto 0px auto auto;
+}
+
+.login-right-title {
+    bottom: 0px;
+    position: fixed;
+    margin: 0px 0px 50px 50px;
+    color: white;
+
+}
+
+.title {
+    font-weight: bold;
+    font-size: 42px;
+}
+
+.tag-line {
+    font-size: 20px;
+    font-style: italic;
+}
+
+.login-top {
+    display: none;
+}
+
+@media only screen and (max-width: 767px) {
+    .login-wrapper {
+        flex-direction: column;
+    }
+
+    .login-left {
+        width: 100%;
+    }
+
+    .login-right {
+        display: none;
+    }
+
+    .login-top {
+        display: block;
+        height: 60px;
+        background-color: rgb(33, 49, 58);
+    }
+
+    .login-left-wrapper {
+        margin: 50px 50px 50px 42px;
+    }
+
+    .login-form-input input {
+        width: 100%;
+    }
+
+    .login-button-wrapper {
+        display: block;
+        margin-top: 50px;
+    }
+
+    .sign-up {
+        margin: 20px 0 0 0;
+        text-align: center;
+    }
+}
+

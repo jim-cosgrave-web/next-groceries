@@ -1,0 +1,54 @@
+@import './variables';
+
+.my-button {
+    position: relative;
+    z-index: 0;
+    box-sizing: border-box;
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    font-family: Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: normal;
+    text-transform: none;
+    font-size: 16px;
+    background-image: none;
+    box-shadow: none;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 120ms ease 0s;
+    overflow: hidden;
+    padding: 10px 12px;
+    border-width: 1px;
+    border-style: solid;
+    border-image: initial;
+    border-color: rgb(184, 196, 194);
+    cursor: default;
+    transition: all .3s;
+
+    background-color: $primary;
+    color: #fff;
+    cursor: pointer;
+}
+
+.my-button.inactive {
+    color: rgb(86, 91, 93);
+    background-color: $secondary;
+    cursor: default;
+}
+
+.my-button.inactive:active,
+.my-button.inactive:focus {
+    border-width: 1px;
+    border-style: solid;
+    border-image: initial;
+    border-color: rgb(184, 196, 194);
+    outline: none;
+}
+
+@media only screen and (max-width: 767px) {
+    .my-button {
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+}

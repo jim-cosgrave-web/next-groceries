@@ -1,0 +1,2 @@
+- Change "Log in to your account" text when signing up
+- Make the username text box default to lowercase?
