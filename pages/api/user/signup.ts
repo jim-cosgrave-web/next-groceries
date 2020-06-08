@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { MongoClient } from 'mongodb';
+import { NextApiResponse } from 'next';
 import { hash } from 'bcrypt';
-import { database, MyNextApiRequest } from '../../../middleware/database';
+import { database } from '../../../middleware/database';
+import { MyNextApiRequest } from '../../../middleware/myNextApiRequest';
 
 export default database(async function signup(
     req: MyNextApiRequest,

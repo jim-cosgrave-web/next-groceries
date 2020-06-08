@@ -1,6 +1,7 @@
 import { NextApiResponse } from 'next';
-import { database, MyNextApiRequest } from '../../../middleware/database';
+import { database } from '../../../middleware/database';
 import cookie from 'cookie';
+import { MyNextApiRequest } from '../../../middleware/myNextApiRequest';
 
 export default database(async function logout(
     req: MyNextApiRequest,
