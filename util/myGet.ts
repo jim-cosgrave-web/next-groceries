@@ -12,7 +12,7 @@ export async function myGet(url: string, ctx: NextPageContext) {
         }
     });
 
-    if(resp.status === 401 && !ctx.req) {
+    if(resp.status === 401 && !ctx?.req) {
         //
         // Client side
         //

@@ -3,11 +3,12 @@ import { useRouter } from 'next/router';
 import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
+import { GroceryList } from '../../models/grocery-list';
 
 const apiUrl = env.apiUrl + 'groceries/list';
 
-const GroceryList = (props) => {
-    const [list, setList] = useState(null)
+const GroceryListComponent = (props) => {
+    const [list, setList] = useState<GroceryList>(null)
     const router = useRouter();
 
     useEffect(() => {
@@ -38,6 +39,7 @@ const GroceryList = (props) => {
             return (
                 <Grocery
                     grocery={g}
+                    list_id={list._id.toString()}
                     key={g.name + '_' + g.checked}>
                 </Grocery>
             );
@@ -56,4 +58,4 @@ const GroceryList = (props) => {
     );
 };
 
-export default GroceryList;
+export default GroceryListComponent;

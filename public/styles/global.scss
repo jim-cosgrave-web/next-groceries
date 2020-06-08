@@ -52,6 +52,7 @@ h1 {
 .flex {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .clickable {
@@ -60,4 +61,8 @@ h1 {
 
 .space-between {
   justify-content: space-between;
+}
+
+.bold {
+  font-weight: 700;
 }

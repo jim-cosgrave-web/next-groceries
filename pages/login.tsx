@@ -68,8 +68,6 @@ const Login = () => {
 
         const json = await resp.json();
 
-        console.log(json);
-
         if (resp.status !== 200) {
             setError(true);
             setErrorMessage(json.status);
