@@ -1,0 +1,9 @@
+@import './variables';
+
+.list div.item {
+    padding: 1em;
+}
+
+.list div.item:nth-child(odd) {
+    background: $secondary;
+}

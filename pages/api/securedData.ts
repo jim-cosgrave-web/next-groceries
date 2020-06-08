@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse, NextApiHandler } from 'next';
 import { MongoClient } from 'mongodb';
 import { authenticate } from '../../middleware/authenticate';
-import { database, MyNextApiRequest } from '../../middleware/database';
+import { database } from '../../middleware/database';
+import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 
 export default authenticate(database(async function groceriesList(
     req: MyNextApiRequest,

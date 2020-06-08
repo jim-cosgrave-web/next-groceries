@@ -11,8 +11,8 @@ const Index = () => {
         <div>
             <h1>Index Page</h1>
             <div>
-                <Link href="/securedData">
-                    <a>Secured Data</a>
+                <Link href="/grocery-list">
+                    <a>Grocery list</a>
                 </Link>
             </div>
             <div>

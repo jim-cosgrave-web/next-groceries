@@ -1,14 +1,11 @@
 import { MongoClient, Db } from 'mongodb';
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+import { MyNextApiRequest } from './myNextApiRequest';
 
 const client = new MongoClient(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-
-export interface MyNextApiRequest extends NextApiRequest {
-    db: Db
-}
 
 const database = (fn: NextApiHandler) => async (req: MyNextApiRequest, res: NextApiResponse) => {
     if (!client.isConnected()) {

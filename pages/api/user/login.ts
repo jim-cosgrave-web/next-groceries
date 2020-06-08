@@ -2,8 +2,9 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { MongoClient } from 'mongodb';
 import { compare } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
-import { database, MyNextApiRequest } from '../../../middleware/database';
+import { database } from '../../../middleware/database';
 import cookie from 'cookie';
+import { MyNextApiRequest } from '../../../middleware/myNextApiRequest';
 
 export default database(async function login(
     req: MyNextApiRequest,
@@ -39,7 +40,7 @@ export default database(async function login(
                 //
                 // Create json token here
                 //
-                const claims = { sub: existingUser._id, name: existingUser.name, email: existingUser.email };
+                const claims = { sub: existingUser._id, name: existingUser.name, email: existingUser.email, user_id: existingUser._id.toString() };
                 const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '1h' });
 
                 res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {

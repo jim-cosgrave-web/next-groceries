@@ -42,7 +42,7 @@ const Login = () => {
             setError(true);
             handleInputChange();
         } else {
-            Router.replace('/securedData');
+            Router.replace('/grocery-list');
         }
     }
 

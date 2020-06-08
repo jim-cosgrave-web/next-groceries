@@ -3,13 +3,12 @@ html, body {
     padding: 0;
   }
 
-  *, *::after, *::before {
+  * {
     box-sizing: border-box;
     word-break: break-all;
 }
 
   body {
-    display: flex;
     font-family: Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;
     max-width: 100%;
     overflow-x: hidden;

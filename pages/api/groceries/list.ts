@@ -13,8 +13,9 @@ export default authenticate(database(async function groceriesList(
     }
 
     const db = req.db;
-    const collection = db.collection('groceries');
-    const groceries = await collection.find().toArray();
+    const collection = db.collection('groceryLists');
+    const filter = { user_id: req.jwt.user_id };
+    const groceryLists = await collection.find(filter).toArray();
 
-    res.json(groceries);
+    res.json(groceryLists);
 }));

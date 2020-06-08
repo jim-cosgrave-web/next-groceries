@@ -56,10 +56,10 @@ const Header = () => {
                 </div>
                 <div className="menu-nav-wrapper">
                     <nav>
-                        <Link href="/securedData">
+                        <Link href="/grocery-list">
                             <div className="nav-item" onClick={handleNav}>
                                 <FontAwesomeIcon icon={faListOl} />
-                                <a>Secured Data</a>
+                                <a>Grocery List</a>
                             </div>
                         </Link>
                         <div className="nav-item" onClick={handleSignOut}>
