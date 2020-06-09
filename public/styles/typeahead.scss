@@ -1,3 +1,5 @@
+@import './variables';
+
 .grocery-search {
     max-width: 600px;
   
@@ -33,7 +35,8 @@
   }
 
   .g-btn {
-    background-color: #423e37;
+    //background-color: #423e37;
+    background-color: $primary;
     color: #fff;
     display: block;
     text-align: center;

@@ -7,3 +7,7 @@
 .list div.item:nth-child(odd) {
     background: $secondary;
 }
+
+.list div.item:nth-child(even) {
+    border-bottom: 1px solid $secondary;
+}

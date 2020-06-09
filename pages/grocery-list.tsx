@@ -11,14 +11,18 @@ const apiUrl = env.apiUrl + 'list/getPrimaryListId';
 const GroceryListPage = ({ data }) => {
     const [mode, setMode] = useState('list');
 
+    async function handleAddGrocery(value) {
+        console.log('Adding...', value);
+    }
+
     return (
         <div>
             <h1>Groceries</h1>
             <button onClick={() => setMode('list')}>List</button>
             <button onClick={() => setMode('store')}>Store</button>
 
-            <div>
-                <MyTypeahead placeholder="Add a grocery" type="groceries"></MyTypeahead>
+            <div className="mt-10 mb-10">
+                <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
             </div>
             <div>
                 {

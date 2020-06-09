@@ -24,9 +24,9 @@ const Grocery = (props) => {
         let html =
             <div className="flex space-between">
                 <div>
-                    <div className="bold" onClick={handleEditNote}>{grocery.name}</div>
+                    <div className="bold clickable" onClick={handleEditNote}>{grocery.name}</div>
                     {grocery.note && grocery.note.length > 0 && 
-                        !editNote && <div onClick={() => setEditNote(true)} className="grocery-note">Note: {grocery.note}</div>
+                        !editNote && <div onClick={() => setEditNote(true)} className="grocery-note clickable">Note: {grocery.note}</div>
                     }
                     {editNote && 
                         <div className="grocery-note flex large-text">
