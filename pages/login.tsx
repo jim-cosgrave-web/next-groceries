@@ -7,6 +7,8 @@ import Link from 'next/link';
 const loginApiUrl = env.apiUrl + 'user/login';
 const signUpApiUrl = env.apiUrl + 'user/signup';
 
+const signUpEnabled = false;
+
 const Login = () => {
     const [valid, setValid] = useState(false);
     const [error, setError] = useState(false);
@@ -177,9 +179,9 @@ const Login = () => {
                                 <div>
                                     <button type="submit" className={buttonClass()} onClick={handleLogin}>Login</button>
                                 </div>
-                                <div className="sign-up">
+                                {signUpEnabled && <div className="sign-up">
                                     Don't have an account? <a href="#" onClick={handleSignUpToggle}>Sign Up</a>
-                                </div>
+                                </div>}
                             </div>}
                             {signUpFlow && <div className="login-button-wrapper">
                                 <div>

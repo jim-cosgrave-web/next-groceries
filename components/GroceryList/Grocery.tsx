@@ -29,8 +29,9 @@ const Grocery = (props) => {
                         !editNote && <div onClick={() => setEditNote(true)} className="grocery-note">Note: {grocery.note}</div>
                     }
                     {editNote && 
-                        <div className="grocery-note flex">
+                        <div className="grocery-note flex large-text">
                             <input type="text" 
+                                   className="large-text"
                                    defaultValue={grocery.note} 
                                    ref={noteRef} 
                                    onKeyUp={handleKeyUp}
