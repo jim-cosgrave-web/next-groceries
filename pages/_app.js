@@ -1,6 +1,8 @@
 import Layout from '../components/Layout/Layout';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-bootstrap-typeahead/css/Typeahead-bs4.min.css';
+import 'react-bootstrap-typeahead/css/Typeahead.min.css';
 import './../public/styles/main.scss';
-import Head from 'next/head';
 
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }) {

@@ -50,7 +50,6 @@ const GroceryListComponent = (props) => {
 
     return (
         <div className="grocery-list">
-            Grocery List
             <div className="list">
                 {getListItemsHTML()}
             </div>

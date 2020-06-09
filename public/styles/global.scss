@@ -13,6 +13,7 @@ html, body {
     max-width: 100%;
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
+    line-height: 1;
   }
 
   #__next {
@@ -69,4 +70,8 @@ h1 {
 
 .large-text {
   font-size: 17px;
+}
+
+.rbt-menu {
+  top: -3px !important;
 }

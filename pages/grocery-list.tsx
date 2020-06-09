@@ -4,6 +4,7 @@ import StoreGroceryList from '../components/GroceryList/StoreGroceryList';
 import { NextPageContext } from 'next';
 import { myGet } from '../util/myGet';
 import { env } from '../util/environment';
+import MyTypeahead from '../components/Shared/MyTypeahead';
 
 const apiUrl = env.apiUrl + 'list/getPrimaryListId';
 
@@ -17,6 +18,9 @@ const GroceryListPage = ({ data }) => {
             <button onClick={() => setMode('store')}>Store</button>
 
             <div>
+                <MyTypeahead placeholder="Add a grocery" type="groceries"></MyTypeahead>
+            </div>
+            <div>
                 {
                     mode == 'list' ? <GroceryList></GroceryList> : <StoreGroceryList></StoreGroceryList>
                 }
@@ -27,7 +31,6 @@ const GroceryListPage = ({ data }) => {
 
 GroceryListPage.getInitialProps = async (ctx: NextPageContext) => {
     const json = await myGet(apiUrl, ctx);
-    console.log(json);
     return { data: json };
 }
 
