@@ -1,1 +1,1 @@
-- Clean up organization of typeahead and button css
+- Clean up organization of typeahead and button css...probably go download the css and just pull in the part you want
