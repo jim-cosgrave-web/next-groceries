@@ -7,12 +7,37 @@ import { env } from '../util/environment';
 import MyTypeahead from '../components/Shared/MyTypeahead';
 
 const apiUrl = env.apiUrl + 'list/getPrimaryListId';
+const getListApiUrl = env.apiUrl + 'groceries/list';
+const postGroceryApiUrl = env.apiUrl + 'list/addGrocery';
 
-const GroceryListPage = ({ data }) => {
+const GroceryListPage = ({ list }) => {
     const [mode, setMode] = useState('list');
 
     async function handleAddGrocery(value) {
-        console.log('Adding...', value);
+        
+        const grocery = list.groceries.find(g => g.name.trim().toLowerCase() == value.trim().toLowerCase());
+
+        if(!grocery && value && value.trim().length > 0) {
+            const body = {
+                "list_id": list._id,
+                "grocery": {
+                    "name": value
+                }
+            };
+
+            const resp = await fetch(postGroceryApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+    
+            const response = await resp.json();
+            console.log(response);
+        } else {
+            console.log('Grocery already on list...');
+        }
     }
 
     return (
@@ -34,8 +59,13 @@ const GroceryListPage = ({ data }) => {
 }
 
 GroceryListPage.getInitialProps = async (ctx: NextPageContext) => {
-    const json = await myGet(apiUrl, ctx);
-    return { data: json };
+    const json = await myGet(getListApiUrl, ctx);
+
+    if(json && json.length > 0) {
+        return { list: json[0] };
+    }
+
+    return { list: null };
 }
 
 export default GroceryListPage;
