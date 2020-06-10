@@ -35,7 +35,7 @@ const GroceryListComponent = (props) => {
 
     function getListItemsHTML() {
         if (!list || !list.groceries) {
-            return null;
+            return <div>Loading...</div>;
         }
 
         let html = list && list.groceries && list.groceries.map((g, index) => {

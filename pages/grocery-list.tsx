@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GroceryList from '../components/GroceryList/GroceryList';
 import StoreGroceryList from '../components/GroceryList/StoreGroceryList';
 import { NextPageContext } from 'next';
@@ -14,12 +14,17 @@ const GroceryListPage = ({ initialList }) => {
     const [mode, setMode] = useState('list');
     const [list, setList] = useState(initialList);
 
+    function changeMode(mode) {
+        localStorage.setItem('list-mode', mode);
+        setMode(mode);
+    }
+
     return (
         <div>
             <h1>Groceries</h1>
             <div className="btn-group">
-                <button className="btn w-50" onClick={() => setMode('list')}>List</button>
-                <button className="btn w-50" onClick={() => setMode('store')}>Store</button>
+                <button className="btn w-50" onClick={() => changeMode('list')}>List</button>
+                <button className="btn w-50" onClick={() => changeMode('store')}>Store</button>
             </div>
             <div>
                 {
