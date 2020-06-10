@@ -4,8 +4,11 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import { GroceryList } from '../../models/grocery-list';
+import MyTypeahead from '../Shared/MyTypeahead';
+import { compare } from '../../util/compare';
 
 const apiUrl = env.apiUrl + 'groceries/list';
+const postGroceryApiUrl = env.apiUrl + 'list/addGrocery';
 
 const GroceryListComponent = (props) => {
     const [list, setList] = useState<GroceryList>(null)
@@ -26,7 +29,7 @@ const GroceryListComponent = (props) => {
         if (json && json.length > 0) {
             json = json[0];
         }
-    
+
         return json;
     }
 
@@ -48,10 +51,47 @@ const GroceryListComponent = (props) => {
         return html;
     }
 
+    async function handleAddGrocery(value) {
+        
+        const grocery = list.groceries.find(g => g.name.trim().toLowerCase() == value.trim().toLowerCase());
+
+        if(!grocery && value && value.trim().length > 0) {
+            const body = {
+                "list_id": list._id,
+                "grocery": {
+                    "name": value
+                }
+            };
+
+            list.groceries.push(grocery);
+            list.groceries.sort(compare);
+
+            const resp = await fetch(postGroceryApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+    
+            const response = await resp.json();
+            
+            setList(response);
+        } else {
+            console.log('Grocery already on list...');
+        }
+    }
+
     return (
-        <div className="grocery-list">
-            <div className="list">
-                {getListItemsHTML()}
+        <div>
+            <div className="mt-10 mb-10">
+                <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
+            </div>
+
+            <div className="grocery-list">
+                <div className="list">
+                    {getListItemsHTML()}
+                </div>
             </div>
         </div>
     );

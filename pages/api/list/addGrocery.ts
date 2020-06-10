@@ -3,6 +3,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import { database } from '../../../middleware/database';
 import { MyNextApiRequest } from '../../../middleware/myNextApiRequest';
 import { authenticate } from '../../../middleware/authenticate';
+import { compare } from '../../../util/compare';
 
 export default authenticate(database(async function addGrocery(
     req: MyNextApiRequest,
@@ -65,6 +66,7 @@ export default authenticate(database(async function addGrocery(
     //
     req.body.grocery.checked = false;
     list.groceries.push(req.body.grocery);
+    list.groceries.sort(compare);
     const result = await collection.replaceOne(listFilter, list);
 
     res.status(200).json(list);
