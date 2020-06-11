@@ -5,7 +5,7 @@ import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
 
-const apiUrl = env.apiUrl + 'groceries/list';
+const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
 
 const StoreGroceryList = (props) => {
@@ -53,7 +53,7 @@ const StoreGroceryList = (props) => {
     }
 
     async function getListData(listId, storeId) {
-        let getStoreListResponse = await myGet(env.apiUrl + `list/${listId}/${storeId}`, null);
+        let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
         setStoreList(getStoreListResponse);
     }
 

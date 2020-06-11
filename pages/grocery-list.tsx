@@ -6,8 +6,7 @@ import { myGet } from '../util/myGet';
 import { env } from '../util/environment';
 import MyTypeahead from '../components/Shared/MyTypeahead';
 
-const apiUrl = env.apiUrl + 'list/getPrimaryListId';
-const getListApiUrl = env.apiUrl + 'groceries/list';
+const getListApiUrl = env.apiUrl + 'list?method=getList';
 
 
 const GroceryListPage = ({ initialList }) => {
@@ -38,8 +37,8 @@ const GroceryListPage = ({ initialList }) => {
 GroceryListPage.getInitialProps = async (ctx: NextPageContext) => {
     const json = await myGet(getListApiUrl, ctx);
 
-    if(json && json.length > 0) {
-        return { initialList: json[0] };
+    if(json) {
+        return { initialList: json };
     }
 
     return { initialList: null };

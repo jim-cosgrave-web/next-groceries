@@ -6,7 +6,7 @@ import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { faSquare, faSave } from '@fortawesome/free-regular-svg-icons';
 import { env } from '../../util/environment';
 
-const updateGroceryUrl = env.apiUrl + 'list/updateGrocery';
+const updateGroceryUrl = env.apiUrl + 'list';
 
 const Grocery = (props) => {
     const [grocery, setGrocery] = useState(props.grocery);

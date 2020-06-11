@@ -7,8 +7,8 @@ import { GroceryList } from '../../models/grocery-list';
 import MyTypeahead from '../Shared/MyTypeahead';
 import { compare } from '../../util/compare';
 
-const apiUrl = env.apiUrl + 'groceries/list';
-const postGroceryApiUrl = env.apiUrl + 'list/addGrocery';
+const apiUrl = env.apiUrl + 'list?method=getList';
+const postGroceryApiUrl = env.apiUrl + 'list';
 
 const GroceryListComponent = (props) => {
     const [list, setList] = useState<GroceryList>(null)

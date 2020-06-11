@@ -112,6 +112,9 @@ export default authenticateNoRedirect(database(async function login(
         const collection = db.collection('users');
         const method = req.query.method;
 
+        /********************************************
+         GET STORES
+        ********************************************/
         if (method === 'getStores') {
             const user = await collection.findOne({ _id: new ObjectId(req.jwt.user_id) });
 
@@ -123,6 +126,9 @@ export default authenticateNoRedirect(database(async function login(
             res.status(200).json({ stores: user.stores });
             return;
         } else if (method === 'logout') {
+            /********************************************
+             LOGOUT
+            ********************************************/
             res.setHeader('Set-Cookie', cookie.serialize('auth', '', {
                 httpOnly: true,
                 secure: process.env.NODE_ENV !== 'development',
@@ -130,7 +136,7 @@ export default authenticateNoRedirect(database(async function login(
                 maxAge: 0,
                 path: '/'
             }));
-        
+
             res.status(200).json({ status: 'ok' });
             return;
         }
