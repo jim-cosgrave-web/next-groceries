@@ -28,7 +28,7 @@ const GroceryListPage = ({ initialList }) => {
             </div>
             <div>
                 {
-                    mode == 'list' ? <GroceryList></GroceryList> : <StoreGroceryList></StoreGroceryList>
+                    mode == 'list' ? <GroceryList></GroceryList> : <StoreGroceryList listId={initialList._id}></StoreGroceryList>
                 }
             </div>
         </div>

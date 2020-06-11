@@ -11,3 +11,17 @@
 .list div.item:nth-child(even) {
     border-bottom: 1px solid $secondary;
 }
+
+.list-category-name {
+    background-color: $primary;
+    color: #fff;
+    padding: 1em;
+}
+
+.grocery-note {
+    font-style: italic;
+}
+
+.grocery-checkbox {
+    font-size: 20px;
+}
