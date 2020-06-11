@@ -4,9 +4,7 @@ import Router from 'next/router';
 import { env } from '../util/environment';
 import Link from 'next/link';
 
-const loginApiUrl = env.apiUrl + 'user/login';
-const signUpApiUrl = env.apiUrl + 'user/signup';
-
+const userApiUrl = env.apiUrl + 'user';
 const signUpEnabled = false;
 
 const Login = () => {
@@ -27,12 +25,13 @@ const Login = () => {
         setValid(false);
         setError(false);
 
-        const resp = await fetch(loginApiUrl, {
+        const resp = await fetch(userApiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                'method': 'login',
                 'email': emailRef.current.value,
                 'password': passwordRef.current.value
             })
@@ -56,12 +55,13 @@ const Login = () => {
         setValid(false);
         setError(false);
 
-        const resp = await fetch(signUpApiUrl, {
+        const resp = await fetch(userApiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                'method': 'signup',
                 'name': nameRef.current.value,
                 'email': emailRef.current.value,
                 'password': passwordRef.current.value

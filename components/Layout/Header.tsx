@@ -35,7 +35,7 @@ const Header = () => {
     }
 
     function handleSignOut() {
-        fetch(env.apiUrl + 'user/logout');
+        fetch(env.apiUrl + 'user?method=logout');
         router.push('/login');
     }
 

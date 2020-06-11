@@ -6,7 +6,7 @@ import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
 
 const apiUrl = env.apiUrl + 'groceries/list';
-const getStoresApiUrl = env.apiUrl + 'user/getStores';
+const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
 
 const StoreGroceryList = (props) => {
     const [storeList, setStoreList] = useState(null);

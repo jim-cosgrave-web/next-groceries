@@ -24,9 +24,4 @@ const Index = () => {
     )
 }
 
-Index.getInitialProps = async (ctx: NextPageContext) => {
-    const json = await myGet(apiUrl, ctx);
-    return { data: json };
-}
-
 export default Index;

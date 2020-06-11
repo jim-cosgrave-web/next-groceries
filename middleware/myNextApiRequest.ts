@@ -8,6 +8,7 @@ export interface MyJWT {
     email: string,
     iat: number;
     exp: number;
+    authenticated: boolean;
 }
 
 export interface MyNextApiRequest extends NextApiRequest {
