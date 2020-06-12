@@ -1,1 +1,1 @@
-- Clean up organization of typeahead and button css...probably go download the css and just pull in the part you want
+- Add methods to unsubscribe from requests in useEffect.  Currently getting an error if you change to the store tab on the groceries page too fast

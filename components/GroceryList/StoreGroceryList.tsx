@@ -7,6 +7,7 @@ import MyTypeahead from '../Shared/MyTypeahead';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
+const postGroceryApiUrl = env.apiUrl + 'list';
 
 const StoreGroceryList = (props) => {
     const [storeList, setStoreList] = useState(null);
@@ -108,6 +109,40 @@ const StoreGroceryList = (props) => {
     }
 
     async function handleAddGrocery(value) {
+        //let value = groceryInputRef.current.value;
+        value = value.trim();
+
+        const body = {
+            "list_id": props.listId,
+            "grocery": {
+                "name": value
+            }
+        };
+
+        let grocery = null;
+
+        for (let i = 0; i < storeList.categorizedList.length; i++) {
+            const category = storeList.categorizedList[i];
+            grocery = category.groceries.find(g => g.name.toLowerCase() == value.toLowerCase());
+
+            if (grocery) {
+                break;
+            }
+        }
+
+        console.log(grocery);
+
+        if (!grocery) {
+            const resp = await fetch(postGroceryApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+    
+            const response = await resp.json();
+        }
     }
 
     return (
