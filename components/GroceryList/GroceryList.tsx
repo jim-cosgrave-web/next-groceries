@@ -23,6 +23,15 @@ const GroceryListComponent = (props) => {
         execute();
     }, []);
 
+    useEffect(() => {
+        async function execute() {
+            const data = await getListData();
+            setList(data);
+        }
+
+        execute();
+    }, [props.updateTime]);
+
     async function getListData() {
         let json = await myGet(apiUrl, null);
 

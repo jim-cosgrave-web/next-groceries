@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import GroceryList from '../components/GroceryList/GroceryList';
 import StoreGroceryList from '../components/GroceryList/StoreGroceryList';
 import { NextPageContext } from 'next';
@@ -7,11 +7,12 @@ import { env } from '../util/environment';
 import MyTypeahead from '../components/Shared/MyTypeahead';
 
 const getListApiUrl = env.apiUrl + 'list?method=getList';
-
+const postClearGroceriesApiUrl = env.apiUrl + 'list';
 
 const GroceryListPage = ({ initialList }) => {
     const [mode, setMode] = useState('list');
     const [list, setList] = useState(initialList);
+    const [update, setUpdate] = useState(-1);
 
     function changeMode(mode) {
         localStorage.setItem('list-mode', mode);
@@ -38,6 +39,28 @@ const GroceryListPage = ({ initialList }) => {
         return c;
     }
 
+    //
+    // Clear the crossed off groceries
+    //
+    async function handleClearGroceries() {
+        const body = {
+            "method": "clear-groceries",
+            "list_id": list._id
+        };
+
+        const resp = await fetch(postClearGroceriesApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const response = await resp.json();
+
+        setUpdate(new Date().getTime());
+    }
+
     return (
         <div>
             <h1>Groceries</h1>
@@ -45,9 +68,12 @@ const GroceryListPage = ({ initialList }) => {
                 <button className={listBtnClass()} onClick={() => changeMode('list')}>List</button>
                 <button className={storeBtnClass()} onClick={() => changeMode('store')}>Store</button>
             </div>
+            <div className="mt-10">
+                <button className="btn w-100 warning" onClick={handleClearGroceries}>Clear Groceries</button>
+            </div>
             <div>
                 {
-                    mode == 'list' ? <GroceryList></GroceryList> : <StoreGroceryList listId={initialList._id}></StoreGroceryList>
+                    mode == 'list' ? <GroceryList updateTime={update}></GroceryList> : <StoreGroceryList updateTime={update} listId={initialList._id}></StoreGroceryList>
                 }
             </div>
         </div>

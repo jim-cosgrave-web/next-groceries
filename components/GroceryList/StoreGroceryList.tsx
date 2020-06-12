@@ -27,6 +27,23 @@ const StoreGroceryList = (props) => {
         execute();
     }, []);
 
+    //
+    // Update list
+    //
+    useEffect(() => {
+        async function execute() {
+            const result = await getStores();
+
+            if (result.success) {
+                const list = await getListData(props.listId, selectedStore.value);
+            }
+        }
+
+        if (props.updateTime != -1) {
+            execute();
+        }
+    }, [props.updateTime]);
+
     async function getStores() {
         let getStoresResponse = await myGet(getStoresApiUrl, null);
 
