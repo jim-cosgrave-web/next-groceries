@@ -1,10 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { NextPageContext } from 'next';
-import { myGet } from '../util/myGet';
-import { env } from '../util/environment';
-
-const apiUrl = env.apiUrl + 'securedData';
 
 const Index = () => {
     return (

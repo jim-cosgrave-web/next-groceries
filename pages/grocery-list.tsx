@@ -18,12 +18,32 @@ const GroceryListPage = ({ initialList }) => {
         setMode(mode);
     }
 
+    function listBtnClass() {
+        let c = 'btn w-50';
+
+        if(mode !== 'list') {
+            c += ' btn-inactive';
+        }
+
+        return c;
+    }
+
+    function storeBtnClass() {
+        let c = 'btn w-50';
+
+        if(mode !== 'store') {
+            c += ' btn-inactive';
+        }
+
+        return c;
+    }
+
     return (
         <div>
             <h1>Groceries</h1>
             <div className="btn-group">
-                <button className="btn w-50" onClick={() => changeMode('list')}>List</button>
-                <button className="btn w-50" onClick={() => changeMode('store')}>Store</button>
+                <button className={listBtnClass()} onClick={() => changeMode('list')}>List</button>
+                <button className={storeBtnClass()} onClick={() => changeMode('store')}>Store</button>
             </div>
             <div>
                 {
