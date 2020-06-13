@@ -5,7 +5,7 @@ import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
 import { UNCATEGORIZED } from '../../util/constants';
-import { faRetweet } from '@fortawesome/free-solid-svg-icons';
+import { writeLog } from '../../util/logger';
 
 export default authenticate(database(async function getPrimaryListid(
     req: MyNextApiRequest,
@@ -151,6 +151,8 @@ export default authenticate(database(async function getPrimaryListid(
                 const list_id = new ObjectId(req.body.list_id);
                 let filter = { _id: list_id, user_id: req.jwt.user_id };
 
+                await writeLog('Clear Groceries', filter);
+
                 const response = await collection.updateMany(filter, { $pull: { "groceries": { checked: true } } });
 
                 res.status(200).json({ message: 'Ok' });
@@ -235,12 +237,12 @@ export default authenticate(database(async function getPrimaryListid(
             const list = await collection.findOne({ _id: list_id });
             const current = list.groceries.find(g => { return g.name == req.body.grocery.name });
 
+            await writeLog('Update List Grocery', { current, updated: req.body.grocery });
+
             delete req.body.grocery.order;
             delete req.body.grocery.category;
 
-            const result = await collection.updateOne(filter, { $set: { 'groceries.$': req.body.grocery } });
-
-            await writeLog(req, 'Update List Grocery', { current, updated: req.body.grocery });
+            const result = await collection.updateOne(filter, { $set: { 'groceries.$': req.body.grocery } });     
 
             res.status(200).json({ status: result.modifiedCount });
             return;
@@ -253,13 +255,3 @@ export default authenticate(database(async function getPrimaryListid(
         return;
     }
 }));
-
-async function writeLog(req, action, document) {
-    try {
-        const db = req.db;
-        const collection = db.collection('log');
-        await collection.insertOne({ action, timestamp: new Date(), data: document });
-    } catch (e) {
-        console.log(e);
-    }
-}

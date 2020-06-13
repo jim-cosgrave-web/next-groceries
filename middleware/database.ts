@@ -1,6 +1,7 @@
 import { MongoClient, Db } from 'mongodb';
-import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
+import { NextApiHandler, NextApiResponse } from 'next';
 import { MyNextApiRequest } from './myNextApiRequest';
+import { DATABASE_NAME } from '../util/constants';
 
 const client = new MongoClient(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -12,7 +13,7 @@ const database = (fn: NextApiHandler) => async (req: MyNextApiRequest, res: Next
         await client.connect();
     }
 
-    const db = client.db('groceriesDB');
+    const db = client.db(DATABASE_NAME);
     req.db = db;
 
     return await fn(req, res);

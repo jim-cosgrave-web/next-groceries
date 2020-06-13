@@ -6,7 +6,7 @@ import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
 import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED } from '../../util/constants';
 
-export default //authenticate(
+export default authenticate(
     database(async function storeApi(
         req: MyNextApiRequest,
         res: NextApiResponse
@@ -123,9 +123,8 @@ export default //authenticate(
             res.status(500).json({ error: e, message: 'Error occurred' });
             return;
         }
-    }
-        //)
-    );
+    })
+);
 
 //
 // Add a category to a store if it doesnt exist

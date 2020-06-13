@@ -1,8 +1,9 @@
+const DATABASE_NAME = 'groceriesDB';
 const UPDATE_STORE_GROCERY_API_METHOD = 'UPDATE_STORE_GROCERY';
-
 const UNCATEGORIZED = '__ Uncategorized __';
 
 export { 
+    DATABASE_NAME,
     UPDATE_STORE_GROCERY_API_METHOD,
     UNCATEGORIZED
 };
