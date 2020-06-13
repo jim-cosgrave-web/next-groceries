@@ -37,10 +37,10 @@ const Grocery = (props) => {
                                     ref={noteRef}
                                     onKeyUp={handleKeyUp}
                                     onChange={() => { }}></input>
-                                <FontAwesomeIcon className="ml-5 clickable" onClick={saveNote} icon={faSave} />
-                                {props.enableCategory && !grocery.category && <div className="mt-10">
-                                    <select className="prevent-click" onChange={handleCategoryChange}>
-                                        {props.categories.map((c, i) => { return <option key={c.name} defaultValue={c.name}>{c.name}</option>; })}
+                                {/* <FontAwesomeIcon className="ml-5 clickable" onClick={saveNote} icon={faSave} /> */}
+                                {props.enableCategory && <div className="mt-10">
+                                    <select className="prevent-click" onChange={handleCategoryChange} value={props.categoryName}>
+                                        {props.categories.map((c, i) => { return <option key={c.name} defaultValue={props.categoryName}>{c.name}</option>; })}
                                     </select>
                                 </div>}
                             </div>
@@ -61,7 +61,7 @@ const Grocery = (props) => {
 
 
     const handleCategoryChange = (event) => {
-        props.onCategorySet(event.target.value, grocery);
+        props.onCategorySet(event.target.value, props.categoryName, grocery);
     }
 
     async function handleKeyUp(e) {

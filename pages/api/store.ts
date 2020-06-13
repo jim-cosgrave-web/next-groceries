@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { UPDATE_STORE_GROCERY_API_METHOD } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED } from '../../util/constants';
 
 export default //authenticate(
     database(async function storeApi(
@@ -45,6 +45,7 @@ export default //authenticate(
                     }
 
                     let newGrocery = {};
+                    let category = undefined;
                     let push = undefined;
                     let pull = undefined;
                     let currentCategoryName = '';
@@ -54,54 +55,57 @@ export default //authenticate(
                     //
                     groceryCollection.update({ name: groceryName.toLowerCase() }, { name: groceryName }, { upsert: true });
 
-                    //
-                    // Find the category in the store if categories exist
-                    //
-                    let category = await addCategoryIfNotExists(collection, categoryName, store, storeId);
                     let groceryCategory = findCategoryWithGrocery(store, groceryName);
 
-                    if(groceryCategory && groceryCategory.name != categoryName) {
+                    if (groceryCategory && groceryCategory.name != categoryName) {
                         pull = { $pull: { "categories.$.groceries": { groceryName: groceryName } } };
                         currentCategoryName = groceryCategory.name;
                     }
 
                     //
-                    // If the category exists, find the grocery
+                    // Find the category in the store if categories exist
                     //
-                    const existing = category.groceries.find(g => { return g.groceryName == groceryName });
+                    if (categoryName != UNCATEGORIZED) {
+                        category = await addCategoryIfNotExists(collection, categoryName, store, storeId);
 
-                    //
-                    // If it already exists, dont add it as a duplicate
-                    //
-                    if (existing) {
-                        res.send('duplicate grocery');
-                        return;
+
+                        //
+                        // If the category exists, find the grocery
+                        //
+                        const existing = category.groceries.find(g => { return g.groceryName == groceryName });
+
+                        //
+                        // If it already exists, dont add it as a duplicate
+                        //
+                        if (existing) {
+                            res.send('duplicate grocery');
+                            return;
+                        }
+
+                        //
+                        // Get the max order and set the new grocery to that order + 1
+                        //
+                        let order = Math.max.apply(Math, category.groceries.map(function (g) { return g.order; }));
+
+                        if (order == Number.NEGATIVE_INFINITY) {
+                            order = 0;
+                        }
+
+                        newGrocery = { groceryName: groceryName, order: order + 1 };
+                        category.groceries.push(newGrocery);
+                        push = { $push: { 'categories.$.groceries': newGrocery } };
                     }
-
-                    //
-                    // Get the max order and set the new grocery to that order + 1
-                    //
-                    let order = Math.max.apply(Math, category.groceries.map(function (g) { return g.order; }));
-
-                    if (order == Number.NEGATIVE_INFINITY) {
-                        order = 0;
-                    }
-
-                    newGrocery = { groceryName: groceryName, order: order + 1 };
-
-                    category.groceries.push(newGrocery);
-
 
                     //
                     // Update the collection
                     //
-                    const pushFilter = { _id: storeId, 'categories.name': categoryName };
-                    const pullFilter = { _id: storeId, 'categories.name': currentCategoryName }
-                    push = { $push: { 'categories.$.groceries': newGrocery } };
+                    if (push) {
+                        const pushFilter = { _id: storeId, 'categories.name': categoryName };
+                        await collection.update(pushFilter, push);
+                    }
 
-                    await collection.update(pushFilter, push);
-
-                    if(pull) {
+                    if (pull) {
+                        const pullFilter = { _id: storeId, 'categories.name': currentCategoryName }
                         await collection.update(pullFilter, pull);
                     }
 

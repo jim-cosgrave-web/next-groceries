@@ -4,7 +4,7 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
-import { UPDATE_STORE_GROCERY_API_METHOD } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED } from '../../util/constants';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
@@ -80,38 +80,43 @@ const StoreGroceryList = (props) => {
         setCategories(getStoreListResponse.categories);
     }
 
-    async function handleGroceryCategoryChange(categoryName, grocery) {
+    async function handleGroceryCategoryChange(newCategoryName, oldCategoryName, grocery) {
         const clone = { ...storeList };
 
         //
         // Remove from uncategorized
         //
-        const uncategorized = clone.categorizedList.find(c => c.uncategorized);
-        const groceryToMove = uncategorized.groceries.find(g => g.name == grocery.name);
-        const index = uncategorized.groceries.indexOf(groceryToMove);
-        uncategorized.groceries.splice(index, 1);
+        const oldCategory = clone.categorizedList.find(c => c.name == oldCategoryName);
+        const groceryToMove = oldCategory.groceries.find(g => g.name == grocery.name);
+        const index = oldCategory.groceries.indexOf(groceryToMove);
+        oldCategory.groceries.splice(index, 1);
 
-        uncategorized.hidden = uncategorized.groceries.length == 0;
+        oldCategory.hidden = oldCategory.groceries.length == 0;
 
         //
         // Add to the new category
         //
-        let newCategory = clone.categorizedList.find(c => c.name == categoryName);
+        let newCategory = clone.categorizedList.find(c => c.name == newCategoryName);
 
         if (!newCategory) {
-            newCategory = { name: categoryName, groceries: [] };
-            clone.categorizedList.list.push(newCategory);
+            newCategory = { name: newCategoryName, groceries: [] };
+
+            if(newCategoryName == UNCATEGORIZED) {
+                clone.categorizedList.unshift(newCategory);
+            } else {
+                clone.categorizedList.push(newCategory);
+            }
         }
 
         newCategory.hidden = false;
         newCategory.groceries.push(groceryToMove); 
 
         setStoreList(clone);
-
+        
         const body = { 
             method: UPDATE_STORE_GROCERY_API_METHOD,
             store: selectedStore.value,
-            category: categoryName, 
+            category: newCategoryName, 
             groceryName: groceryToMove.name 
         };
 
@@ -148,6 +153,7 @@ const StoreGroceryList = (props) => {
                                     grocery={g}
                                     list_id={props.listId}
                                     enableCategory={true}
+                                    categoryName={c.name}
                                     categories={categories}
                                     onCategorySet={handleGroceryCategoryChange}
                                     key={g.name + '_' + g.checked}>
