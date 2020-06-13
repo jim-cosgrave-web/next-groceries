@@ -12,7 +12,7 @@ const MyTypeahead = (props) => {
         async function execute() {
             await getData();
         }
-        
+
         execute();
     }, []);
 
@@ -24,6 +24,18 @@ const MyTypeahead = (props) => {
             const uniqueSet = Array.from(new Set(names));
 
             setOptions(uniqueSet);
+        } else if (props.type === 'store') {
+            let data = await myGet(env.apiUrl + 'store', null);
+            let ar = [];
+            console.log(data);
+
+            for (let i = 0; i < data.stores.length; i++) {
+                var store = data.stores[i];
+                var name = `${store.name} (${store.city} ${store.state})`;
+                ar.push({ id: store._id.toString(), label: name });
+            }
+
+            setOptions(ar);
         } else {
             setOptions(['NO OPTIONS FOUND']);
         }
@@ -38,11 +50,11 @@ const MyTypeahead = (props) => {
             value = ref.current.getInput().value;
         }
 
-        if(!value) {
+        if (!value) {
             console.error('Selected item not found!');
         }
 
-        if(typeof(props.onAdd) == 'function') {
+        if (typeof (props.onAdd) == 'function') {
             props.onAdd(value);
         }
 

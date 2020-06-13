@@ -7,6 +7,7 @@ import cookie from 'cookie';
 import { MyNextApiRequest, MyJWT } from '../../middleware/myNextApiRequest';
 import { ObjectId } from 'mongodb';
 import { authenticateNoRedirect } from '../../middleware/authenticateNoRedirect';
+import { SUBSCRIBE_TO_STORE_API_METHOD } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
     req: MyNextApiRequest,
@@ -26,6 +27,12 @@ export default authenticateNoRedirect(database(async function login(
         if (name && name.trim().length > 0) {
             method = 'signup';
         }
+        
+        if (req.body.method = SUBSCRIBE_TO_STORE_API_METHOD) {
+            method = SUBSCRIBE_TO_STORE_API_METHOD;
+        }
+
+        console.log(method);
 
         if (method === 'login') {
             //
@@ -112,8 +119,12 @@ export default authenticateNoRedirect(database(async function login(
                     await listCollection.insert(groceryList);
 
                     res.status(200).json({ status: 'ok'});
+                    return;
                 });
             }
+        } else if (method == SUBSCRIBE_TO_STORE_API_METHOD ) {
+            res.status(200).json({ message: "new method!" });
+            return;
         }
 
         //

@@ -17,7 +17,9 @@ export default authenticate(
             const groceryCollection = db.collection('groceries');
 
             if (req.method === 'GET') {
-                res.status(200).json({ message: 'store GET' });
+                const stores = await collection.find().toArray();
+
+                res.status(200).json({ stores });
                 return;
             } else if (req.method === 'PUT') {
                 if (req.body.method === UPDATE_STORE_GROCERY_API_METHOD) {

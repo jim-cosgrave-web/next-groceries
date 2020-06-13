@@ -4,12 +4,13 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
-import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD } from '../../util/constants';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
 const postGroceryApiUrl = env.apiUrl + 'list';
 const postStoreApiUrl = env.apiUrl + 'store';
+const postUserApiUrl = env.apiUrl + 'user';
 
 const StoreGroceryList = (props) => {
     const [storeList, setStoreList] = useState(null);
@@ -135,9 +136,37 @@ const StoreGroceryList = (props) => {
         const json = await resp.json();
     }
 
+    async function handleAddStore(value) {
+        const body = {
+            method: SUBSCRIBE_TO_STORE_API_METHOD,
+            store_id: value.id,
+            name: value.label
+        };
+
+        const resp = await fetch(postUserApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+    }
+
     function getListHTML() {
         if (!storeList) {
             return <div>Loading...</div>;
+        }
+
+        if(stores && stores.length == 0) {
+            return (
+                <div className="store-reg-container">
+                    <div>
+                        <MyTypeahead placeholder="Find a store near you" type="store" onAdd={handleAddStore}></MyTypeahead>
+                    </div>
+                </div>
+            );
         }
 
         if(storeList.emptyList) {
@@ -215,9 +244,9 @@ const StoreGroceryList = (props) => {
 
     return (
         <div className="mt-10">
-            <div className="mt-10 mb-10">
+            {stores && stores.length > 0 && <div className="mt-10 mb-10">
                 <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
-            </div>
+            </div>}
             <div className="grocery-list">
                 <div className="list">
                     {getListHTML()}
