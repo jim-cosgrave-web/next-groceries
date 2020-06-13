@@ -12,6 +12,10 @@ export default authenticateNoRedirect(database(async function login(
     req: MyNextApiRequest,
     res: NextApiResponse
 ) {
+    const db = req.db;
+    const collection = db.collection('users');
+    const listCollection = db.collection('groceryLists');
+
     if (req.method == 'POST') {
         const name: string = req.body.name;
         const email: string = req.body.email;
@@ -64,7 +68,7 @@ export default authenticateNoRedirect(database(async function login(
                     }
                 });
             }
-        } else {
+        } else if (method === 'signup') {
             //
             // Validate that parameters were supplied
             //
@@ -81,8 +85,6 @@ export default authenticateNoRedirect(database(async function login(
                 return;
             }
 
-            const db = req.db;
-            const collection = db.collection('users');
             const existingUser = await collection.findOne({ "email": email });
 
             if (existingUser) {
@@ -94,12 +96,22 @@ export default authenticateNoRedirect(database(async function login(
                         email: email,
                         name: name,
                         password: hash,
-                        stores: []
+                        stores: [],
+                        roles: []
                     };
 
-                    await collection.insertOne(user);
+                    const newUserResponse = await collection.insertOne(user);
+                    const newUserId = newUserResponse.ops[0]._id;
 
-                    res.status(200).json({ status: 'ok' });
+                    const groceryList = {
+                        user_id: newUserId.toString(),
+                        name: "Groceries",
+                        groceries: []
+                    };
+
+                    await listCollection.insert(groceryList);
+
+                    res.status(200).json({ status: 'ok'});
                 });
             }
         }
@@ -108,8 +120,6 @@ export default authenticateNoRedirect(database(async function login(
         // END POST
         //
     } else if (req.method === 'GET') {
-        const db = req.db;
-        const collection = db.collection('users');
         const method = req.query.method;
 
         /********************************************

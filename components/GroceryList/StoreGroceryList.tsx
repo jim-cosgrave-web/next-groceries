@@ -24,8 +24,10 @@ const StoreGroceryList = (props) => {
         async function execute() {
             const result = await getStores();
 
-            if (result.success) {
+            if (result.success && result.selectedStore) {
                 const list = await getListData(props.listId, result.selectedStore.value)
+            } else {
+                setStoreList({ emptyList: true });
             }
         }
 
@@ -39,8 +41,10 @@ const StoreGroceryList = (props) => {
         async function execute() {
             const result = await getStores();
 
-            if (result.success) {
+            if (result.success && result.selectedStore) {
                 const list = await getListData(props.listId, selectedStore.value);
+            } else {
+                setStoreList({ emptyList: true });
             }
         }
 
@@ -134,6 +138,10 @@ const StoreGroceryList = (props) => {
     function getListHTML() {
         if (!storeList) {
             return <div>Loading...</div>;
+        }
+
+        if(storeList.emptyList) {
+            return <div>Add some groceries!</div>
         }
 
         let html = '';

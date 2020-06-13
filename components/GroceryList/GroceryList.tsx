@@ -47,24 +47,30 @@ const GroceryListComponent = (props) => {
             return <div>Loading...</div>;
         }
 
-        let html = list && list.groceries && list.groceries.map((g, index) => {
-            return (
-                <Grocery
-                    grocery={g}
-                    list_id={list._id.toString()}
-                    key={g.name + '_' + g.checked}>
-                </Grocery>
-            );
-        });
+        let html = null;
+
+        if (list.groceries.length > 0) {
+            html = list && list.groceries && list.groceries.map((g, index) => {
+                return (
+                    <Grocery
+                        grocery={g}
+                        list_id={list._id.toString()}
+                        key={g.name + '_' + g.checked}>
+                    </Grocery>
+                );
+            });
+        } else {
+            return <div>Add some groceries!</div>
+        }
 
         return html;
     }
 
     async function handleAddGrocery(value) {
-        
+
         const grocery = list.groceries.find(g => g.name.trim().toLowerCase() == value.trim().toLowerCase());
 
-        if(!grocery && value && value.trim().length > 0) {
+        if (!grocery && value && value.trim().length > 0) {
             const body = {
                 "list_id": list._id,
                 "grocery": {
@@ -82,9 +88,9 @@ const GroceryListComponent = (props) => {
                 },
                 body: JSON.stringify(body)
             });
-    
+
             const response = await resp.json();
-            
+
             setList(response);
         } else {
             console.log('Grocery already on list...');
