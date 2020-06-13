@@ -4,16 +4,20 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
+import { UPDATE_STORE_GROCERY_API_METHOD } from '../../util/constants';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
 const postGroceryApiUrl = env.apiUrl + 'list';
+const postStoreApiUrl = env.apiUrl + 'store';
 
 const StoreGroceryList = (props) => {
     const [storeList, setStoreList] = useState(null);
     const [stores, setStores] = useState(null);
     const [selectedStore, setSelectedStore] = useState(null);
     const [storeDropDown, setStoreDropDown] = useState(null);
+    const [categories, setCategories] = useState(null);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -40,7 +44,7 @@ const StoreGroceryList = (props) => {
             }
         }
 
-        if (props.updateTime != -1) {
+        if (props.updateTime != -1 && selectedStore) {
             execute();
         }
     }, [props.updateTime]);
@@ -73,6 +77,53 @@ const StoreGroceryList = (props) => {
     async function getListData(listId, storeId) {
         let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
         setStoreList(getStoreListResponse);
+        setCategories(getStoreListResponse.categories);
+    }
+
+    async function handleGroceryCategoryChange(categoryName, grocery) {
+        const clone = { ...storeList };
+
+        //
+        // Remove from uncategorized
+        //
+        const uncategorized = clone.categorizedList.find(c => c.uncategorized);
+        const groceryToMove = uncategorized.groceries.find(g => g.name == grocery.name);
+        const index = uncategorized.groceries.indexOf(groceryToMove);
+        uncategorized.groceries.splice(index, 1);
+
+        uncategorized.hidden = uncategorized.groceries.length == 0;
+
+        //
+        // Add to the new category
+        //
+        let newCategory = clone.categorizedList.find(c => c.name == categoryName);
+
+        if (!newCategory) {
+            newCategory = { name: categoryName, groceries: [] };
+            clone.categorizedList.list.push(newCategory);
+        }
+
+        newCategory.hidden = false;
+        newCategory.groceries.push(groceryToMove); 
+
+        setStoreList(clone);
+
+        const body = { 
+            method: UPDATE_STORE_GROCERY_API_METHOD,
+            store: selectedStore.value,
+            category: categoryName, 
+            groceryName: groceryToMove.name 
+        };
+
+        const resp = await fetch(postStoreApiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
     }
 
     function getListHTML() {
@@ -96,6 +147,9 @@ const StoreGroceryList = (props) => {
                                 <Grocery
                                     grocery={g}
                                     list_id={props.listId}
+                                    enableCategory={true}
+                                    categories={categories}
+                                    onCategorySet={handleGroceryCategoryChange}
                                     key={g.name + '_' + g.checked}>
                                 </Grocery>
                             );
@@ -112,13 +166,7 @@ const StoreGroceryList = (props) => {
         //let value = groceryInputRef.current.value;
         value = value.trim();
 
-        const body = {
-            "list_id": props.listId,
-            "grocery": {
-                "name": value
-            }
-        };
-
+        const clone = { ...storeList };
         let grocery = null;
 
         for (let i = 0; i < storeList.categorizedList.length; i++) {
@@ -130,9 +178,14 @@ const StoreGroceryList = (props) => {
             }
         }
 
-        console.log(grocery);
-
         if (!grocery) {
+            const body = {
+                "list_id": props.listId,
+                "grocery": {
+                    "name": value
+                }
+            };
+
             const resp = await fetch(postGroceryApiUrl, {
                 method: 'POST',
                 headers: {
@@ -142,6 +195,7 @@ const StoreGroceryList = (props) => {
             });
     
             const response = await resp.json();
+            getListData(props.listId, selectedStore.value);
         }
     }
 

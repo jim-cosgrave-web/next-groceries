@@ -23,30 +23,45 @@ const Grocery = (props) => {
 
         let html =
             <div className="flex space-between">
-                <div>
-                    <div className="bold clickable" onClick={handleEditNote}>{grocery.name}</div>
-                    {grocery.note && grocery.note.length > 0 && 
+                <div className="flex-grow clickable" onClick={handleEditNote}>
+                    <div className="bold clickable">{grocery.name}</div>
+                    {grocery.note && grocery.note.length > 0 &&
                         !editNote && <div onClick={() => setEditNote(true)} className="grocery-note clickable">Note: {grocery.note}</div>
                     }
-                    {editNote && 
+                    {editNote &&
                         <div className="grocery-note flex large-text">
-                            <input type="text" 
-                                   className="large-text"
-                                   defaultValue={grocery.note} 
-                                   ref={noteRef} 
-                                   onKeyUp={handleKeyUp}
-                                   onChange={() => {}}></input>
-                            <FontAwesomeIcon className="ml-5 clickable" onClick={saveNote} icon={faSave} />
-                        </div>
+                            <div>
+                                <input type="text"
+                                    className="large-text"
+                                    defaultValue={grocery.note}
+                                    ref={noteRef}
+                                    onKeyUp={handleKeyUp}
+                                    onChange={() => { }}></input>
+                                <FontAwesomeIcon className="ml-5 clickable" onClick={saveNote} icon={faSave} />
+                                {props.enableCategory && !grocery.category && <div className="mt-10">
+                                    <select className="prevent-click" onChange={handleCategoryChange}>
+                                        {props.categories.map((c, i) => { return <option key={c.name} defaultValue={c.name}>{c.name}</option>; })}
+                                    </select>
+                                </div>}
+                            </div>
+                        </div> 
                     }
                 </div>
                 <div className="grocery-checkbox clickable" onClick={handleToggleCheck}>
                     {grocery.checked && <FontAwesomeIcon icon={faCheckSquare} />}
                     {!grocery.checked && <FontAwesomeIcon icon={faSquare} />}
                 </div>
+                {/* <div>
+                    {JSON.stringify(grocery, null, 2)}
+                </div> */}
             </div>
 
         return html;
+    }
+
+
+    const handleCategoryChange = (event) => {
+        props.onCategorySet(event.target.value, grocery);
     }
 
     async function handleKeyUp(e) {
@@ -55,8 +70,18 @@ const Grocery = (props) => {
         }
     }
 
-    async function handleEditNote() {
-        setEditNote(true);
+    async function handleEditNote(e) {
+        const domType = e.target.type;
+
+        if (domType) {
+            return;
+        }
+
+        if (!editNote) {
+            setEditNote(true);
+        } else {
+            saveNote();
+        }
     }
 
     async function saveNote() {

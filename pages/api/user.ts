@@ -47,13 +47,13 @@ export default authenticateNoRedirect(database(async function login(
                         // Create json token here
                         //
                         const claims = { sub: existingUser._id, name: existingUser.name, email: existingUser.email, user_id: existingUser._id.toString() };
-                        const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '1h' });
+                        const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '24h' });
 
                         res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
                             httpOnly: true,
                             secure: process.env.NODE_ENV !== 'development',
                             sameSite: 'strict',
-                            maxAge: 3600,
+                            maxAge: 86400,
                             path: '/'
                         }));
 

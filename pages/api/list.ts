@@ -100,6 +100,7 @@ export default authenticate(database(async function getPrimaryListid(
 
                         if (listGrocery.name == storeGrocery.groceryName) {
                             listGrocery.order = order;
+                            listGrocery.category = storeCategory;
                             category.groceries.push(listGrocery);
 
                             const index = remainingGroceries.indexOf(listGrocery);
