@@ -28,11 +28,9 @@ export default authenticateNoRedirect(database(async function login(
             method = 'signup';
         }
         
-        if (req.body.method = SUBSCRIBE_TO_STORE_API_METHOD) {
+        if (req.body.method === SUBSCRIBE_TO_STORE_API_METHOD) {
             method = SUBSCRIBE_TO_STORE_API_METHOD;
-        }
-
-        console.log(method);
+        } 
 
         if (method === 'login') {
             //
@@ -123,7 +121,27 @@ export default authenticateNoRedirect(database(async function login(
                 });
             }
         } else if (method == SUBSCRIBE_TO_STORE_API_METHOD ) {
-            res.status(200).json({ message: "new method!" });
+            //let push = { $push: { 'categories': newCategory } };
+            const store_id = new ObjectId(req.body.store_id);
+            const userFilter = { _id: new ObjectId(req.jwt.user_id) };
+            const user = await collection.findOne(userFilter);
+
+            let alreadySubbed = false;
+
+            for(let i = 0; i < user.stores.length; i++) {
+                if(user.stores[i].name == req.body.name) {
+                    alreadySubbed = true;
+                    break;
+                }
+            }
+
+            if(!alreadySubbed) {
+                await collection.updateOne(userFilter, { $push: { 'stores': { store_id: req.body.store_id, name: req.body.name } } });
+            }
+
+            //await collection.updateOne({ _id: store_id }, { $push: { 'stores': { store_id: req.body.store_id, name: req.body.name } } });
+
+            res.status(200).json({ message: alreadySubbed });
             return;
         }
 

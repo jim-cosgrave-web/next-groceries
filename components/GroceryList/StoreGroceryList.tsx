@@ -5,6 +5,7 @@ import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
 import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD } from '../../util/constants';
+import SubscribeToStore from '../Shared/SubscribeToStore';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
@@ -136,37 +137,13 @@ const StoreGroceryList = (props) => {
         const json = await resp.json();
     }
 
-    async function handleAddStore(value) {
-        const body = {
-            method: SUBSCRIBE_TO_STORE_API_METHOD,
-            store_id: value.id,
-            name: value.label
-        };
-
-        const resp = await fetch(postUserApiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
-
-        const json = await resp.json();
-    }
-
     function getListHTML() {
         if (!storeList) {
             return <div>Loading...</div>;
         }
 
         if(stores && stores.length == 0) {
-            return (
-                <div className="store-reg-container">
-                    <div>
-                        <MyTypeahead placeholder="Find a store near you" type="store" onAdd={handleAddStore}></MyTypeahead>
-                    </div>
-                </div>
-            );
+            return <SubscribeToStore></SubscribeToStore>
         }
 
         if(storeList.emptyList) {

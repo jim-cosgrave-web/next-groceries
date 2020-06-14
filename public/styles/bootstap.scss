@@ -112,6 +112,20 @@ a {
     opacity: .7;
 }
 
-.warning {
+.danger {
     background-color: #dc3545;
+}
+
+.warning {
+    background-color: #fff3cd;
+}
+
+.alert {
+    padding: 1em;
+    font-style: italic;
+    word-break: normal;
+}
+
+.alert.warning {
+    border: 1px solid #ffeeba;
 }

@@ -69,7 +69,7 @@ const GroceryListPage = ({ initialList }) => {
                 <button className={storeBtnClass()} onClick={() => changeMode('store')}>Store</button>
             </div>
             <div className="mt-10">
-                <button className="btn w-100 warning" onClick={handleClearGroceries}>Clear Groceries</button>
+                <button className="btn w-100 danger" onClick={handleClearGroceries}>Clear Groceries</button>
             </div>
             <div>
                 {
