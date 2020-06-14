@@ -1,3 +1,5 @@
+@import './variables';
+
 .menu-btn-wrapper {
     position: fixed;
     width: 24px;
@@ -14,7 +16,8 @@
     right: 0px; 
     top: 0%; 
     opacity: 1;
-    background: #373a47;
+    //background: #373a47;
+    background: #fff;
 }
 
 .menu-btn {
@@ -38,7 +41,8 @@
     width: 300px; 
     height: 100%; 
     transition: all 0.5s ease 0s; 
-    background: #373a47;
+    //background: #373a47;
+    background: lighten($primary, 10%);
     transform: translate3d(-100%, 0px, 0px);
 }
 
@@ -134,4 +138,14 @@
             }
         }
     }
+}
+
+#fixed-nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 60px;
+    background-color: $primary;
+    z-index: 999;
 }

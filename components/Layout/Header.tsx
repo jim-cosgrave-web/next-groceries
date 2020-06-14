@@ -83,6 +83,7 @@ const Header = () => {
                 </span>
                 <button className="menu-btn">Open Menu</button>
             </div>
+            <div id="fixed-nav-bar"></div>
         </div>
     );
 };
