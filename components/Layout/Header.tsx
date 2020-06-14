@@ -56,10 +56,16 @@ const Header = () => {
                 </div>
                 <div className="menu-nav-wrapper">
                     <nav>
-                        <Link href="/grocery-list">
+                    <Link href="/grocery-list">
                             <div className="nav-item" onClick={handleNav}>
                                 <FontAwesomeIcon icon={faListOl} />
                                 <a>Grocery List</a>
+                            </div>
+                        </Link>
+                        <Link href="/subscribe-to-store">
+                            <div className="nav-item" onClick={handleNav}>
+                                <FontAwesomeIcon icon={faListOl} />
+                                <a>Subscribe to Stores</a>
                             </div>
                         </Link>
                         <div className="nav-item" onClick={handleSignOut}>

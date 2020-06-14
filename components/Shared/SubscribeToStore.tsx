@@ -41,6 +41,8 @@ const SubscribeToStore = (props) => {
         });
 
         const json = await resp.json();
+
+        setSubbedStores(json.stores);
     }
 
     function getHTML() {
@@ -51,6 +53,9 @@ const SubscribeToStore = (props) => {
                     <div className="mt-5">
                         Please use the search bar below to subscribe to a store and get shopping!
                     </div>
+                </div>}
+                {subbedStores && subbedStores.length > 0 && <div>
+                    Current stores
                 </div>}
                 <div>
                     <MyTypeahead placeholder="Find a store near you" type="store" onAdd={handleStoreSubscription}></MyTypeahead>

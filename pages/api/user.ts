@@ -136,12 +136,12 @@ export default authenticateNoRedirect(database(async function login(
             }
 
             if(!alreadySubbed) {
-                await collection.updateOne(userFilter, { $push: { 'stores': { store_id: req.body.store_id, name: req.body.name } } });
+                const newStore = { store_id: req.body.store_id, name: req.body.name }
+                user.stores.push(newStore)
+                await collection.updateOne(userFilter, { $push: { 'stores': newStore } });
             }
 
-            //await collection.updateOne({ _id: store_id }, { $push: { 'stores': { store_id: req.body.store_id, name: req.body.name } } });
-
-            res.status(200).json({ message: alreadySubbed });
+            res.status(200).json({ stores: user.stores });
             return;
         }
 
