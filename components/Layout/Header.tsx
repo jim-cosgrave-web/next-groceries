@@ -68,6 +68,18 @@ const Header = () => {
                                 <a>Subscribe to Stores</a>
                             </div>
                         </Link>
+                        <Link href="/recipes">
+                            <div className="nav-item" onClick={handleNav}>
+                                <FontAwesomeIcon icon={faListOl} />
+                                <a>Recipes</a>
+                            </div>
+                        </Link>
+                        <Link href="/admin">
+                            <div className="nav-item" onClick={handleNav}>
+                                <FontAwesomeIcon icon={faListOl} />
+                                <a>Admin</a>
+                            </div>
+                        </Link>
                         <div className="nav-item" onClick={handleSignOut}>
                             <FontAwesomeIcon icon={faSignOutAlt} />
                             <a>Sign Out</a>

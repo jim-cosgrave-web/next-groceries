@@ -8,7 +8,7 @@ import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD } from
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
 const postUserApiUrl = env.apiUrl + 'user';
 
-const offline = false;
+const offline = true;
 
 const SubscribeToStore = (props) => {
     const [subbedStores, setSubbedStores] = useState(null);
