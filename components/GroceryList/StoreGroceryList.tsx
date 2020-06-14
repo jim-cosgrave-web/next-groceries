@@ -137,13 +137,36 @@ const StoreGroceryList = (props) => {
         const json = await resp.json();
     }
 
+    //
+    // Handle user subscribing to a store.  This should only happen
+    // if the user has no store subscriptions and then subscribes to their first store.
+    //
+    async function handleStoreSubscribe(store) {
+        console.log('handleStoreSubscribe', store);
+
+        let storeDropdownClone = storeDropDown.slice();
+
+        if(!storeDropdownClone) {
+            storeDropdownClone = [];
+        }
+
+        const newStore = { name: store.name + ' (' + store.city + ')', value: store.store_id.toString() }
+
+        storeDropdownClone.push(newStore);
+
+        setStoreDropDown(storeDropdownClone);
+        setSelectedStore(newStore);
+
+        const list = await getListData(props.listId, store._id.toString());
+    }
+
     function getListHTML() {
         if (!storeList) {
             return <div>Loading...</div>;
         }
 
         if(stores && stores.length == 0) {
-            return <SubscribeToStore></SubscribeToStore>
+            return <SubscribeToStore onSubscribe={handleStoreSubscribe}></SubscribeToStore>
         }
 
         if(storeList.emptyList) {

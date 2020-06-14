@@ -4,6 +4,8 @@ import { env } from '../../util/environment';
 import { myGet } from '../../util/myGet';
 import { compare } from '../../util/compare';
 
+const offline = true;
+
 const MyTypeahead = (props) => {
     const [options, setOptions] = useState([]);
     const ref = React.createRef<any>();
@@ -18,24 +20,40 @@ const MyTypeahead = (props) => {
 
     async function getData() {
         if (props.type === 'groceries') {
-            let data = await myGet(env.apiUrl + 'groceries', null);
-            data = data.sort(compare);
-            const names = data.map(d => { return d.name });
-            const uniqueSet = Array.from(new Set(names));
+            if (!offline) {
+                let data = await myGet(env.apiUrl + 'groceries', null);
+                data = data.sort(compare);
+                const names = data.map(d => { return d.name });
+                const uniqueSet = Array.from(new Set(names));
 
-            setOptions(uniqueSet);
-        } else if (props.type === 'store') {
-            let data = await myGet(env.apiUrl + 'store', null);
-            let ar = [];
-            console.log(data);
-
-            for (let i = 0; i < data.stores.length; i++) {
-                var store = data.stores[i];
-                var name = `${store.name} (${store.city} ${store.state})`;
-                ar.push({ id: store._id.toString(), label: name });
+                setOptions(uniqueSet);
+            } else {
+                setOptions(['Apples', 'Bananas', 'Milk', 'Eggs', 'Bacon']);
             }
+        } else if (props.type === 'store') {
+            if (!offline) {
+                let data = await myGet(env.apiUrl + 'store', null);
+                let ar = [];
 
-            setOptions(ar);
+                for (let i = 0; i < data.stores.length; i++) {
+                    var store = data.stores[i];
+                    var name = `${store.name} (${store.city} ${store.state})`;
+                    ar.push({ id: store._id.toString(), label: name });
+                }
+
+                setOptions(ar);
+            } else {
+                setOptions([
+                    {
+                        id: '123abc',
+                        label: 'Aldi (Lemont IL)'
+                    },
+                    {
+                        id: '456def',
+                        label: 'Jewel (Lemont IL)'
+                    }
+                ]);
+            }
         } else {
             setOptions(['NO OPTIONS FOUND']);
         }
