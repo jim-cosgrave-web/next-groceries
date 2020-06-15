@@ -5,7 +5,7 @@ import { env } from '../util/environment';
 import Link from 'next/link';
 
 const userApiUrl = env.apiUrl + 'user';
-const signUpEnabled = true;
+const signUpEnabled = false;
 
 const Login = () => {
     const [valid, setValid] = useState(false);
