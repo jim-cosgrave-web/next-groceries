@@ -210,7 +210,7 @@ const StoreGroceryList = (props) => {
 
     function getListHTML() {
         if (!storeList) {
-            return <div>Loading...</div>;
+            return <div className="mt-10">Loading...</div>;
         }
 
         if (stores && stores.length == 0) {
