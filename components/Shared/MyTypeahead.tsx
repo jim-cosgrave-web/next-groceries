@@ -4,7 +4,7 @@ import { env } from '../../util/environment';
 import { myGet } from '../../util/myGet';
 import { compare } from '../../util/compare';
 
-const offline = true;
+const offline = false;
 
 const MyTypeahead = (props) => {
     const [options, setOptions] = useState([]);

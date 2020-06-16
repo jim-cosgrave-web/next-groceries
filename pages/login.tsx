@@ -12,6 +12,7 @@ const Login = () => {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [signUpFlow, setSignUpFlow] = useState(false);
+    const [signingIn, setSigningIn] = useState(false);
 
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -22,6 +23,7 @@ const Login = () => {
             return;
         }
 
+        setSigningIn(true);
         setValid(false);
         setError(false);
 
@@ -38,6 +40,7 @@ const Login = () => {
         })
 
         const json = await resp.json();
+        setSigningIn(false);
 
         if (resp.status === 401) {
             setError(true);
