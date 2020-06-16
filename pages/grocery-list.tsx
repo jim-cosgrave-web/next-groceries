@@ -4,7 +4,8 @@ import StoreGroceryList from '../components/GroceryList/StoreGroceryList';
 import { NextPageContext } from 'next';
 import { myGet } from '../util/myGet';
 import { env } from '../util/environment';
-import MyTypeahead from '../components/Shared/MyTypeahead';
+
+import { ToastContainer, toast } from 'react-toastify';
 
 const getListApiUrl = env.apiUrl + 'list?method=getList';
 const postClearGroceriesApiUrl = env.apiUrl + 'list';
@@ -13,6 +14,33 @@ const GroceryListPage = ({ initialList }) => {
     const [mode, setMode] = useState('list');
     const [list, setList] = useState(initialList);
     const [update, setUpdate] = useState(-1);
+    const startToastId = React.useRef(null);
+
+    const notifyStart = () => startToastId.current = toast('Removing checked groceries...', {
+        position: "bottom-center",
+        hideProgressBar: true,
+        closeOnClick: true,
+        progress: undefined,
+        className: 'warning'
+    });
+
+    const dismissStart = () => toast.dismiss(startToastId.current);
+
+    const notifySuccess = () => startToastId.current = toast('Successfully removed groceries!', {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        className: 'success'
+    });
+
+    const notifyError = () => startToastId.current = toast('Error removing groceries!', {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        className: 'error'
+    });
 
     function changeMode(mode) {
         localStorage.setItem('list-mode', mode);
@@ -22,7 +50,7 @@ const GroceryListPage = ({ initialList }) => {
     function listBtnClass() {
         let c = 'btn w-50';
 
-        if(mode !== 'list') {
+        if (mode !== 'list') {
             c += ' btn-inactive';
         }
 
@@ -32,7 +60,7 @@ const GroceryListPage = ({ initialList }) => {
     function storeBtnClass() {
         let c = 'btn w-50';
 
-        if(mode !== 'store') {
+        if (mode !== 'store') {
             c += ' btn-inactive';
         }
 
@@ -43,22 +71,40 @@ const GroceryListPage = ({ initialList }) => {
     // Clear the crossed off groceries
     //
     async function handleClearGroceries() {
-        const body = {
-            "method": "clear-groceries",
-            "list_id": list._id
-        };
+        notifyStart();
 
-        const resp = await fetch(postClearGroceriesApiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
+        try {
+            const body = {
+                "method": "clear-groceries",
+                "list_id": list._id
+            };
 
-        const response = await resp.json();
+            const resp = await fetch(postClearGroceriesApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
 
-        setUpdate(new Date().getTime());
+            const response = await resp.json();
+
+            if (resp.status == 200) {
+                setTimeout(() => {
+                    dismissStart();
+                    notifySuccess();
+                }, 1000);
+
+                setUpdate(new Date().getTime());
+            } else {
+                setTimeout(() => {
+                    dismissStart();
+                    notifyError();
+                }, 1000);
+            }
+        } catch {
+            dismissStart();
+        }
     }
 
     return (
@@ -76,6 +122,7 @@ const GroceryListPage = ({ initialList }) => {
                     mode == 'list' ? <GroceryList updateTime={update}></GroceryList> : <StoreGroceryList updateTime={update} listId={initialList._id}></StoreGroceryList>
                 }
             </div>
+            <ToastContainer />
         </div>
     );
 }
@@ -83,7 +130,7 @@ const GroceryListPage = ({ initialList }) => {
 GroceryListPage.getInitialProps = async (ctx: NextPageContext) => {
     const json = await myGet(getListApiUrl, ctx);
 
-    if(json) {
+    if (json) {
         return { initialList: json };
     }
 

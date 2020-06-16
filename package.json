@@ -28,7 +28,8 @@
     "next-connect": "^0.6.6",
     "react": "^16.13.1",
     "react-bootstrap-typeahead": "^4.2.2",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-toastify": "^6.0.5"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",
