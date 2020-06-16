@@ -67,8 +67,9 @@ const StoreGroceryList = (props) => {
             setStores(getStoresResponse.stores);
 
             const ddl = [];
+
             getStoresResponse.stores.forEach(s => {
-                ddl.push({ name: s.name + ' (' + s.city + ')', value: s.store_id.toString() });
+                ddl.push({ name: s.name, value: s.store_id.toString() });
             });
 
             const tempSelectedStore = ddl[0];
@@ -107,7 +108,7 @@ const StoreGroceryList = (props) => {
         if (!newCategory) {
             newCategory = { name: newCategoryName, groceries: [] };
 
-            if(newCategoryName == UNCATEGORIZED) {
+            if (newCategoryName == UNCATEGORIZED) {
                 clone.categorizedList.unshift(newCategory);
             } else {
                 clone.categorizedList.push(newCategory);
@@ -115,15 +116,15 @@ const StoreGroceryList = (props) => {
         }
 
         newCategory.hidden = false;
-        newCategory.groceries.push(groceryToMove); 
+        newCategory.groceries.push(groceryToMove);
 
         setStoreList(clone);
-        
-        const body = { 
+
+        const body = {
             method: UPDATE_STORE_GROCERY_API_METHOD,
             store: selectedStore.value,
-            category: newCategoryName, 
-            groceryName: groceryToMove.name 
+            category: newCategoryName,
+            groceryName: groceryToMove.name
         };
 
         const resp = await fetch(postStoreApiUrl, {
@@ -146,7 +147,7 @@ const StoreGroceryList = (props) => {
 
         let storeDropdownClone = storeDropDown.slice();
 
-        if(!storeDropdownClone) {
+        if (!storeDropdownClone) {
             storeDropdownClone = [];
         }
 
@@ -165,11 +166,11 @@ const StoreGroceryList = (props) => {
             return <div>Loading...</div>;
         }
 
-        if(stores && stores.length == 0) {
+        if (stores && stores.length == 0) {
             return <SubscribeToStore onSubscribe={handleStoreSubscribe}></SubscribeToStore>
         }
 
-        if(storeList.emptyList) {
+        if (storeList.emptyList) {
             return <div>Add some groceries!</div>
         }
 
@@ -178,7 +179,7 @@ const StoreGroceryList = (props) => {
         html = storeList.categorizedList.map((c, cIndex) => {
             return (
                 !c.hidden && c.groceries.length > 0 && <div key={c.name}>
-                    <div className="list-category mt-20">
+                    <div className="list-category mt-10">
                         <div className="list-category-name">
                             {c.name}
                         </div>
@@ -236,16 +237,31 @@ const StoreGroceryList = (props) => {
                 },
                 body: JSON.stringify(body)
             });
-    
+
             const response = await resp.json();
             getListData(props.listId, selectedStore.value);
         }
+    }
+
+    async function handleStoreChange(event) {
+        //props.onCategorySet(event.target.value, props.categoryName, grocery);
+        //console.log(event.target.value);
+        await getListData(props.listId, event.target.value);
     }
 
     return (
         <div className="mt-10">
             {stores && stores.length > 0 && <div className="mt-10 mb-10">
                 <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
+            </div>}
+            {storeDropDown && storeDropDown.length > 0 && <div className="mt-10">
+                <select className="select-css" onChange={handleStoreChange} defaultValue={storeDropDown[0].value}>
+                    {storeDropDown.map((s, index) => {
+                        return (<option key={index} value={s.value}>
+                            {s.name}
+                        </option>);
+                    })}
+                </select>
             </div>}
             <div className="grocery-list">
                 <div className="list">
