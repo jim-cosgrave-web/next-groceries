@@ -23,23 +23,25 @@ const Grocery = (props) => {
 
         let html =
             <div className="flex space-between">
-                <div className="flex-grow clickable" onClick={handleEditNote}>
+                <div className="flex-grow clickable grocery-left" onClick={handleEditNote}>
                     <div className="bold clickable">{grocery.name}</div>
                     {grocery.note && grocery.note.length > 0 &&
-                        !editNote && <div onClick={() => setEditNote(true)} className="grocery-note clickable">Note: {grocery.note}</div>
+                        !editNote && <div onClick={() => setEditNote(true)} className="grocery-note clickable mt-10">Note: {grocery.note}</div>
                     }
                     {editNote &&
                         <div className="grocery-note flex large-text">
-                            <div>
+                            <div className="mt-10">
                                 <input type="text"
-                                    className="large-text"
+                                    className="large-text w-100 form-control"
+                                    placeholder="Enter a note"
                                     defaultValue={grocery.note}
                                     ref={noteRef}
                                     onKeyUp={handleKeyUp}
+                                    onBlur={handleBlur}
                                     onChange={() => { }}></input>
                                 {/* <FontAwesomeIcon className="ml-5 clickable" onClick={saveNote} icon={faSave} /> */}
                                 {props.enableCategory && <div className="mt-10">
-                                    <select className="prevent-click" onChange={handleCategoryChange} value={props.categoryName}>
+                                    <select className="prevent-click select-css" onChange={handleCategoryChange} value={props.categoryName}>
                                         {props.categories.map((c, i) => { return <option key={c.name} defaultValue={props.categoryName}>{c.name}</option>; })}
                                     </select>
                                 </div>}
@@ -68,6 +70,10 @@ const Grocery = (props) => {
         if (e.key.toLowerCase() === 'enter') {
             await saveNote();
         }
+    }
+
+    async function handleBlur(e) {
+        await saveNote();
     }
 
     async function handleEditNote(e) {

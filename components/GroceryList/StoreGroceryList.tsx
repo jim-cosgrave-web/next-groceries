@@ -161,6 +161,53 @@ const StoreGroceryList = (props) => {
         const list = await getListData(props.listId, store._id.toString());
     }
 
+    async function handleAddGrocery(value) {
+        //let value = groceryInputRef.current.value;
+        value = value.trim();
+
+        const clone = { ...storeList };
+        let grocery = null;
+
+        for (let i = 0; i < storeList.categorizedList.length; i++) {
+            const category = storeList.categorizedList[i];
+            grocery = category.groceries.find(g => g.name.toLowerCase() == value.toLowerCase());
+
+            if (grocery) {
+                break;
+            }
+        }
+
+        if (!grocery) {
+            const body = {
+                "list_id": props.listId,
+                "grocery": {
+                    "name": value
+                }
+            };
+
+            const resp = await fetch(postGroceryApiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            const response = await resp.json();
+            getListData(props.listId, selectedStore.value);
+        }
+    }
+
+    //
+    // Handle the event when the store dropdown changes
+    //
+    async function handleStoreChange(event) {
+        const store = storeDropDown.find(s => s.value == event.target.value);
+        setSelectedStore(store);
+
+        await getListData(props.listId, event.target.value);
+    }
+
     function getListHTML() {
         if (!storeList) {
             return <div>Loading...</div>;
@@ -204,49 +251,6 @@ const StoreGroceryList = (props) => {
         });
 
         return html;
-    }
-
-    async function handleAddGrocery(value) {
-        //let value = groceryInputRef.current.value;
-        value = value.trim();
-
-        const clone = { ...storeList };
-        let grocery = null;
-
-        for (let i = 0; i < storeList.categorizedList.length; i++) {
-            const category = storeList.categorizedList[i];
-            grocery = category.groceries.find(g => g.name.toLowerCase() == value.toLowerCase());
-
-            if (grocery) {
-                break;
-            }
-        }
-
-        if (!grocery) {
-            const body = {
-                "list_id": props.listId,
-                "grocery": {
-                    "name": value
-                }
-            };
-
-            const resp = await fetch(postGroceryApiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            });
-
-            const response = await resp.json();
-            getListData(props.listId, selectedStore.value);
-        }
-    }
-
-    async function handleStoreChange(event) {
-        //props.onCategorySet(event.target.value, props.categoryName, grocery);
-        //console.log(event.target.value);
-        await getListData(props.listId, event.target.value);
     }
 
     return (
