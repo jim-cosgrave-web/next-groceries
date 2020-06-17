@@ -81,7 +81,7 @@ const SubscribeToStore = (props) => {
                 //
                 // Offline mode, is client side only
                 //
-                const newStore = { _id: store.id, name: store.label };
+                const newStore = { store_id: store.id, name: store.label };
 
                 clone.push(newStore);
                 setSubbedStores(clone);
@@ -139,7 +139,7 @@ const SubscribeToStore = (props) => {
                             <div className="list">
                                 {subbedStores.map((s, index) => {
                                     return (
-                                        <div className="item" key={s._id}>
+                                        <div className="item" key={s.store_id}>
                                             <div className="flex space-between">
                                                 <div>
                                                     {s.name}

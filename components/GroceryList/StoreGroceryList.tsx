@@ -83,6 +83,7 @@ const StoreGroceryList = (props) => {
 
     async function getListData(listId, storeId) {
         let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
+        //console.log(getStoreListResponse);
         setStoreList(getStoreListResponse);
         setCategories(getStoreListResponse.categories);
     }
@@ -151,14 +152,15 @@ const StoreGroceryList = (props) => {
             storeDropdownClone = [];
         }
 
-        const newStore = { name: store.name + ' (' + store.city + ')', value: store.store_id.toString() }
+        const newStore = { name: store.name, value: store.store_id.toString() }
 
         storeDropdownClone.push(newStore);
 
+        setStores([store]);
         setStoreDropDown(storeDropdownClone);
         setSelectedStore(newStore);
 
-        const list = await getListData(props.listId, store._id.toString());
+        const list = await getListData(props.listId, store.store_id.toString());
     }
 
     async function handleAddGrocery(value) {
