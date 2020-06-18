@@ -16,6 +16,11 @@ const GroceryListPage = ({ initialList }) => {
     const [update, setUpdate] = useState(-1);
     const startToastId = React.useRef(null);
 
+    useEffect(() => {
+        const listMode = localStorage.getItem('list-mode');
+        setMode(listMode);
+    }, []);
+
     const notifyStart = () => startToastId.current = toast('Removing checked groceries...', {
         position: "bottom-center",
         hideProgressBar: true,

@@ -72,12 +72,19 @@ const StoreGroceryList = (props) => {
                 ddl.push({ name: s.name, value: s.store_id.toString() });
             });
 
-            const tempSelectedStore = ddl[0];
+            const lsStore = localStorage.getItem('selected-store');
+            let tSelectedStore = null;
 
+            if(lsStore) {
+                tSelectedStore = JSON.parse(lsStore);
+            } else {
+                tSelectedStore = ddl[0];
+            }
+
+            setSelectedStore(tSelectedStore);
             setStoreDropDown(ddl);
-            setSelectedStore(tempSelectedStore);
 
-            return { success: true, selectedStore: tempSelectedStore };
+            return { success: true, selectedStore: tSelectedStore };
         }
     }
 
@@ -144,8 +151,6 @@ const StoreGroceryList = (props) => {
     // if the user has no store subscriptions and then subscribes to their first store.
     //
     async function handleStoreSubscribe(store) {
-        console.log('handleStoreSubscribe', store);
-
         let storeDropdownClone = storeDropDown.slice();
 
         if (!storeDropdownClone) {
@@ -206,6 +211,7 @@ const StoreGroceryList = (props) => {
     async function handleStoreChange(event) {
         const store = storeDropDown.find(s => s.value == event.target.value);
         setSelectedStore(store);
+        localStorage.setItem('selected-store', JSON.stringify(store));
 
         await getListData(props.listId, event.target.value);
     }
@@ -261,7 +267,7 @@ const StoreGroceryList = (props) => {
                 <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
             </div>}
             {storeDropDown && storeDropDown.length > 0 && <div className="mt-10">
-                <select className="select-css" onChange={handleStoreChange} defaultValue={storeDropDown[0].value}>
+                <select className="select-css" onChange={handleStoreChange} defaultValue={selectedStore.value}>
                     {storeDropDown.map((s, index) => {
                         return (<option key={index} value={s.value}>
                             {s.name}

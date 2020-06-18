@@ -11,7 +11,7 @@ const apiUrl = env.apiUrl + 'list?method=getList';
 const postGroceryApiUrl = env.apiUrl + 'list';
 
 const GroceryListComponent = (props) => {
-    const [list, setList] = useState<GroceryList>(null)
+    const [list, setList] = useState<GroceryList>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -21,6 +21,10 @@ const GroceryListComponent = (props) => {
         }
 
         execute();
+
+        return () => {
+            console.log('unmount...');
+        };
     }, []);
 
     useEffect(() => {
