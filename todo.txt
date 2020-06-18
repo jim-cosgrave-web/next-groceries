@@ -1,4 +1,3 @@
-- Admin link only for admin role
 - API wrapper that checks user roles and redirects if not authenticated
 - favicon
 

@@ -113,7 +113,7 @@ const GroceryListPage = ({ initialList }) => {
     }
 
     return (
-        <div>
+        <div className="max-width-page">
             <h1>Groceries</h1>
             <div className="btn-group">
                 <button className={listBtnClass()} onClick={() => changeMode('list')}>List</button>

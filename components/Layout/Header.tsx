@@ -76,7 +76,7 @@ const Header = () => {
     function isAdmin() {
         let isAdmin = false;
 
-        if(userRoles) {
+        if (userRoles) {
             isAdmin = userRoles.indexOf('admin') > -1
         }
 
@@ -96,7 +96,7 @@ const Header = () => {
                 </div>
                 <div className="menu-nav-wrapper">
                     <nav>
-                    <Link href="/grocery-list">
+                        <Link href="/grocery-list">
                             <div className="nav-item" onClick={handleNav}>
                                 <FontAwesomeIcon icon={faListOl} />
                                 <a>Grocery List</a>
@@ -113,7 +113,7 @@ const Header = () => {
                                 <FontAwesomeIcon icon={faBook} />
                                 <a>Recipes</a>
                             </div>
-                        </Link> 
+                        </Link>
                         {isAdmin() && <Link href="/admin">
                             <div className="nav-item" onClick={handleNav}>
                                 <FontAwesomeIcon icon={faLock} />
