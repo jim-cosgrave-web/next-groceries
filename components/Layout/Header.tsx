@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListOl, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faSignOutAlt, faBook, faLink, faLock } from '@fortawesome/free-solid-svg-icons';
 import { env } from './../../util/environment';
 import fetch from 'isomorphic-unfetch';
 
@@ -64,19 +64,19 @@ const Header = () => {
                         </Link>
                         <Link href="/subscribe-to-store">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faListOl} />
+                                <FontAwesomeIcon icon={faLink} />
                                 <a>Subscribe to Stores</a>
                             </div>
                         </Link>
                         <Link href="/recipes">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faListOl} />
+                                <FontAwesomeIcon icon={faBook} />
                                 <a>Recipes</a>
                             </div>
                         </Link>
                         <Link href="/admin">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faListOl} />
+                                <FontAwesomeIcon icon={faLock} />
                                 <a>Admin</a>
                             </div>
                         </Link>

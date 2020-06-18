@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
@@ -15,25 +15,41 @@ const GroceryListComponent = (props) => {
     const router = useRouter();
 
     useEffect(() => {
+        let isCancelled = false;
+
         async function execute() {
             const data = await getListData();
-            setList(data);
+
+            if (isCancelled == false) {
+                setList(data);
+            }
         }
 
         execute();
 
         return () => {
-            console.log('unmount...');
+            isCancelled = true;
         };
     }, []);
 
     useEffect(() => {
+        let isCancelled = false;
+
         async function execute() {
             const data = await getListData();
-            setList(data);
+
+            if (isCancelled == false) {
+                setList(data);
+            }
         }
 
-        execute();
+        if (props.updateTime != -1) {
+            execute();
+        }
+
+        return () => {
+            isCancelled = true;
+        };
     }, [props.updateTime]);
 
     async function getListData() {
@@ -96,6 +112,7 @@ const GroceryListComponent = (props) => {
             const response = await resp.json();
 
             setList(response);
+
         } else {
             console.log('Grocery already on list...');
         }
@@ -106,7 +123,6 @@ const GroceryListComponent = (props) => {
             <div className="mt-10 mb-10">
                 <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
             </div>
-
             <div className="grocery-list">
                 <div className="list">
                     {getListItemsHTML()}

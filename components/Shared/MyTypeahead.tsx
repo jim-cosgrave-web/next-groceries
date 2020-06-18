@@ -11,11 +11,21 @@ const MyTypeahead = (props) => {
     const ref = React.createRef<any>();
 
     useEffect(() => {
+        let isCancelled = false;
+
         async function execute() {
-            await getData();
+            const data = await getData();
+
+            if(!isCancelled) {
+                setOptions(data);
+            }
         }
 
         execute();
+
+        return () => {
+            isCancelled = true;
+        };
     }, []);
 
     async function getData() {
@@ -26,9 +36,9 @@ const MyTypeahead = (props) => {
                 const names = data.map(d => { return d.name });
                 const uniqueSet = Array.from(new Set(names));
 
-                setOptions(uniqueSet);
+                return uniqueSet;
             } else {
-                setOptions(['Apples', 'Bananas', 'Milk', 'Eggs', 'Bacon']);
+                return ['Apples', 'Bananas', 'Milk', 'Eggs', 'Bacon'];
             }
         } else if (props.type === 'store') {
             if (!offline) {
@@ -41,9 +51,9 @@ const MyTypeahead = (props) => {
                     ar.push({ id: store._id.toString(), label: name });
                 }
 
-                setOptions(ar);
+                return ar;
             } else {
-                setOptions([
+                return [
                     {
                         id: '123abc',
                         label: 'Aldi (Lemont IL)'
@@ -52,10 +62,10 @@ const MyTypeahead = (props) => {
                         id: '456def',
                         label: 'Jewel (Lemont IL)'
                     }
-                ]);
+                ];
             }
         } else {
-            setOptions(['NO OPTIONS FOUND']);
+            return ['NO OPTIONS FOUND'];
         }
     }
 
