@@ -1,7 +1,7 @@
-- Figure out how to use localstoarge in useEffect 
-  - Need to retain selection of List vs store
-  - Need to retain selection of store dropdown
-- Add methods to unsubscribe from requests in useEffect.  Currently getting an error if you change to the store tab on the groceries page too fast
+- Admin link only for admin role
+- API wrapper that checks user roles and redirects if not authenticated
+- favicon
+
 - Track last login time for each user
 - Give certain local users roles
 - Create admin page with drag and drop for easier management

@@ -67,7 +67,7 @@ export default authenticateNoRedirect(database(async function login(
                         }));
 
                         //res.json({ authToken: jwt });
-                        res.status(200).json({ status: 'Logged in' });
+                        res.status(200).json({ status: 'Logged in', jwt });
                     } else {
                         res.status(401).json({ status: 'Oops.  Something went wrong' });
                     }
@@ -183,6 +183,27 @@ export default authenticateNoRedirect(database(async function login(
             }));
 
             res.status(200).json({ status: 'ok' });
+            return;
+        } else {
+            //
+            // Standard GET user
+            //
+            const user = await collection.findOne({ _id: new ObjectId(req.jwt.user_id) });
+
+            if (!user) {
+                res.status(500).json({ message: 'User not found' });
+                return;
+            }
+
+            res.status(200).json({ user: { 
+                _id: user._id.toString(), 
+                username: user.username, 
+                email: user.email, 
+                name: user.name,
+                roles: user.roles,
+                stores: user.stores
+            }});
+
             return;
         }
 

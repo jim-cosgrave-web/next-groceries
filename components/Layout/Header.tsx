@@ -1,14 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListOl, faSignOutAlt, faBook, faLink, faLock } from '@fortawesome/free-solid-svg-icons';
 import { env } from './../../util/environment';
 import fetch from 'isomorphic-unfetch';
+import user from '../../pages/api/user';
+
+const userApiUrl = env.apiUrl + 'user';
 
 const Header = () => {
     const [hidden, setHidden] = useState(true);
+    const [userRoles, setUserRoles] = useState(null);
     const router = useRouter();
+
+    useEffect(() => {
+        let isCancelled = false;
+
+        async function execute() {
+            const user = await getUser();
+
+            if (isCancelled == false && user && user.roles && user.roles.length > 0) {
+                setUserRoles(user.roles);
+            }
+        }
+
+        execute();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, []);
+
+    async function getUser() {
+        const resp = await fetch(userApiUrl);
+        const json = await resp.json();
+        const user = json.user;
+
+        return user;
+    }
 
     function hiddenClass() {
         let menuClass = 'slide-hidden';
@@ -43,6 +73,16 @@ const Header = () => {
         handleToggleMenu();
     }
 
+    function isAdmin() {
+        let isAdmin = false;
+
+        if(userRoles) {
+            isAdmin = userRoles.indexOf('admin') > -1
+        }
+
+        return isAdmin;
+    }
+
     return (
         <div id="menu">
             <div id="menu-overlay" className={overlayClass()} onClick={handleToggleMenu}></div>
@@ -73,13 +113,13 @@ const Header = () => {
                                 <FontAwesomeIcon icon={faBook} />
                                 <a>Recipes</a>
                             </div>
-                        </Link>
-                        <Link href="/admin">
+                        </Link> 
+                        {isAdmin() && <Link href="/admin">
                             <div className="nav-item" onClick={handleNav}>
                                 <FontAwesomeIcon icon={faLock} />
                                 <a>Admin</a>
                             </div>
-                        </Link>
+                        </Link>}
                         <div className="nav-item" onClick={handleSignOut}>
                             <FontAwesomeIcon icon={faSignOutAlt} />
                             <a>Sign Out</a>
