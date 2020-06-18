@@ -54,10 +54,7 @@ const GroceryListComponent = (props) => {
 
     async function getListData() {
         let json = await myGet(apiUrl, null);
-
-        if (json && json.length > 0) {
-            json = json[0];
-        }
+        json.groceries.sort(compare);
 
         return json;
     }

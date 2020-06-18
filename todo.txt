@@ -4,3 +4,11 @@
 - Track last login time for each user
 - Give certain local users roles
 - Create admin page with drag and drop for easier management
+- User lists - keep in local storage?  If data exists, render it quickly.  Still query back end then compare length of grocery list to know if state should be refreshed?
+
+- drag n drop
+  https://github.com/atlassian/react-beautiful-dnd
+  https://catalystjsweb.azurewebsites.net/#/docs/react-example/react-generic-component
+  https://dev.azure.com/bdodigital/_git/Catalyst%20JS?path=%2Fpackages%2Freact-generic-component%2Fsrc%2FReorderList.tsx
+
+- Come up with different text for the "Clear Groceries" button
