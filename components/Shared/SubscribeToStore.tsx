@@ -38,7 +38,7 @@ const SubscribeToStore = (props) => {
     //
     async function handleStoreSubscription(store) {
         const clone = subbedStores.slice();
-        const existing = clone.find(s => s._id.toString() == store.id);
+        const existing = clone.find(s => s.store_id.toString() == store.id);
 
         //
         // Only proceed if the user chose a store they're not currently
@@ -108,7 +108,7 @@ const SubscribeToStore = (props) => {
             //
             const body = {
                 method: UNSUBSCRIBE_FROM_STORE_API_METHOD,
-                store_id: store._id.toString()
+                store_id: store.store_id.toString()
             };
 
             const resp = await fetch(postUserApiUrl, {

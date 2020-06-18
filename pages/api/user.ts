@@ -7,7 +7,7 @@ import cookie from 'cookie';
 import { MyNextApiRequest, MyJWT } from '../../middleware/myNextApiRequest';
 import { ObjectId } from 'mongodb';
 import { authenticateNoRedirect } from '../../middleware/authenticateNoRedirect';
-import { SUBSCRIBE_TO_STORE_API_METHOD } from '../../util/constants';
+import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
     req: MyNextApiRequest,
@@ -27,11 +27,11 @@ export default authenticateNoRedirect(database(async function login(
         if (name && name.trim().length > 0) {
             method = 'signup';
         }
-        
-        if (req.body.method === SUBSCRIBE_TO_STORE_API_METHOD) {
-            method = SUBSCRIBE_TO_STORE_API_METHOD;
-        } 
 
+        if (req.body.method && req.body.method.length > 0) {
+            method = req.body.method;
+        }
+        
         if (method === 'login') {
             //
             // Validate that parameters were supplied
@@ -143,6 +143,12 @@ export default authenticateNoRedirect(database(async function login(
 
             res.status(200).json({ stores: user.stores });
             return;
+        } else if (method == UNSUBSCRIBE_FROM_STORE_API_METHOD) {
+            const pull = { $pull: { "stores": { store_id: req.body.store_id } } };
+            const userFilter = { _id: new ObjectId(req.jwt.user_id) };
+            const user = await collection.updateOne(userFilter, pull);
+
+            res.status(200).json(user);
         }
 
         //
