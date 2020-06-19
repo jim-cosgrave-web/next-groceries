@@ -3,7 +3,7 @@ import fetch from 'isomorphic-unfetch';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
-import { faSquare, faSave } from '@fortawesome/free-regular-svg-icons';
+import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { env } from '../../util/environment';
 
 const updateGroceryUrl = env.apiUrl + 'list';

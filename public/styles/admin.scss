@@ -39,3 +39,22 @@
     border-top: 1px solid $secondary;
     border-bottom: 1px solid $secondary;
 }
+
+@media only screen and (max-width: 1200px) {
+    .category-container {
+        width: 30%;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .category-container {
+        width: 45%;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .category-container {
+        width: 100%;
+    }
+}
+
