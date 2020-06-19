@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { env } from '../../../util/environment';
 import { useRouter } from 'next/router';
 import { myGet } from '../../../util/myGet';
+import { DragDropContext } from 'react-beautiful-dnd';
+import AdminCategory from '../../../components/Admin/AdminCategory';
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
@@ -32,29 +34,47 @@ const AdminStoreByIdPage = () => {
         };
     }, [router.query.store_id]);
 
+    function handleDragEnd(result) {
+        //console.log('handleDragEnd', result);
+        const { destination, source, draggableId } = result;
+
+        //
+        // If no destination, dont do anything
+        //
+        if(!destination) {
+            return;
+        }
+
+        //
+        // If the destination did not change, dont do anything
+        //
+        if(destination.droppableId === source.droppableId && destination.index === source.index) {
+            return;
+        }
+
+        const newStore = { ...store };
+        const category = newStore.categories.find(c => c.name === source.droppableId);
+        const categoryIndex = newStore.categories.indexOf(category);
+        const newCategory = { ...category };
+        const grocery = newCategory.groceries[source.index];
+
+        newCategory.groceries.splice(source.index, 1);
+        newCategory.groceries.splice(destination.index, 0, grocery);
+
+        newStore.categories[categoryIndex] = newCategory;
+        setStore(newStore);
+    }
+
     function getJSX() {
-        if(!store) {
+        if (!store) {
             return <div>Loading...</div>
         }
 
-        let jsx = store.categories.map((c, index) => {
-            return (
-                <div key={c.name + "-" + index} className="category-container">
-                    <div className="category-name">
-                        {c.name}
-                    </div>
-                    <div className="grocery-container">
-                        {c.groceries.map((g, gIndex) => {
-                            return (
-                                <div className="admin-grocery">
-                                    {g.groceryName}
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
-        });
+        let jsx = <DragDropContext onDragEnd={handleDragEnd}>
+            {store.categories.map((c, index) => {
+                return <AdminCategory key={c.name} category={c}></AdminCategory>;
+            })}
+        </DragDropContext>
 
         return jsx;
     }

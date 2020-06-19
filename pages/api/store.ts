@@ -16,7 +16,6 @@ export default authenticate(
             const collection = db.collection('stores');
             const groceryCollection = db.collection('groceries');
 
-            console.log(req.query);
 
             if (req.method === 'GET') {
                 if (!req.query.method) {

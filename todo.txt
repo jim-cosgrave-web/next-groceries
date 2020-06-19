@@ -12,3 +12,4 @@
   https://dev.azure.com/bdodigital/_git/Catalyst%20JS?path=%2Fpackages%2Freact-generic-component%2Fsrc%2FReorderList.tsx
 
 - Come up with different text for the "Clear Groceries" button
+- Change groceryName property to name on the store groceries
