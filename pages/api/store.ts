@@ -16,11 +16,21 @@ export default authenticate(
             const collection = db.collection('stores');
             const groceryCollection = db.collection('groceries');
 
-            if (req.method === 'GET') {
-                const stores = await collection.find().toArray();
+            console.log(req.query);
 
-                res.status(200).json({ stores });
-                return;
+            if (req.method === 'GET') {
+                if (!req.query.method) {
+                    const stores = await collection.find().toArray();
+
+                    res.status(200).json({ stores });
+                    return;
+                } else if (req.query.method == 'getStoreDetails') {
+                    const filter = { _id: new ObjectId(req.query.store_id.toString()) };
+                    const store = await collection.findOne(filter);
+
+                    res.status(200).json({ store });
+                    return;
+                }
             } else if (req.method === 'PUT') {
                 if (req.body.method === UPDATE_STORE_GROCERY_API_METHOD) {
                     /********************************************

@@ -9,3 +9,27 @@
     text-align: center;
     font-weight: bold;
 }
+
+.category-container {
+    width: 18%;
+    margin-bottom: 20px;
+    margin-right: 20px;
+}
+
+.category-name {
+    background-color: $primary;
+    padding: 1em;
+    color: #fff;
+}
+
+.grocery-container {
+    border: 1px solid $secondary;
+}
+
+.admin-grocery {
+    padding: 1em;
+}
+
+.admin-grocery:nth-child(odd) {
+    background-color: $secondary;
+}
