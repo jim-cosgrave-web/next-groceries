@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { env } from '../../../util/environment';
 import { useRouter } from 'next/router';
 import { myGet } from '../../../util/myGet';
 import { DragDropContext } from 'react-beautiful-dnd';
 import AdminCategory from '../../../components/Admin/AdminCategory';
+import { UPDATE_STORE_GROCERY_API_METHOD, REORGANIZE_STORE_GROCERIES_API_METHOD } from '../../../util/constants';
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
@@ -11,6 +12,7 @@ const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
 const AdminStoreByIdPage = () => {
     const [store, setStore] = useState(null);
     const router = useRouter();
+    let reorganizeTimeout = useRef(null);
 
     useEffect(() => {
         const store_id = router.query.store_id;
@@ -34,7 +36,7 @@ const AdminStoreByIdPage = () => {
         };
     }, [router.query.store_id]);
 
-    function handleDragEnd(result) {
+    async function handleDragEnd(result) {
         //console.log('handleDragEnd', result);
         const { destination, source, draggableId } = result;
 
@@ -61,8 +63,34 @@ const AdminStoreByIdPage = () => {
         newCategory.groceries.splice(source.index, 1);
         newCategory.groceries.splice(destination.index, 0, grocery);
 
+        for(let i = 0; i < newCategory.groceries.length; i++) {
+            newCategory.groceries[i].order = i + 1;
+        }
+
         newStore.categories[categoryIndex] = newCategory;
         setStore(newStore);
+
+        if(reorganizeTimeout.current) { 
+            console.log('yuppp');
+        }
+
+        reorganizeTimeout.current = {};
+
+        const body = { 
+            method: REORGANIZE_STORE_GROCERIES_API_METHOD, 
+            store_id: store._id.toString(), 
+            updatedCategory: newCategory 
+        };
+
+        const resp = await fetch(storeApiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
     }
 
     function getJSX() {

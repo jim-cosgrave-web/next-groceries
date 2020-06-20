@@ -39,7 +39,7 @@ const AdminStoresPage = () => {
 
         let jsx = stores.map((s, index) => {
             return (
-                <Link href={`/admin/stores/${s._id.toString()}`}>
+                <Link key={s._id} href={`/admin/stores/${s._id.toString()}`}>
                     <div className="item clickable" key={index}>
                         {s.name} ({s.city} {s.state})
                     </div>

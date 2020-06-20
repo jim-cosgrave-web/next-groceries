@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, REORGANIZE_STORE_GROCERIES_API_METHOD } from '../../util/constants';
 
 export default authenticate(
     database(async function storeApi(
@@ -15,7 +15,6 @@ export default authenticate(
             const db = req.db;
             const collection = db.collection('stores');
             const groceryCollection = db.collection('groceries');
-
 
             if (req.method === 'GET') {
                 if (!req.query.method) {
@@ -121,6 +120,27 @@ export default authenticate(
                     }
 
                     res.status(200).json({ message: 'ok' });
+                    return;
+                } else if (req.body.method === REORGANIZE_STORE_GROCERIES_API_METHOD) {
+                    //
+                    // User reorganized category groceries for a store
+                    //
+                    const storeId = new ObjectId(req.body.store_id);
+                    const filter = { _id: storeId };
+                    const store = await collection.findOne(filter);
+                    const updatedCategory = req.body.updatedCategory;
+
+                    if(!store) {
+                        res.status(500).json({ message: 'Store not found' });
+                        return;
+                    }
+
+                    const uFilter = { _id: storeId, "categories.name": updatedCategory.name };
+                    const uSet = { "$set": { "categories.$": updatedCategory } };
+
+                    await collection.updateOne(uFilter, uSet);
+
+                    res.status(200).json({ uFilter, uSet });
                     return;
                 } else {
                     res.status(500).json({ message: 'Method not supported' });

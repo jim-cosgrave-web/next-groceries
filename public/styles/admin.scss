@@ -40,6 +40,12 @@
     border-bottom: 1px solid $secondary;
 }
 
+.admin-drag {
+    font-size: 20px;
+    min-width: 50px;
+    text-align: center;
+}
+
 @media only screen and (max-width: 1200px) {
     .category-container {
         width: 30%;
@@ -54,6 +60,10 @@
 
 @media only screen and (max-width: 650px) {
     .category-container {
+        width: 100%;
+    }
+
+    .admin-card {
         width: 100%;
     }
 }

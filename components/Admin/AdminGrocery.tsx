@@ -25,7 +25,7 @@ const AdminGrocery = (props) => {
                             {props.grocery.groceryName}
                         </div>
                         <div>
-                            <div {...provided.dragHandleProps}>
+                            <div className="admin-drag" {...provided.dragHandleProps}>
                                 <FontAwesomeIcon icon={faBars} />
                             </div>
                         </div>
