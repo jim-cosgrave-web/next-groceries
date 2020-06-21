@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import AdminGrocery from './AdminGrocery';
 import { Droppable } from 'react-beautiful-dnd';
 import { UPDATE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD } from '../../util/constants';
@@ -10,9 +10,13 @@ const postStoreApiUrl = env.apiUrl + 'store';
 
 const AdminCategory = (props) => {
     const [mode, setMode] = useState('view');
-    const [groceries, setGroceries] = useState(props.category.groceries);
+    const [groceries, setGroceries] = useState(null);
     const nameRef = useRef<HTMLInputElement>(null);
     const groceryRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        setGroceries(props.category.groceries);
+    }, [props.category]);
 
     function handleCategorySet(grocery, previousCategory, newCategory) {
         if (typeof (props.onCategorySet) === 'function') {
@@ -117,6 +121,10 @@ const AdminCategory = (props) => {
         });
 
         const json = await resp.json();
+
+        if(typeof(props.onGroceryAdd) === 'function') {
+            props.onGroceryAdd(props.category.name, grocery);
+        }
     }
 
     return (
@@ -142,7 +150,7 @@ const AdminCategory = (props) => {
             <Droppable droppableId={props.category.name}>
                 {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps} className="grocery-container">
-                        {groceries.map((g, index) => {
+                        {groceries && groceries.map((g, index) => {
                             return <AdminGrocery
                                 key={g.groceryName}
                                 grocery={g}

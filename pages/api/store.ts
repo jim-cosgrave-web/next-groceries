@@ -141,15 +141,7 @@ export default authenticate(
                     // User reorganized category groceries for a store
                     //
                     const storeId = new ObjectId(req.body.store_id);
-                    const filter = { _id: storeId };
-                    const store = await collection.findOne(filter);
                     const updatedCategory = req.body.updatedCategory;
-
-                    if(!store) {
-                        res.status(500).json({ message: 'Store not found' });
-                        return;
-                    }
-
                     const uFilter = { _id: storeId, "categories.name": updatedCategory.name };
                     const uSet = { "$set": { "categories.$": updatedCategory } };
 

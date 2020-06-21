@@ -90,7 +90,7 @@ const AdminStoreByIdPage = () => {
             });
 
             const json = await resp.json();
-        }, 2000);
+        }, 200);
     }
 
     //
@@ -177,6 +177,15 @@ const AdminStoreByIdPage = () => {
         }
     }
 
+    function handleGroceryAdd(categoryName, grocery) {
+        const clone = {...store};
+        const categoryIndex = clone.categories.map(c => { return c.name }).indexOf(categoryName);
+        const category = clone.categories[categoryIndex];
+
+        category.groceries.push(grocery);
+        setStore(clone);
+    }
+
     //
     // Generate the page JSX
     //
@@ -197,6 +206,7 @@ const AdminStoreByIdPage = () => {
                         store={store}
                         onCategorySet={handleCategorySet}
                         onCategoryDelete={handleCategoryDelete}
+                        onGroceryAdd={handleGroceryAdd}
                     >
                     </AdminCategory>
                 );
