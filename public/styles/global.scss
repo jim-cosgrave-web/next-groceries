@@ -116,6 +116,14 @@ h1 {
   padding: 1em;
 }
 
+.wide-icon {
+  width: 50px;
+}
+
+.tall-icon {
+  height: 70px;
+}
+
 .flex {
   display: flex;
   align-items: center;
@@ -136,6 +144,14 @@ h1 {
 
 .space-between {
   justify-content: space-between;
+}
+
+.flex-center {
+  justify-content: center;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .bold {

@@ -49,6 +49,14 @@
     max-width: 80%;
 }
 
+
+.grocery-container {
+    .admin-grocery.new-grocery {
+        background: lighten($primary, 0%);
+        color: #fff;
+    }
+}
+
 @media only screen and (max-width: 1200px) {
     .category-container {
         width: 30%;
