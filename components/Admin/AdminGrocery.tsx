@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const AdminGrocery = (props) => {
     const [mode, setMode] = useState('view');
@@ -25,6 +25,12 @@ const AdminGrocery = (props) => {
     function handleCategoryChange(event) {
         if(typeof(props.onCategorySet) === 'function') {
             props.onCategorySet(props.grocery, props.categoryName, event.target.value)
+        }
+    }
+
+    function handleDeleteClick(event) {
+        if(typeof(props.onGroceryDelete) === 'function') {
+            props.onGroceryDelete(props.grocery);
         }
     }
 
@@ -52,9 +58,12 @@ const AdminGrocery = (props) => {
                             </div>
                         </div>}
                         <div>
-                            <div className="admin-drag" {...provided.dragHandleProps}>
+                            {mode == 'view' && <div className="admin-drag" {...provided.dragHandleProps}>
                                 <FontAwesomeIcon icon={faBars} />
-                            </div>
+                            </div>}
+                            {mode == 'edit' && <div className="admin-drag" onClick={handleDeleteClick} {...provided.dragHandleProps}>
+                                <FontAwesomeIcon icon={faTrash} />
+                            </div>}
                         </div>
                     </div>
                 </div>

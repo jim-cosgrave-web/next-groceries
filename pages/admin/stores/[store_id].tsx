@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { myGet } from '../../../util/myGet';
 import { DragDropContext } from 'react-beautiful-dnd';
 import AdminCategory from '../../../components/Admin/AdminCategory';
-import { UPDATE_STORE_GROCERY_API_METHOD, REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, DELETE_STORE_CATEGORY_API_METHOD } from '../../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, DELETE_STORE_CATEGORY_API_METHOD, DELETE_STORE_GROCERY_API_METHOD } from '../../../util/constants';
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
@@ -187,6 +187,37 @@ const AdminStoreByIdPage = () => {
     }
 
     //
+    // Handle grocery deleted
+    //
+    async function handleGroceryDelete(categoryName, grocery) {
+        const clone = {...store};
+        
+        const categoryIndex = clone.categories.map(c => { return c.name }).indexOf(categoryName);
+        const category = clone.categories[categoryIndex];
+        const groceryIndex = category.groceries.map(g => { return g.groceryName }).indexOf(grocery.groceryName);
+        category.groceries.splice(groceryIndex, 1);
+
+        setStore(clone);
+
+        const body = {
+            method: DELETE_STORE_GROCERY_API_METHOD,
+            storeId: store._id.toString(),
+            categoryName: categoryName,
+            groceryName: grocery.groceryName
+        };
+
+        const resp = await fetch(storeApiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+    }
+
+    //
     // Generate the page JSX
     //
     function getJSX() {
@@ -207,6 +238,7 @@ const AdminStoreByIdPage = () => {
                         onCategorySet={handleCategorySet}
                         onCategoryDelete={handleCategoryDelete}
                         onGroceryAdd={handleGroceryAdd}
+                        onGroceryDelete={handleGroceryDelete}
                     >
                     </AdminCategory>
                 );

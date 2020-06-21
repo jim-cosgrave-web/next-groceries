@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, REORGANIZE_STORE_GROCERIES_API_METHOD, UPDATE_STORE_CATEGORY_API_METHOD, DELETE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, REORGANIZE_STORE_GROCERIES_API_METHOD, UPDATE_STORE_CATEGORY_API_METHOD, DELETE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD, DELETE_STORE_GROCERY_API_METHOD } from '../../util/constants';
 
 export default authenticate(
     database(async function storeApi(
@@ -36,9 +36,9 @@ export default authenticate(
                     const filter = { _id: storeId, "categories.name": req.body.categoryName };
                     const push = { '$push': { 'categories.$.groceries': req.body.grocery }};
 
-                    const resp = await collection.updateOne(filter, push);
+                    await collection.updateOne(filter, push);
 
-                    res.status(200).json({ message: 'OK', resp });
+                    res.status(200).json({ message: 'OK' });
                     return;
                 } else {
                     res.status(500).json( {message: 'Method not supported'});
@@ -167,9 +167,18 @@ export default authenticate(
                     const filter = { _id: storeId };
                     const pull = { "$pull": { "categories": { "name": req.body.categoryName } } };
 
-                    const resp = await collection.updateOne(filter, pull);
+                    await collection.updateOne(filter, pull);
 
-                    res.status(200).json({ message: 'OK', resp });
+                    res.status(200).json({ message: 'OK' });
+                    return;
+                } else if(req.body.method === DELETE_STORE_GROCERY_API_METHOD) {
+                    const storeId = new ObjectId(req.body.storeId);
+                    const filter = { _id: storeId, "categories.name": req.body.categoryName };
+                    const pull = { "$pull": { "categories.$.groceries": { "groceryName": req.body.groceryName } } };
+
+                    await collection.updateOne(filter, pull);
+
+                    res.status(200).json({ message: 'OK' });
                     return;
                 } else {
                     res.status(200).json({ message: 'Method not supported' });

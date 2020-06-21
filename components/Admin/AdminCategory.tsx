@@ -4,7 +4,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import { UPDATE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD } from '../../util/constants';
 import { env } from '../../util/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const postStoreApiUrl = env.apiUrl + 'store';
 
@@ -127,6 +127,12 @@ const AdminCategory = (props) => {
         }
     }
 
+    function handleGroceryDelete(grocery) {
+        if(typeof(props.onGroceryDelete) === 'function') {
+            props.onGroceryDelete(props.category.name, grocery);
+        }
+    }
+
     return (
         <div className="category-container">
             {mode == 'view' && <div className="category-name clickable" onClick={toggleMode}>
@@ -143,7 +149,7 @@ const AdminCategory = (props) => {
                             defaultValue={props.category.name} />
                     </div>
                     <div className="clickable" onClick={deleteCategory}>
-                        Delete
+                        <FontAwesomeIcon icon={faTrash} />
                     </div>
                 </div>
             </div>}
@@ -158,6 +164,7 @@ const AdminCategory = (props) => {
                                 categories={props.categories}
                                 categoryName={props.category.name}
                                 onCategorySet={handleCategorySet}
+                                onGroceryDelete={handleGroceryDelete}
                             >
                             </AdminGrocery>;
                         })}
@@ -168,7 +175,7 @@ const AdminCategory = (props) => {
             <div className="grocery-container">
                 <div className="flex space-between admin-grocery new-grocery">
                     <div className="p-1">
-                        <input ref={groceryRef} type="text" className="form-control"></input>
+                        <input ref={groceryRef} type="text" className="form-control" placeholder="Add a new grocery"></input>
                     </div>
                     <div className="wide-icon tall-icon clickable flex flex-center" onClick={handleNewGroceryClick}>
                         <FontAwesomeIcon icon={faPlus} />
