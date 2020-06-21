@@ -27,7 +27,6 @@
 }
 
 .admin-grocery {
-    padding: 1em;
 }
 
 .admin-grocery:nth-child(odd) {
@@ -44,6 +43,10 @@
     font-size: 20px;
     min-width: 50px;
     text-align: center;
+}
+
+.category-input {
+    max-width: 80%;
 }
 
 @media only screen and (max-width: 1200px) {

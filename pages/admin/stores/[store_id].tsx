@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { myGet } from '../../../util/myGet';
 import { DragDropContext } from 'react-beautiful-dnd';
 import AdminCategory from '../../../components/Admin/AdminCategory';
-import { UPDATE_STORE_GROCERY_API_METHOD, REORGANIZE_STORE_GROCERIES_API_METHOD } from '../../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, DELETE_STORE_CATEGORY_API_METHOD } from '../../../util/constants';
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
@@ -43,14 +43,14 @@ const AdminStoreByIdPage = () => {
         //
         // If no destination, dont do anything
         //
-        if(!destination) {
+        if (!destination) {
             return;
         }
 
         //
         // If the destination did not change, dont do anything
         //
-        if(destination.droppableId === source.droppableId && destination.index === source.index) {
+        if (destination.droppableId === source.droppableId && destination.index === source.index) {
             return;
         }
 
@@ -63,23 +63,77 @@ const AdminStoreByIdPage = () => {
         newCategory.groceries.splice(source.index, 1);
         newCategory.groceries.splice(destination.index, 0, grocery);
 
-        for(let i = 0; i < newCategory.groceries.length; i++) {
+        for (let i = 0; i < newCategory.groceries.length; i++) {
             newCategory.groceries[i].order = i + 1;
         }
 
         newStore.categories[categoryIndex] = newCategory;
         setStore(newStore);
 
-        if(reorganizeTimeout.current) { 
-            console.log('yuppp');
+        if (reorganizeTimeout.current) {
+            clearTimeout(reorganizeTimeout.current);
         }
 
-        reorganizeTimeout.current = {};
+        reorganizeTimeout.current = setTimeout(async () => {
+            const body = {
+                method: REORGANIZE_STORE_GROCERIES_API_METHOD,
+                store_id: store._id.toString(),
+                updatedCategory: newCategory
+            };
 
-        const body = { 
-            method: REORGANIZE_STORE_GROCERIES_API_METHOD, 
-            store_id: store._id.toString(), 
-            updatedCategory: newCategory 
+            const resp = await fetch(storeApiUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            const json = await resp.json();
+        }, 2000);
+    }
+
+    //
+    // Handle case when a grocery has moved between categories
+    //
+    async function handleCategorySet(grocery, oldCategoryName, newCategoryName) {
+        const clone = { ...store };
+
+        //
+        // Remove from uncategorized
+        //
+        const oldCategory = clone.categories.find(c => c.name == oldCategoryName);
+        const groceryToMove = oldCategory.groceries.find(g => g.groceryName == grocery.groceryName);
+        const index = oldCategory.groceries.indexOf(groceryToMove);
+        oldCategory.groceries.splice(index, 1);
+
+        oldCategory.hidden = oldCategory.groceries.length == 0;
+
+        //
+        // Add to the new category
+        //
+        let newCategory = clone.categories.find(c => c.name == newCategoryName);
+
+        if (!newCategory) {
+            newCategory = { name: newCategoryName, groceries: [] };
+
+            if (newCategoryName == UNCATEGORIZED) {
+                clone.categorizedList.unshift(newCategory);
+            } else {
+                clone.categorizedList.push(newCategory);
+            }
+        }
+
+        newCategory.hidden = false;
+        newCategory.groceries.push(groceryToMove);
+
+        setStore(clone);
+
+        const body = {
+            method: UPDATE_STORE_GROCERY_API_METHOD,
+            store: store._id.toString(),
+            category: newCategoryName,
+            groceryName: groceryToMove.groceryName
         };
 
         const resp = await fetch(storeApiUrl, {
@@ -93,14 +147,59 @@ const AdminStoreByIdPage = () => {
         const json = await resp.json();
     }
 
+    //
+    // Handle the case where a category is deleted
+    //
+    async function handleCategoryDelete(category) {
+        const clone = { ...store };
+        const categoryIndex = clone.categories.map(c => { return c.name }).indexOf(category.name);
+
+        if (categoryIndex > -1) {
+            clone.categories.splice(categoryIndex, 1);
+
+            setStore(clone);
+
+            const body = {
+                method: DELETE_STORE_CATEGORY_API_METHOD,
+                storeId: store._id.toString(),
+                categoryName: category.name
+            };
+    
+            const resp = await fetch(storeApiUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+    
+            const json = await resp.json();
+        }
+    }
+
+    //
+    // Generate the page JSX
+    //
     function getJSX() {
         if (!store) {
             return <div>Loading...</div>
         }
 
+        const categoryNames = store.categories.map(c => { return c.name });
+
         let jsx = <DragDropContext onDragEnd={handleDragEnd}>
             {store.categories.map((c, index) => {
-                return <AdminCategory key={c.name} category={c}></AdminCategory>;
+                return (
+                    <AdminCategory
+                        key={c.name}
+                        category={c}
+                        categories={categoryNames}
+                        store={store}
+                        onCategorySet={handleCategorySet}
+                        onCategoryDelete={handleCategoryDelete}
+                    >
+                    </AdminCategory>
+                );
             })}
         </DragDropContext>
 
