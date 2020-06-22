@@ -159,21 +159,21 @@ const AdminStoreByIdPage = () => {
 
             setStore(clone);
 
-            const body = {
-                method: DELETE_STORE_CATEGORY_API_METHOD,
-                storeId: store._id.toString(),
-                categoryName: category.name
-            };
+            // const body = {
+            //     method: DELETE_STORE_CATEGORY_API_METHOD,
+            //     storeId: store._id.toString(),
+            //     categoryName: category.name
+            // };
     
-            const resp = await fetch(storeApiUrl, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
-            });
+            // const resp = await fetch(storeApiUrl, {
+            //     method: 'DELETE',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(body)
+            // });
     
-            const json = await resp.json();
+            // const json = await resp.json();
         }
     }
 
