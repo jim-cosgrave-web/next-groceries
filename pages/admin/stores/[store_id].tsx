@@ -4,15 +4,23 @@ import { useRouter } from 'next/router';
 import { myGet } from '../../../util/myGet';
 import { DragDropContext } from 'react-beautiful-dnd';
 import AdminCategory from '../../../components/Admin/AdminCategory';
-import { UPDATE_STORE_GROCERY_API_METHOD, REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, DELETE_STORE_CATEGORY_API_METHOD, DELETE_STORE_GROCERY_API_METHOD } from '../../../util/constants';
+import { 
+    UPDATE_STORE_GROCERY_API_METHOD, 
+    REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, 
+    DELETE_STORE_CATEGORY_API_METHOD, 
+    DELETE_STORE_GROCERY_API_METHOD 
+} from '../../../util/constants';
+import Confirm from '../../../components/Shared/Confirm';
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
 
 const AdminStoreByIdPage = () => {
     const [store, setStore] = useState(null);
+    const [isCategoryConfirmOpen, setCategoryConfirm] = useState(false);
     const router = useRouter();
     let reorganizeTimeout = useRef(null);
+    let categoryToDelete = useRef(null);
 
     useEffect(() => {
         const store_id = router.query.store_id;
@@ -35,6 +43,8 @@ const AdminStoreByIdPage = () => {
             isCancelled = true;
         };
     }, [router.query.store_id]);
+
+
 
     async function handleDragEnd(result) {
         //console.log('handleDragEnd', result);
@@ -150,7 +160,13 @@ const AdminStoreByIdPage = () => {
     //
     // Handle the case where a category is deleted
     //
-    async function handleCategoryDelete(category) {
+    async function handleCategoryDelete_step1(category) {
+        categoryToDelete.current = category;
+        setCategoryConfirm(true);
+    }
+
+    async function handleCategoryDelete_step2() {
+        const category = categoryToDelete.current;
         const clone = { ...store };
         const categoryIndex = clone.categories.map(c => { return c.name }).indexOf(category.name);
 
@@ -159,26 +175,26 @@ const AdminStoreByIdPage = () => {
 
             setStore(clone);
 
-            // const body = {
-            //     method: DELETE_STORE_CATEGORY_API_METHOD,
-            //     storeId: store._id.toString(),
-            //     categoryName: category.name
-            // };
-    
-            // const resp = await fetch(storeApiUrl, {
-            //     method: 'DELETE',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify(body)
-            // });
-    
-            // const json = await resp.json();
+            const body = {
+                method: DELETE_STORE_CATEGORY_API_METHOD,
+                storeId: store._id.toString(),
+                categoryName: category.name
+            };
+
+            const resp = await fetch(storeApiUrl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            const json = await resp.json();
         }
     }
 
     function handleGroceryAdd(categoryName, grocery) {
-        const clone = {...store};
+        const clone = { ...store };
         const categoryIndex = clone.categories.map(c => { return c.name }).indexOf(categoryName);
         const category = clone.categories[categoryIndex];
 
@@ -190,8 +206,8 @@ const AdminStoreByIdPage = () => {
     // Handle grocery deleted
     //
     async function handleGroceryDelete(categoryName, grocery) {
-        const clone = {...store};
-        
+        const clone = { ...store };
+
         const categoryIndex = clone.categories.map(c => { return c.name }).indexOf(categoryName);
         const category = clone.categories[categoryIndex];
         const groceryIndex = category.groceries.map(g => { return g.groceryName }).indexOf(grocery.groceryName);
@@ -236,7 +252,7 @@ const AdminStoreByIdPage = () => {
                         categories={categoryNames}
                         store={store}
                         onCategorySet={handleCategorySet}
-                        onCategoryDelete={handleCategoryDelete}
+                        onCategoryDelete={handleCategoryDelete_step1}
                         onGroceryAdd={handleGroceryAdd}
                         onGroceryDelete={handleGroceryDelete}
                     >
@@ -251,6 +267,13 @@ const AdminStoreByIdPage = () => {
     return (
         <div>
             <h1>Admin Stores Page With ID</h1>
+            <div>
+                <Confirm 
+                    isOpen={isCategoryConfirmOpen} 
+                    onConfirm={handleCategoryDelete_step2}
+                    onClose={() => setCategoryConfirm(false)}
+                />
+            </div>
             <div className="flex align-top">
                 {getJSX()}
             </div>
