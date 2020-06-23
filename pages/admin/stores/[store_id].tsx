@@ -5,7 +5,7 @@ import { myGet } from '../../../util/myGet';
 import { DragDropContext } from 'react-beautiful-dnd';
 import AdminCategory from '../../../components/Admin/AdminCategory';
 import { 
-    UPDATE_STORE_GROCERY_API_METHOD, 
+    UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, 
     REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, 
     DELETE_STORE_CATEGORY_API_METHOD, 
     DELETE_STORE_GROCERY_API_METHOD 
@@ -140,7 +140,7 @@ const AdminStoreByIdPage = () => {
         setStore(clone);
 
         const body = {
-            method: UPDATE_STORE_GROCERY_API_METHOD,
+            method: UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
             store: store._id.toString(),
             category: newCategoryName,
             groceryName: groceryToMove.groceryName

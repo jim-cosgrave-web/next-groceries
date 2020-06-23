@@ -1,12 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { env } from '../../util/environment';
+import { UPDATE_STORE_GROCERY_API_METHOD } from '../../util/constants';
+
+const updateStoreGroceryApi = env.apiUrl + 'store';
 
 const AdminGrocery = (props) => {
     const [mode, setMode] = useState('view');
+    const [grocery, setGrocery] = useState(null);
 
     const nameRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        setGrocery(props.grocery);
+    }, [props.grocery]);
 
     function changeMode(e) {
         const domType = e.target.type;
@@ -34,8 +43,53 @@ const AdminGrocery = (props) => {
         }
     }
 
+    async function handleKeyUp(e) {
+        if (e.key.toLowerCase() === 'enter') {
+            await saveNote();
+        }
+    }
+
+    async function handleBlur(e) {
+        await saveNote();
+    }
+
+    async function saveNote() {
+        const clone = { ...grocery };
+        
+        clone.originalName = clone.groceryName;
+        clone.groceryName = nameRef.current?.value;
+        setGrocery(clone);
+        await updateGrocery(clone);
+
+        setMode('view');
+    }
+
+    async function updateGrocery(grocery) {
+        console.log(props.storeId);
+        const body = { 
+            method: UPDATE_STORE_GROCERY_API_METHOD,
+            storeId: props.storeId.toString(), 
+            grocery: grocery,
+            categoryName: props.categoryName
+        };
+
+        const resp = await fetch(updateStoreGroceryApi, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+    }
+
+    if(!grocery) {
+        return <div>Loading...</div>;
+    }
+
     return (
-        <Draggable draggableId={props.grocery.groceryName} index={props.index}>
+        <Draggable draggableId={grocery.groceryName} index={props.index}>
             {(provided) => (
                 <div
                     ref={provided.innerRef}
@@ -45,11 +99,18 @@ const AdminGrocery = (props) => {
                 >
                     <div className="flex space-between">
                         {mode == 'view' && <div className="flex-grow-1 p-1 clickable" onClick={changeMode}>
-                            {props.grocery.groceryName}
+                            {grocery.groceryName}
                         </div>}
                         {mode == 'edit' && <div className="flex-grow-1 p-1 clickable" onClick={changeMode}>
                             <div>
-                                <input className="form-control" type="text" ref={nameRef} defaultValue={props.grocery.groceryName} />
+                                <input 
+                                    className="form-control" 
+                                    type="text" 
+                                    ref={nameRef} 
+                                    defaultValue={grocery.groceryName}
+                                    onKeyUp={handleKeyUp}
+                                    onBlur={handleBlur}
+                                    onChange={() => { }}></input>
                             </div>
                             <div className="mt-10">
                                 <select className="prevent-click select-css" onChange={handleCategoryChange} value={props.categoryName}>

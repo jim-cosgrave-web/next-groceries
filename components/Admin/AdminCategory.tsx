@@ -165,6 +165,7 @@ const AdminCategory = (props) => {
                                 categoryName={props.category.name}
                                 onCategorySet={handleCategorySet}
                                 onGroceryDelete={handleGroceryDelete}
+                                storeId={props.store._id}
                             >
                             </AdminGrocery>;
                         })}
