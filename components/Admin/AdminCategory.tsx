@@ -86,6 +86,12 @@ const AdminCategory = (props) => {
         }
     }
 
+    async function newGroceryKeyUp(e) {
+        if (e.key.toLowerCase() === 'enter') {
+            await handleNewGroceryClick();
+        }
+    }
+
     async function handleNewGroceryClick() {
         const groceryName = groceryRef.current.value.trim();
 
@@ -176,7 +182,7 @@ const AdminCategory = (props) => {
             <div className="grocery-container">
                 <div className="flex space-between admin-grocery new-grocery">
                     <div className="p-1">
-                        <input ref={groceryRef} type="text" className="form-control" placeholder="Add a new grocery"></input>
+                        <input ref={groceryRef} type="text" onKeyUp={newGroceryKeyUp} className="form-control" placeholder="Add a new grocery"></input>
                     </div>
                     <div className="wide-icon tall-icon clickable flex flex-center" onClick={handleNewGroceryClick}>
                         <FontAwesomeIcon icon={faPlus} />

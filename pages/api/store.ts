@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { UPDATE_STORE_GROCERY_API_METHOD as UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, UNCATEGORIZED, REORGANIZE_STORE_GROCERIES_API_METHOD, UPDATE_STORE_CATEGORY_API_METHOD, DELETE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD, DELETE_STORE_GROCERY_API_METHOD, UPDATE_STORE_GROCERY_API_METHOD } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD as UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, UNCATEGORIZED, REORGANIZE_STORE_GROCERIES_API_METHOD, UPDATE_STORE_CATEGORY_API_METHOD, DELETE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD, DELETE_STORE_GROCERY_API_METHOD, UPDATE_STORE_GROCERY_API_METHOD, ADD_STORE_CATEGORY_API_METHOD } from '../../util/constants';
 import { ENGINE_METHOD_PKEY_ASN1_METHS } from 'constants';
 
 export default authenticate(
@@ -36,6 +36,15 @@ export default authenticate(
                     const storeId = new ObjectId(req.body.store_id);
                     const filter = { _id: storeId, "categories.name": req.body.categoryName };
                     const push = { '$push': { 'categories.$.groceries': req.body.grocery } };
+
+                    await collection.updateOne(filter, push);
+
+                    res.status(200).json({ message: 'OK' });
+                    return;
+                } else if (req.body.method === ADD_STORE_CATEGORY_API_METHOD) {
+                    const storeId = new ObjectId(req.body.storeId);
+                    const filter = { _id: storeId };
+                    const push = { '$push': { 'categories': req.body.category } };
 
                     await collection.updateOne(filter, push);
 

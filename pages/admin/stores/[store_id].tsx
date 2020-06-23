@@ -8,7 +8,8 @@ import {
     UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, 
     REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, 
     DELETE_STORE_CATEGORY_API_METHOD, 
-    DELETE_STORE_GROCERY_API_METHOD 
+    DELETE_STORE_GROCERY_API_METHOD, 
+    ADD_STORE_CATEGORY_API_METHOD
 } from '../../../util/constants';
 import Confirm from '../../../components/Shared/Confirm';
 
@@ -19,6 +20,7 @@ const AdminStoreByIdPage = () => {
     const [store, setStore] = useState(null);
     const [isCategoryConfirmOpen, setCategoryConfirm] = useState(false);
     const router = useRouter();
+    const newCategoryNameRef = useRef<HTMLInputElement>(null);
     let reorganizeTimeout = useRef(null);
     let categoryToDelete = useRef(null);
 
@@ -31,6 +33,7 @@ const AdminStoreByIdPage = () => {
             const storeResp = await myGet(storeDetailApiUrl + '&store_id=' + store_id, null);
 
             if (isCancelled == false) {
+                storeResp.store.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
                 setStore(storeResp.store);
             }
         }
@@ -43,8 +46,6 @@ const AdminStoreByIdPage = () => {
             isCancelled = true;
         };
     }, [router.query.store_id]);
-
-
 
     async function handleDragEnd(result) {
         //console.log('handleDragEnd', result);
@@ -233,6 +234,43 @@ const AdminStoreByIdPage = () => {
         const json = await resp.json();
     }
 
+    async function newCategoryKeyUp(e) {
+        if (e.key.toLowerCase() === 'enter') {
+            await handleNewCategoryAdd();
+        }
+    }
+
+    async function handleNewCategoryAdd() {
+        const clone = { ...store };
+
+        const newCategory = {
+            name: newCategoryNameRef.current.value,
+            order: Math.max.apply(Math, clone.categories.map(function(c) { return c.order })) + 1,
+            groceries: []
+        };
+        
+        clone.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        clone.categories.push(newCategory);
+
+        setStore(clone);
+
+        const body = {
+            method: ADD_STORE_CATEGORY_API_METHOD,
+            storeId: store._id.toString(),
+            category: newCategory
+        };
+
+        const resp = await fetch(storeApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+    }
+
     //
     // Generate the page JSX
     //
@@ -276,6 +314,10 @@ const AdminStoreByIdPage = () => {
             </div>
             <div className="flex align-top">
                 {getJSX()}
+            </div>
+            <div style={{ 'width': '20%', 'minWidth': '300px' }}>
+                <input ref={newCategoryNameRef} onKeyUp={newCategoryKeyUp} className="form-control" placeholder="Add a new category..." />
+                <button className="btn" onClick={handleNewCategoryAdd}>Add</button>
             </div>
         </div>
     );
