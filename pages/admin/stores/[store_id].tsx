@@ -167,6 +167,9 @@ const AdminStoreByIdPage = () => {
         setCategoryConfirm(true);
     }
 
+    //
+    // Delete the category once confirmed
+    //
     async function handleCategoryDelete_step2() {
         const category = categoryToDelete.current;
         const clone = { ...store };

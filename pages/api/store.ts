@@ -4,7 +4,6 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { 
-    UPDATE_STORE_GROCERY_API_METHOD as UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, 
     UNCATEGORIZED, 
     REORGANIZE_STORE_GROCERIES_API_METHOD, 
     UPDATE_STORE_CATEGORY_API_METHOD, 
@@ -13,7 +12,8 @@ import {
     DELETE_STORE_GROCERY_API_METHOD, 
     UPDATE_STORE_GROCERY_API_METHOD, 
     ADD_STORE_CATEGORY_API_METHOD, 
-    MOVE_STORE_CATEGORY_API_METHOD 
+    MOVE_STORE_CATEGORY_API_METHOD, 
+    UPDATE_STORE_GROCERY_CATEGORY_API_METHOD
 } from '../../util/constants';
 
 export default authenticate(
