@@ -1,20 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
+import Router from "next/router";
 
 const Index = () => {
+    useEffect(() => {
+        Router.replace('/grocery-list');
+    }, [])
+    
+
     return (
         <div>
-            <h1>Index Page</h1>
-            <div>
-                <Link href="/grocery-list">
-                    <a>Grocery list</a>
-                </Link>
-            </div>
-            <div>
-                <Link href="/login">
-                    <a>Login</a>
-                </Link>
-            </div>
+            <h1>Loading...</h1>
         </div>
     )
 }
