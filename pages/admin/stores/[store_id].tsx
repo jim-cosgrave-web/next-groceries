@@ -179,6 +179,7 @@ const AdminStoreByIdPage = () => {
             clone.categories.splice(categoryIndex, 1);
 
             setStore(clone);
+            setCategoryConfirm(false);
 
             const body = {
                 method: DELETE_STORE_CATEGORY_API_METHOD,
@@ -246,10 +247,17 @@ const AdminStoreByIdPage = () => {
 
     async function handleNewCategoryAdd() {
         const clone = { ...store };
+        let order = Math.max.apply(Math, clone.categories.map(function(c) { return c.order }));
+        
+        if(order === Number.NEGATIVE_INFINITY) {
+            order = 0;
+        }
+
+        order += 1;
 
         const newCategory = {
             name: newCategoryNameRef.current.value,
-            order: Math.max.apply(Math, clone.categories.map(function(c) { return c.order })) + 1,
+            order: order,
             groceries: []
         };
         
@@ -273,6 +281,7 @@ const AdminStoreByIdPage = () => {
         });
 
         const json = await resp.json();
+        newCategoryNameRef.current.value = '';
     }
 
     //
