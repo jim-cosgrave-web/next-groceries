@@ -4,7 +4,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import { UPDATE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD } from '../../util/constants';
 import { env } from '../../util/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 const postStoreApiUrl = env.apiUrl + 'store';
 
@@ -81,7 +81,7 @@ const AdminCategory = (props) => {
     }
 
     async function deleteCategory(e) {
-        if(typeof(props.onCategoryDelete) === 'function') {
+        if (typeof (props.onCategoryDelete) === 'function') {
             props.onCategoryDelete(props.category);
         }
     }
@@ -95,14 +95,14 @@ const AdminCategory = (props) => {
     async function handleNewGroceryClick() {
         const groceryName = groceryRef.current.value.trim();
 
-        if(!groceryName || groceryName.length == 0) {
+        if (!groceryName || groceryName.length == 0) {
             return;
         }
 
         const clone = groceries.slice();
-        clone.push({groceryName});
+        clone.push({ groceryName });
 
-        for(let i = 0; i < clone.length; i++) {
+        for (let i = 0; i < clone.length; i++) {
             clone[i].order = i + 1;
         }
 
@@ -128,28 +128,48 @@ const AdminCategory = (props) => {
 
         const json = await resp.json();
 
-        if(typeof(props.onGroceryAdd) === 'function') {
+        if (typeof (props.onGroceryAdd) === 'function') {
             props.onGroceryAdd(props.category.name, grocery);
         }
     }
 
     function handleGroceryDelete(grocery) {
-        if(typeof(props.onGroceryDelete) === 'function') {
+        if (typeof (props.onGroceryDelete) === 'function') {
             props.onGroceryDelete(props.category.name, grocery);
+        }
+    }
+
+    function moveLeft() {
+        if (typeof (props.onMove) === 'function') {
+            props.onMove(props.category.name, -1);
+        }
+    }
+
+    function moveRight() {
+        if (typeof (props.onMove) === 'function') {
+            props.onMove(props.category.name, 1);
         }
     }
 
     return (
         <div className="category-container">
-            {mode == 'view' && <div className="category-name clickable" onClick={toggleMode}>
-                {props.category.name}
+            {mode == 'view' && <div className="category-name clickable">
+                <div className="flex space-between">
+                    <div onClick={toggleMode}>
+                        {props.category.name}
+                    </div>
+                    <div>
+                        <FontAwesomeIcon icon={faArrowLeft} className="mr-20" onClick={moveLeft} />
+                        <FontAwesomeIcon icon={faArrowRight} onClick={moveRight} />
+                    </div>
+                </div>
             </div>}
             {mode == 'edit' && <div className="category-name clickable">
                 <div className="flex space-between">
                     <div className="flex-grow-1" onClick={toggleMode}>
-                        <input 
-                            className="form-control category-input" 
-                            type="text" 
+                        <input
+                            className="form-control category-input"
+                            type="text"
                             ref={nameRef}
                             onKeyUp={handleKeyUp}
                             defaultValue={props.category.name} />

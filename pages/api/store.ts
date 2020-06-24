@@ -3,9 +3,18 @@ import { ObjectId, Collection } from 'mongodb';
 import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
-import { compare } from '../../util/compare';
-import { UPDATE_STORE_GROCERY_API_METHOD as UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, UNCATEGORIZED, REORGANIZE_STORE_GROCERIES_API_METHOD, UPDATE_STORE_CATEGORY_API_METHOD, DELETE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD, DELETE_STORE_GROCERY_API_METHOD, UPDATE_STORE_GROCERY_API_METHOD, ADD_STORE_CATEGORY_API_METHOD } from '../../util/constants';
-import { ENGINE_METHOD_PKEY_ASN1_METHS } from 'constants';
+import { 
+    UPDATE_STORE_GROCERY_API_METHOD as UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, 
+    UNCATEGORIZED, 
+    REORGANIZE_STORE_GROCERIES_API_METHOD, 
+    UPDATE_STORE_CATEGORY_API_METHOD, 
+    DELETE_STORE_CATEGORY_API_METHOD, 
+    ADD_STORE_GROCERY_API_METHOD, 
+    DELETE_STORE_GROCERY_API_METHOD, 
+    UPDATE_STORE_GROCERY_API_METHOD, 
+    ADD_STORE_CATEGORY_API_METHOD, 
+    MOVE_STORE_CATEGORY_API_METHOD 
+} from '../../util/constants';
 
 export default authenticate(
     database(async function storeApi(
@@ -181,6 +190,21 @@ export default authenticate(
                     await collection.updateOne(uFilter, uSet);
 
                     res.status(200).json({ message: 'OK' });
+                } else if (req.body.method === MOVE_STORE_CATEGORY_API_METHOD) {
+                    const storeId = new ObjectId(req.body.storeId);
+
+                    const filter1 = { _id: storeId, "categories.name": req.body.category1.name };
+                    const set1 = { "$set": { "categories.$.order": req.body.category1.order } };
+
+                    const resp1 = await collection.updateOne(filter1, set1);
+
+                    const filter2 = { _id: storeId, "categories.name": req.body.category2.name };
+                    const set2 = { "$set": { "categories.$.order": req.body.category2.order } };
+
+                    const resp2 = await collection.updateOne(filter2, set2);
+                    
+                    res.status(200).json({ message: 'OK' });
+                    return;
                 } else {
                     res.status(500).json({ message: 'Method not supported' });
                     return;

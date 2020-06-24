@@ -2,21 +2,22 @@
 
 .modal-wrapper {
     min-width: 300px;
+
+    .modal-title {
+        background: $primary;
+        padding: 1em;
+        color: #fff;
+        font-size: 20px;
+    }
+    
+    .modal-body {
+        background: #fff;
+        padding: 1em;
+    }
+    
+    button {
+        padding: .5em 1em;
+        width: 30%;
+    }
 }
 
-.modal-title {
-    background: $primary;
-    padding: 1em;
-    color: #fff;
-    font-size: 20px;
-}
-
-.modal-body {
-    background: #fff;
-    padding: 1em;
-}
-
-button {
-    padding: .5em 1em;
-    width: 30%;
-}

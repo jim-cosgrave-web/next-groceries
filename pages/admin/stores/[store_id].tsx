@@ -9,7 +9,8 @@ import {
     REORGANIZE_STORE_GROCERIES_API_METHOD, UNCATEGORIZED, 
     DELETE_STORE_CATEGORY_API_METHOD, 
     DELETE_STORE_GROCERY_API_METHOD, 
-    ADD_STORE_CATEGORY_API_METHOD
+    ADD_STORE_CATEGORY_API_METHOD,
+    MOVE_STORE_CATEGORY_API_METHOD
 } from '../../../util/constants';
 import Confirm from '../../../components/Shared/Confirm';
 
@@ -272,6 +273,54 @@ const AdminStoreByIdPage = () => {
     }
 
     //
+    // Handle category movement
+    //
+    async function handleMove(categoryName, direction) {
+        const clone = { ...store };
+        const categoryIndex = clone.categories.map(c => { return c.name; }).indexOf(categoryName);
+        const otherIndex = categoryIndex + direction;
+
+        if(otherIndex < 0) {
+            console.log('cant move before beginning...');
+            return;
+        }
+
+        if(otherIndex > clone.categories.length - 1) {
+            console.log('cant move past the end...');
+            return;
+        }
+
+        const swap = clone.categories[otherIndex];
+        const category = clone.categories[categoryIndex];
+
+        const tempOrder = swap.order;
+        swap.order = category.order;
+        category.order = tempOrder;
+
+        clone.categories[otherIndex] = category
+        clone.categories[categoryIndex] = swap;
+
+        setStore(clone);
+
+        const body = {
+            method: MOVE_STORE_CATEGORY_API_METHOD,
+            storeId: store._id.toString(),
+            category1: { name: category.name, order: category.order },
+            category2: { name: swap.name, order: swap.order }
+        };
+
+        const resp = await fetch(storeApiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+    }
+
+    //
     // Generate the page JSX
     //
     function getJSX() {
@@ -293,6 +342,7 @@ const AdminStoreByIdPage = () => {
                         onCategoryDelete={handleCategoryDelete_step1}
                         onGroceryAdd={handleGroceryAdd}
                         onGroceryDelete={handleGroceryDelete}
+                        onMove={handleMove}
                     >
                     </AdminCategory>
                 );
