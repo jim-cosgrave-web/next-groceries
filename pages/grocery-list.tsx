@@ -55,7 +55,7 @@ const GroceryListPage = ({ initialList }) => {
     function listBtnClass() {
         let c = 'btn w-50';
 
-        if (mode !== 'list') {
+        if (mode && mode !== 'list') {
             c += ' btn-inactive';
         }
 
