@@ -11,7 +11,12 @@ export default function MyApp({ Component, pageProps }) {
     return (
         <div>
             <Head>
+                <title>Groceries</title>
+
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <link rel="shortcut icon" href="/images/favicon-32x32.png" />
+                <link rel="apple-touch-icon" sizes="128x128" href="cart-icon-white.png" />
+                <link rel="icon" sizes="192x192" href="cart-icon-white.png" />
             </Head>
             <Layout>
                 <div>
