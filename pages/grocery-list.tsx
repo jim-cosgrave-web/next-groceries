@@ -65,7 +65,7 @@ const GroceryListPage = ({ initialList }) => {
     function storeBtnClass() {
         let c = 'btn w-50';
 
-        if (mode !== 'store') {
+        if (!mode || mode !== 'store') {
             c += ' btn-inactive';
         }
 
@@ -124,7 +124,7 @@ const GroceryListPage = ({ initialList }) => {
             </div>
             <div>
                 {
-                    mode == 'list' ? <GroceryList updateTime={update}></GroceryList> : <StoreGroceryList updateTime={update} listId={initialList._id}></StoreGroceryList>
+                    (!mode || mode == 'list') ? <GroceryList updateTime={update}></GroceryList> : <StoreGroceryList updateTime={update} listId={initialList._id}></StoreGroceryList>
                 }
             </div>
             <ToastContainer />
