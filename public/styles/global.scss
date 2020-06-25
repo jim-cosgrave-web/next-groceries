@@ -167,7 +167,7 @@ h1 {
 }
 
 .w-100 {
-  width: 100%;
+  width: 100% !important;
 }
 
 .flex-grow {
@@ -176,4 +176,8 @@ h1 {
 
 .max-width-page {
   max-width: 600px;
+}
+
+svg {
+  width: 20px;
 }

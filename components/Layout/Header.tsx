@@ -98,31 +98,41 @@ const Header = () => {
                     <nav>
                         <Link href="/grocery-list">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faListOl} />
-                                <a>Grocery List</a>
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faListOl} />
+                                    <a>Grocery List</a>
+                                </div>
                             </div>
                         </Link>
                         <Link href="/subscribe-to-store">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faLink} />
-                                <a>Subscribe to Stores</a>
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faLink} />
+                                    <a>Subscribe to Stores</a>
+                                </div>
                             </div>
                         </Link>
                         <Link href="/recipes">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faBook} />
-                                <a>Recipes</a>
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faBook} />
+                                    <a>Recipes</a>
+                                </div>
                             </div>
                         </Link>
                         {isAdmin() && <Link href="/admin">
                             <div className="nav-item" onClick={handleNav}>
-                                <FontAwesomeIcon icon={faLock} />
-                                <a>Admin</a>
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faLock} />
+                                    <a>Admin</a>
+                                </div>
                             </div>
                         </Link>}
                         <div className="nav-item" onClick={handleSignOut}>
-                            <FontAwesomeIcon icon={faSignOutAlt} />
-                            <a>Sign Out</a>
+                            <div className="flex">
+                                <FontAwesomeIcon icon={faSignOutAlt} />
+                                <a>Sign Out</a>
+                            </div>
                         </div>
                     </nav>
                 </div>

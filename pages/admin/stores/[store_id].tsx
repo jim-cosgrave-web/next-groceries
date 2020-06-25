@@ -377,9 +377,9 @@ const AdminStoreByIdPage = () => {
             <div className="flex align-top">
                 {getJSX()}
             </div>
-            <div style={{ 'width': '20%', 'minWidth': '300px' }}>
-                <input ref={newCategoryNameRef} onKeyUp={newCategoryKeyUp} className="form-control" placeholder="Add a new category..." />
-                <button className="btn" onClick={handleNewCategoryAdd}>Add</button>
+            <div className="new-category">
+                <input ref={newCategoryNameRef} onKeyUp={newCategoryKeyUp} className="form-control mb-10" placeholder="Add a new category..." />
+                <button className="btn w-100" onClick={handleNewCategoryAdd}>Add</button>
             </div>
         </div>
     );

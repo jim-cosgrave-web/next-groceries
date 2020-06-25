@@ -201,8 +201,8 @@ const AdminCategory = (props) => {
             </Droppable>
             <div className="grocery-container">
                 <div className="flex space-between admin-grocery new-grocery">
-                    <div className="p-1">
-                        <input ref={groceryRef} type="text" onKeyUp={newGroceryKeyUp} className="form-control" placeholder="Add a new grocery"></input>
+                    <div className="p-1 flex-grow-1">
+                        <input ref={groceryRef} type="text" onKeyUp={newGroceryKeyUp} className="form-control w-100" placeholder="Add a new grocery"></input>
                     </div>
                     <div className="wide-icon tall-icon clickable flex flex-center" onClick={handleNewGroceryClick}>
                         <FontAwesomeIcon icon={faPlus} />

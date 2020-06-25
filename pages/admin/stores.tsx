@@ -34,7 +34,7 @@ const AdminStoresPage = () => {
 
     function getStoresJSX() {
         if (!stores || stores.length == 0) {
-            return <div>No Stores</div>;
+            return <div>Loading...</div>;
         }
 
         let jsx = stores.map((s, index) => {
