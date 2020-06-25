@@ -148,9 +148,18 @@ const Login = () => {
     return (
         <div className="site-wrapper">
             <div className="login-wrapper">
-                <div className="login-top"></div>
+                <div className="login-top">
+                </div>
                 <div className="login-left">
                     <div className="login-left-wrapper">
+                        <div className="flex">
+                            <div className="mr-20">
+                                <img src="/images/cart-icon-blue-gray.png" width="50" />
+                            </div>
+                            <div>
+                                <h1>Groceries</h1>
+                            </div>
+                        </div>
                         <h1>{titleMessage()}</h1>
                         <div className="login-form">
                             {errorMessageHTML()}
@@ -201,12 +210,15 @@ const Login = () => {
                     <div className="login-right-container">
                         <div className="login-right-title">
                             <div className="title">
-                                GROCER
-                        </div>
+                                GROCERIES
+                            </div>
                             <div className="tag-line">
                                 Shop smarter.
+                            </div>
                         </div>
-                        </div>
+                    </div>
+                    <div className="logo">
+                        <img src="/images/cart-icon-white.png" width="300" />
                     </div>
                 </div>
             </div>
