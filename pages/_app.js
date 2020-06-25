@@ -13,10 +13,12 @@ export default function MyApp({ Component, pageProps }) {
             <Head>
                 <title>Groceries</title>
 
+                <link rel="manifest" href="/manifest.json" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <link rel="shortcut icon" href="/images/favicon-32x32.png" />
-                <link rel="apple-touch-icon" sizes="128x128" href="cart-icon-white.png" />
-                <link rel="icon" sizes="192x192" href="cart-icon-white.png" />
+                <link rel="apple-touch-icon" sizes="72x72" href="icon-72x72.png" />
+                {/* <link rel="apple-touch-icon" sizes="96x96" href="icon-96x96.png" />
+                <link rel="apple-touch-icon" sizes="128x128" href="icon-128x128.png" /> */}
             </Head>
             <Layout>
                 <div>
