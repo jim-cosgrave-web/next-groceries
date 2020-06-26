@@ -1,19 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
 
-const RecipesPage = () => {
+const ProfilePage = () => {
 
     return (
         <div>
-            <h1>Recipes Page</h1>
+            <h1>Profile Page</h1>
             <div>Coming soon...</div>
             <div className="mt-20">
                 <Link href="/grocery-list">
                     <a>Back to grocery list</a>
                 </Link>
-            </div>            
+            </div>
         </div>
     );
 }
 
-export default RecipesPage;
+export default ProfilePage;

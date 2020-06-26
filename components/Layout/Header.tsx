@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListOl, faSignOutAlt, faBook, faLink, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faSignOutAlt, faBook, faLink, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { env } from './../../util/environment';
 import fetch from 'isomorphic-unfetch';
-import user from '../../pages/api/user';
 
 const userApiUrl = env.apiUrl + 'user';
 
 const Header = () => {
     const [hidden, setHidden] = useState(true);
+    const [user, setUser] = useState(null);
     const [userRoles, setUserRoles] = useState(null);
     const router = useRouter();
 
@@ -21,7 +21,9 @@ const Header = () => {
             const user = await getUser();
 
             if (isCancelled == false && user && user.roles && user.roles.length > 0) {
-                setUserRoles(user.roles);
+                //console.log(user);
+                //setUserRoles(user.roles);
+                setUser(user);
             }
         }
 
@@ -76,8 +78,8 @@ const Header = () => {
     function isAdmin() {
         let isAdmin = false;
 
-        if (userRoles) {
-            isAdmin = userRoles.indexOf('admin') > -1
+        if (user && user.roles) {
+            isAdmin = user.roles.indexOf('admin') > -1
         }
 
         return isAdmin;
@@ -96,6 +98,14 @@ const Header = () => {
                 </div>
                 <div className="menu-nav-wrapper">
                     <nav>
+                        {user && <div className="nav-item" onClick={handleNav}>
+                            <Link href="/profile">
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faUser} />
+                                    <a>{user.name}</a>
+                                </div>
+                            </Link>
+                        </div>}
                         <Link href="/grocery-list">
                             <div className="nav-item" onClick={handleNav}>
                                 <div className="flex">

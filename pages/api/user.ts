@@ -42,12 +42,15 @@ export default authenticateNoRedirect(database(async function login(
             }
 
             const db = req.db;
+            const userFilter = { "email": email };
             const existingUser = await db.collection('users').findOne({ "email": email });
 
             if (!existingUser) {
                 res.status(401).json({ status: 'Unsuccessful login' });
             } else {
-                compare(password, existingUser.password, function (err, result) {
+                
+
+                compare(password, existingUser.password, async function (err, result) {
                     //
                     // result will be true/false
                     //
@@ -65,6 +68,8 @@ export default authenticateNoRedirect(database(async function login(
                             maxAge: 86400,
                             path: '/'
                         }));
+
+                        await db.collection('users').updateOne(userFilter, { "$set": { "lastLogin": new Date() } });
 
                         //res.json({ authToken: jwt });
                         res.status(200).json({ status: 'Logged in', jwt });
