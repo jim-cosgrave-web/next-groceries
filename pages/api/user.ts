@@ -72,7 +72,7 @@ export default authenticateNoRedirect(database(async function login(
                         await db.collection('users').updateOne(userFilter, { "$set": { "lastLogin": new Date() } });
 
                         //res.json({ authToken: jwt });
-                        res.status(200).json({ status: 'Logged in', jwt });
+                        res.status(200).json({ status: 'Logged in', jwt, t: process.env.JWT_SECRET });
                     } else {
                         res.status(401).json({ status: 'Oops.  Something went wrong' });
                     }
