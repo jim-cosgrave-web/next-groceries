@@ -16,7 +16,7 @@ const MyTypeahead = (props) => {
         async function execute() {
             const data = await getData();
 
-            if(!isCancelled) {
+            if (!isCancelled) {
                 setOptions(data);
             }
         }
@@ -45,10 +45,12 @@ const MyTypeahead = (props) => {
                 let data = await myGet(env.apiUrl + 'store', null);
                 let ar = [];
 
-                for (let i = 0; i < data.stores.length; i++) {
-                    var store = data.stores[i];
-                    var name = `${store.name} (${store.city} ${store.state})`;
-                    ar.push({ id: store._id.toString(), label: name });
+                if (data && data.stores) {
+                    for (let i = 0; i < data.stores.length; i++) {
+                        var store = data.stores[i];
+                        var name = `${store.name} (${store.city} ${store.state})`;
+                        ar.push({ id: store._id.toString(), label: name });
+                    }
                 }
 
                 return ar;

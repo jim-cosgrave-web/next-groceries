@@ -267,7 +267,7 @@ const StoreGroceryList = (props) => {
                 <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
             </div>}
             {storeDropDown && storeDropDown.length > 0 && <div className="mt-10">
-                <select className="select-css" onChange={handleStoreChange} defaultValue={selectedStore.value}>
+                <select className="select-css" onChange={handleStoreChange} defaultValue={selectedStore ? selectedStore.value : null}>
                     {storeDropDown.map((s, index) => {
                         return (<option key={index} value={s.value}>
                             {s.name}

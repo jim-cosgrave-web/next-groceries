@@ -3,21 +3,26 @@ import fetch from 'isomorphic-unfetch';
 import Router from 'next/router';
 import { env } from '../util/environment';
 import Link from 'next/link';
-import { LOCAL_STORAGE_USER } from '../util/constants';
+import { LOCAL_STORAGE_USER, CHECK_ACTIVATION_CODE_API_METHOD } from '../util/constants';
+import { myGet } from '../util/myGet';
 
 const userApiUrl = env.apiUrl + 'user';
-const signUpEnabled = env.apiUrl.indexOf('localhost') > -1;
+//const signUpEnabled = env.apiUrl.indexOf('localhost') > -1;
 
 const Login = () => {
     const [valid, setValid] = useState(false);
+    const [validActivation, setValidActivation] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [signUpFlow, setSignUpFlow] = useState(false);
     const [signingIn, setSigningIn] = useState(false);
+    const [showActivation, setShowActivation] = useState(false);
+    const [showSignUp, setShowSignUp] = useState(false);
 
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
+    const actCodeRef = useRef<HTMLInputElement>(null);
 
     async function handleLogin() {
         if (!valid) {
@@ -147,6 +152,41 @@ const Login = () => {
         }
     }
 
+    function activationButtonClass() {
+        let btnClass = 'my-button'
+
+        if (!validActivation) {
+            btnClass += ' inactive';
+        }
+
+        return btnClass;
+    }
+
+    function handleActCodeChange() {
+        const code = actCodeRef?.current?.value;
+
+        if(code && code.trim().length > 0) {
+            setValidActivation(true);
+        } else {
+            setValidActivation(false);
+        }
+    }
+
+    async function handleActivationCheck() {
+        if(!validActivation) {
+            return;
+        }
+
+        const result = await myGet(userApiUrl + '?method=' + CHECK_ACTIVATION_CODE_API_METHOD + '&code=' + actCodeRef?.current?.value, null);
+
+        if(result && result.valid) {
+            setValidActivation(false);
+            setShowActivation(false);
+            setShowSignUp(false);
+            setSignUpFlow(true);
+        }
+    }
+
     return (
         <div className="site-wrapper">
             <div className="login-wrapper">
@@ -193,7 +233,7 @@ const Login = () => {
                                 <div>
                                     <button type="submit" className={buttonClass()} onClick={handleLogin}>Login</button>
                                 </div>
-                                {signUpEnabled && <div className="sign-up">
+                                {showSignUp && <div className="sign-up">
                                     Don't have an account? <a href="#" onClick={handleSignUpToggle}>Sign Up</a>
                                 </div>}
                             </div>}
@@ -203,6 +243,26 @@ const Login = () => {
                                 </div>
                                 <div className="sign-up">
                                     Have an account? <a href="#" onClick={handleSignUpToggle}>Sign In</a>
+                                </div>
+                            </div>}
+                            {!showActivation && !signUpFlow && !showSignUp && <div className="login-button-wrapper">
+                                <div className="sign-up">
+                                    Have an activation code? <a href="#" onClick={() => setShowActivation(true)}>Click Here</a>
+                                </div>
+                            </div>}
+                            {showActivation && <div>
+                                <div className="mt-20">
+                                    <div className="login-form-fieldset">
+                                        <div className="login-form-label">
+                                            Activation Code
+                                        </div>
+                                        <div className="login-form-input">
+                                            <input type="text" ref={actCodeRef} onChange={handleActCodeChange} />
+                                        </div>
+                                        <div className="mt-20">
+                                            <button type="submit" className={activationButtonClass()} onClick={handleActivationCheck}>Confirm Activation Code</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>}
                         </div>

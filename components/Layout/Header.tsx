@@ -20,9 +20,7 @@ const Header = () => {
         async function execute() {
             const user = await getUser();
 
-            if (isCancelled == false && user && user.roles && user.roles.length > 0) {
-                //console.log(user);
-                //setUserRoles(user.roles);
+            if (isCancelled == false && user) {
                 setUser(user);
             }
         }

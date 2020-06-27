@@ -7,7 +7,7 @@ import cookie from 'cookie';
 import { MyNextApiRequest, MyJWT } from '../../middleware/myNextApiRequest';
 import { ObjectId } from 'mongodb';
 import { authenticateNoRedirect } from '../../middleware/authenticateNoRedirect';
-import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD } from '../../util/constants';
+import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD, CHECK_ACTIVATION_CODE_API_METHOD } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
     req: MyNextApiRequest,
@@ -195,6 +195,20 @@ export default authenticateNoRedirect(database(async function login(
             }));
 
             res.status(200).json({ status: 'ok' });
+            return;
+        } else if (method === CHECK_ACTIVATION_CODE_API_METHOD) {
+            const activationCollection = db.collection('activationCodes');
+            const code = req.query.code;
+            const filter = { code: code };
+
+            const doc = await activationCollection.findOne(filter);
+
+            if(doc) {
+                res.status(200).json({ valid: true });
+                return
+            }
+
+            res.status(200).json({ valid: false });
             return;
         } else {
             //

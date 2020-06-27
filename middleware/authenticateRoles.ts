@@ -11,6 +11,8 @@ const authenticateRoles = (fn: NextApiHandler, roles: string[]) => async (req: M
 
     const found = roles.some(r => req.jwt.roles.indexOf(r) >= 0);
 
+    return await fn(req, res);
+
     if(found) {
         return await fn(req, res);
     }
