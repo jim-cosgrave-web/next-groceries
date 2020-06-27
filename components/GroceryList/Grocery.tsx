@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import fetch from 'isomorphic-unfetch';
-import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { env } from '../../util/environment';
+import getUser from '../../util/getUser';
 
 const updateGroceryUrl = env.apiUrl + 'list';
 
@@ -12,8 +12,17 @@ const Grocery = (props) => {
     const [grocery, setGrocery] = useState(props.grocery);
     const [listId, setListId] = useState(props.list_id);
     const [editNote, setEditNote] = useState(false);
-    const router = useRouter();
+    const user = getUser();
+
     const noteRef = useRef<HTMLInputElement>(null);
+
+    function actionAllowed(action: string) {
+        if(action == 'change-category') {
+            return user && user.roles && user.roles.indexOf('admin') > -1;
+        }
+
+        return false;
+    }
 
     function getGroceryHTML() {
 
@@ -40,7 +49,7 @@ const Grocery = (props) => {
                                     onBlur={handleBlur}
                                     onChange={() => { }}></input>
                                 {/* <FontAwesomeIcon className="ml-5 clickable" onClick={saveNote} icon={faSave} /> */}
-                                {props.enableCategory && <div className="mt-10">
+                                {props.enableCategory && actionAllowed('change-category') && <div className="mt-10">
                                     <select className="prevent-click select-css" onChange={handleCategoryChange} value={props.categoryName}>
                                         {props.categories.map((c, i) => { return <option key={c.name} defaultValue={props.categoryName}>{c.name}</option>; })}
                                     </select>

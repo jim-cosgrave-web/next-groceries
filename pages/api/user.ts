@@ -58,21 +58,21 @@ export default authenticateNoRedirect(database(async function login(
                         //
                         // Create json token here
                         //
-                        const claims = { sub: existingUser._id, name: existingUser.name, email: existingUser.email, user_id: existingUser._id.toString() };
-                        const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '24h' });
+                        const claims = { sub: existingUser._id, name: existingUser.name, email: existingUser.email, user_id: existingUser._id.toString(), roles: existingUser.roles };
+                        const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '7d' });
 
                         res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
                             httpOnly: true,
                             secure: process.env.NODE_ENV !== 'development',
                             sameSite: 'strict',
-                            maxAge: 86400,
+                            //maxAge: 86400,
                             path: '/'
                         }));
 
                         await db.collection('users').updateOne(userFilter, { "$set": { "lastLogin": new Date() } });
 
                         //res.json({ authToken: jwt });
-                        res.status(200).json({ status: 'Logged in', jwt, t: process.env.JWT_SECRET });
+                        res.status(200).json({ status: 'Logged in', jwt });
                     } else {
                         res.status(401).json({ status: 'Oops.  Something went wrong' });
                     }

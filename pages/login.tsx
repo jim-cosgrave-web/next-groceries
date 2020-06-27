@@ -3,6 +3,7 @@ import fetch from 'isomorphic-unfetch';
 import Router from 'next/router';
 import { env } from '../util/environment';
 import Link from 'next/link';
+import { LOCAL_STORAGE_USER } from '../util/constants';
 
 const userApiUrl = env.apiUrl + 'user';
 const signUpEnabled = env.apiUrl.indexOf('localhost') > -1;
@@ -40,6 +41,7 @@ const Login = () => {
         })
 
         const json = await resp.json();
+        localStorage.setItem(LOCAL_STORAGE_USER, JSON.stringify(json));
         setSigningIn(false);
 
         if (resp.status === 401) {
