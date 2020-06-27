@@ -9,6 +9,7 @@ export interface MyJWT {
     iat: number;
     exp: number;
     authenticated: boolean;
+    roles: string[];
 }
 
 export interface MyNextApiRequest extends NextApiRequest {

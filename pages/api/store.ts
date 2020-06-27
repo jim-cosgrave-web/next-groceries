@@ -3,244 +3,247 @@ import { ObjectId, Collection } from 'mongodb';
 import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
-import { 
-    UNCATEGORIZED, 
-    REORGANIZE_STORE_GROCERIES_API_METHOD, 
-    UPDATE_STORE_CATEGORY_API_METHOD, 
-    DELETE_STORE_CATEGORY_API_METHOD, 
-    ADD_STORE_GROCERY_API_METHOD, 
-    DELETE_STORE_GROCERY_API_METHOD, 
-    UPDATE_STORE_GROCERY_API_METHOD, 
-    ADD_STORE_CATEGORY_API_METHOD, 
-    MOVE_STORE_CATEGORY_API_METHOD, 
+import { authenticateRoles } from '../../middleware/authenticateRoles';
+import {
+    UNCATEGORIZED,
+    REORGANIZE_STORE_GROCERIES_API_METHOD,
+    UPDATE_STORE_CATEGORY_API_METHOD,
+    DELETE_STORE_CATEGORY_API_METHOD,
+    ADD_STORE_GROCERY_API_METHOD,
+    DELETE_STORE_GROCERY_API_METHOD,
+    UPDATE_STORE_GROCERY_API_METHOD,
+    ADD_STORE_CATEGORY_API_METHOD,
+    MOVE_STORE_CATEGORY_API_METHOD,
     UPDATE_STORE_GROCERY_CATEGORY_API_METHOD
 } from '../../util/constants';
 
 export default authenticate(
-    database(async function storeApi(
-        req: MyNextApiRequest,
-        res: NextApiResponse
-    ) {
-        try {
-            const db = req.db;
-            const collection = db.collection('stores');
-            const groceryCollection = db.collection('groceries');
+    authenticateRoles(
+        database(async function storeApi(
+            req: MyNextApiRequest,
+            res: NextApiResponse
+        ) {
+            try {
+                const db = req.db;
+                const collection = db.collection('stores');
+                const groceryCollection = db.collection('groceries');
 
-            if (req.method === 'GET') {
-                if (!req.query.method) {
-                    const stores = await collection.find().toArray();
+                if (req.method === 'GET') {
+                    if (!req.query.method) {
+                        const stores = await collection.find().toArray();
 
-                    res.status(200).json({ stores });
-                    return;
-                } else if (req.query.method == 'getStoreDetails') {
-                    const filter = { _id: new ObjectId(req.query.store_id.toString()) };
-                    const store = await collection.findOne(filter);
+                        res.status(200).json({ stores });
+                        return;
+                    } else if (req.query.method == 'getStoreDetails') {
+                        const filter = { _id: new ObjectId(req.query.store_id.toString()) };
+                        const store = await collection.findOne(filter);
 
-                    res.status(200).json({ store });
-                    return;
-                }
-            } else if (req.method === 'POST') {
-                if (req.body.method === ADD_STORE_GROCERY_API_METHOD) {
-                    //push = { $push: { 'categories.$.groceries': newGrocery } };
-                    const storeId = new ObjectId(req.body.store_id);
-                    const filter = { _id: storeId, "categories.name": req.body.categoryName };
-                    const push = { '$push': { 'categories.$.groceries': req.body.grocery } };
-
-                    await collection.updateOne(filter, push);
-
-                    res.status(200).json({ message: 'OK' });
-                    return;
-                } else if (req.body.method === ADD_STORE_CATEGORY_API_METHOD) {
-                    const storeId = new ObjectId(req.body.storeId);
-                    const filter = { _id: storeId };
-                    const push = { '$push': { 'categories': req.body.category } };
-
-                    await collection.updateOne(filter, push);
-
-                    res.status(200).json({ message: 'OK' });
-                    return;
-                } else {
-                    res.status(500).json({ message: 'Method not supported' });
-                    return;
-                }
-            } else if (req.method === 'PUT') {
-                if (req.body.method === UPDATE_STORE_GROCERY_API_METHOD) {
-                    const storeId = new ObjectId(req.body.storeId);
-                    const categoryName = req.body.categoryName;
-                    const originalName = req.body.grocery.originalName;
-                    const newName = req.body.grocery.groceryName;
-
-                    const filter = { _id: storeId };
-                    const set = { '$set': { "categories.$[category].groceries.$[grocery].groceryName": newName } };
-                    const arrayFilters = { 'arrayFilters': [ { "category.name": categoryName }, { "grocery.groceryName": originalName } ], multi: true };
-
-                    await collection.update(filter, set, arrayFilters);
-
-                    res.status(200).json({ message: 'OK', filter, set });
-                    return;
-                } else if (req.body.method === UPDATE_STORE_GROCERY_CATEGORY_API_METHOD) {
-                    /********************************************
-                     UPDATE STORE GROCERY
-                    ********************************************/
-
-                    //
-                    // Get request body
-                    //
-                    const storeId = new ObjectId(req.body.store);
-                    const groceryName = req.body.groceryName;
-                    const categoryName = req.body.category;
-
-                    const storeFilter = { _id: storeId };
-
-                    //
-                    // Check if the store exists
-                    //
-                    const store = await collection.findOne(storeFilter);
-
-                    if (!store) {
-                        res.status(500).json({ message: 'Store does not exist' });
+                        res.status(200).json({ store });
                         return;
                     }
+                } else if (req.method === 'POST') {
+                    if (req.body.method === ADD_STORE_GROCERY_API_METHOD) {
+                        //push = { $push: { 'categories.$.groceries': newGrocery } };
+                        const storeId = new ObjectId(req.body.store_id);
+                        const filter = { _id: storeId, "categories.name": req.body.categoryName };
+                        const push = { '$push': { 'categories.$.groceries': req.body.grocery } };
 
-                    let newGrocery = {};
-                    let category = undefined;
-                    let push = undefined;
-                    let pull = undefined;
-                    let currentCategoryName = '';
+                        await collection.updateOne(filter, push);
 
-                    //
-                    // Update the grocery collection in case this doesnt currently exist
-                    //
-                    groceryCollection.update({ name: groceryName.toLowerCase() }, { name: groceryName }, { upsert: true });
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else if (req.body.method === ADD_STORE_CATEGORY_API_METHOD) {
+                        const storeId = new ObjectId(req.body.storeId);
+                        const filter = { _id: storeId };
+                        const push = { '$push': { 'categories': req.body.category } };
 
-                    let groceryCategory = findCategoryWithGrocery(store, groceryName);
+                        await collection.updateOne(filter, push);
 
-                    if (groceryCategory && groceryCategory.name != categoryName) {
-                        pull = { $pull: { "categories.$.groceries": { groceryName: groceryName } } };
-                        currentCategoryName = groceryCategory.name;
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else {
+                        res.status(500).json({ message: 'Method not supported' });
+                        return;
                     }
+                } else if (req.method === 'PUT') {
+                    if (req.body.method === UPDATE_STORE_GROCERY_API_METHOD) {
+                        const storeId = new ObjectId(req.body.storeId);
+                        const categoryName = req.body.categoryName;
+                        const originalName = req.body.grocery.originalName;
+                        const newName = req.body.grocery.groceryName;
 
-                    //
-                    // Find the category in the store if categories exist
-                    //
-                    if (categoryName != UNCATEGORIZED) {
-                        category = await addCategoryIfNotExists(collection, categoryName, store, storeId);
+                        const filter = { _id: storeId };
+                        const set = { '$set': { "categories.$[category].groceries.$[grocery].groceryName": newName } };
+                        const arrayFilters = { 'arrayFilters': [{ "category.name": categoryName }, { "grocery.groceryName": originalName }], multi: true };
 
+                        await collection.update(filter, set, arrayFilters);
+
+                        res.status(200).json({ message: 'OK', filter, set });
+                        return;
+                    } else if (req.body.method === UPDATE_STORE_GROCERY_CATEGORY_API_METHOD) {
+                        /********************************************
+                         UPDATE STORE GROCERY
+                        ********************************************/
 
                         //
-                        // If the category exists, find the grocery
+                        // Get request body
                         //
-                        const existing = category.groceries.find(g => { return g.groceryName == groceryName });
+                        const storeId = new ObjectId(req.body.store);
+                        const groceryName = req.body.groceryName;
+                        const categoryName = req.body.category;
+
+                        const storeFilter = { _id: storeId };
 
                         //
-                        // If it already exists, dont add it as a duplicate
+                        // Check if the store exists
                         //
-                        if (existing) {
-                            res.send('duplicate grocery');
+                        const store = await collection.findOne(storeFilter);
+
+                        if (!store) {
+                            res.status(500).json({ message: 'Store does not exist' });
                             return;
                         }
 
-                        //
-                        // Get the max order and set the new grocery to that order + 1
-                        //
-                        let order = Math.max.apply(Math, category.groceries.map(function (g) { return g.order; }));
+                        let newGrocery = {};
+                        let category = undefined;
+                        let push = undefined;
+                        let pull = undefined;
+                        let currentCategoryName = '';
 
-                        if (order == Number.NEGATIVE_INFINITY) {
-                            order = 0;
+                        //
+                        // Update the grocery collection in case this doesnt currently exist
+                        //
+                        groceryCollection.update({ name: groceryName.toLowerCase() }, { name: groceryName }, { upsert: true });
+
+                        let groceryCategory = findCategoryWithGrocery(store, groceryName);
+
+                        if (groceryCategory && groceryCategory.name != categoryName) {
+                            pull = { $pull: { "categories.$.groceries": { groceryName: groceryName } } };
+                            currentCategoryName = groceryCategory.name;
                         }
 
-                        newGrocery = { groceryName: groceryName, order: order + 1 };
-                        category.groceries.push(newGrocery);
-                        push = { $push: { 'categories.$.groceries': newGrocery } };
+                        //
+                        // Find the category in the store if categories exist
+                        //
+                        if (categoryName != UNCATEGORIZED) {
+                            category = await addCategoryIfNotExists(collection, categoryName, store, storeId);
+
+
+                            //
+                            // If the category exists, find the grocery
+                            //
+                            const existing = category.groceries.find(g => { return g.groceryName == groceryName });
+
+                            //
+                            // If it already exists, dont add it as a duplicate
+                            //
+                            if (existing) {
+                                res.send('duplicate grocery');
+                                return;
+                            }
+
+                            //
+                            // Get the max order and set the new grocery to that order + 1
+                            //
+                            let order = Math.max.apply(Math, category.groceries.map(function (g) { return g.order; }));
+
+                            if (order == Number.NEGATIVE_INFINITY) {
+                                order = 0;
+                            }
+
+                            newGrocery = { groceryName: groceryName, order: order + 1 };
+                            category.groceries.push(newGrocery);
+                            push = { $push: { 'categories.$.groceries': newGrocery } };
+                        }
+
+                        //
+                        // Update the collection
+                        //
+                        if (push) {
+                            const pushFilter = { _id: storeId, 'categories.name': categoryName };
+                            await collection.update(pushFilter, push);
+                        }
+
+                        if (pull) {
+                            const pullFilter = { _id: storeId, 'categories.name': currentCategoryName }
+                            await collection.update(pullFilter, pull);
+                        }
+
+                        res.status(200).json({ message: 'ok' });
+                        return;
+                    } else if (req.body.method === REORGANIZE_STORE_GROCERIES_API_METHOD) {
+                        //
+                        // User reorganized category groceries for a store
+                        //
+                        const storeId = new ObjectId(req.body.store_id);
+                        const updatedCategory = req.body.updatedCategory;
+                        const uFilter = { _id: storeId, "categories.name": updatedCategory.name };
+                        const uSet = { "$set": { "categories.$": updatedCategory } };
+
+                        await collection.updateOne(uFilter, uSet);
+
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else if (req.body.method === UPDATE_STORE_CATEGORY_API_METHOD) {
+                        const storeId = new ObjectId(req.body.store_id);
+                        const uFilter = { _id: storeId, "categories.name": req.body.previousCategoryName };
+                        const uSet = { "$set": { "categories.$.name": req.body.newCategoryName } };
+
+                        await collection.updateOne(uFilter, uSet);
+
+                        res.status(200).json({ message: 'OK' });
+                    } else if (req.body.method === MOVE_STORE_CATEGORY_API_METHOD) {
+                        const storeId = new ObjectId(req.body.storeId);
+
+                        const filter1 = { _id: storeId, "categories.name": req.body.category1.name };
+                        const set1 = { "$set": { "categories.$.order": req.body.category1.order } };
+
+                        const resp1 = await collection.updateOne(filter1, set1);
+
+                        const filter2 = { _id: storeId, "categories.name": req.body.category2.name };
+                        const set2 = { "$set": { "categories.$.order": req.body.category2.order } };
+
+                        const resp2 = await collection.updateOne(filter2, set2);
+
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else {
+                        res.status(500).json({ message: 'Method not supported' });
+                        return;
                     }
+                } else if (req.method === 'DELETE') {
+                    if (req.body.method === DELETE_STORE_CATEGORY_API_METHOD) {
+                        const storeId = new ObjectId(req.body.storeId);
+                        const filter = { _id: storeId };
+                        const pull = { "$pull": { "categories": { "name": req.body.categoryName } } };
 
-                    //
-                    // Update the collection
-                    //
-                    if (push) {
-                        const pushFilter = { _id: storeId, 'categories.name': categoryName };
-                        await collection.update(pushFilter, push);
+                        await collection.updateOne(filter, pull);
+
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else if (req.body.method === DELETE_STORE_GROCERY_API_METHOD) {
+                        const storeId = new ObjectId(req.body.storeId);
+                        const filter = { _id: storeId, "categories.name": req.body.categoryName };
+                        const pull = { "$pull": { "categories.$.groceries": { "groceryName": req.body.groceryName } } };
+
+                        await collection.updateOne(filter, pull);
+
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else {
+                        res.status(200).json({ message: 'Method not supported' });
+                        return;
                     }
-
-                    if (pull) {
-                        const pullFilter = { _id: storeId, 'categories.name': currentCategoryName }
-                        await collection.update(pullFilter, pull);
-                    }
-
-                    res.status(200).json({ message: 'ok' });
-                    return;
-                } else if (req.body.method === REORGANIZE_STORE_GROCERIES_API_METHOD) {
-                    //
-                    // User reorganized category groceries for a store
-                    //
-                    const storeId = new ObjectId(req.body.store_id);
-                    const updatedCategory = req.body.updatedCategory;
-                    const uFilter = { _id: storeId, "categories.name": updatedCategory.name };
-                    const uSet = { "$set": { "categories.$": updatedCategory } };
-
-                    await collection.updateOne(uFilter, uSet);
-
-                    res.status(200).json({ message: 'OK' });
-                    return;
-                } else if (req.body.method === UPDATE_STORE_CATEGORY_API_METHOD) {
-                    const storeId = new ObjectId(req.body.store_id);
-                    const uFilter = { _id: storeId, "categories.name": req.body.previousCategoryName };
-                    const uSet = { "$set": { "categories.$.name": req.body.newCategoryName } };
-
-                    await collection.updateOne(uFilter, uSet);
-
-                    res.status(200).json({ message: 'OK' });
-                } else if (req.body.method === MOVE_STORE_CATEGORY_API_METHOD) {
-                    const storeId = new ObjectId(req.body.storeId);
-
-                    const filter1 = { _id: storeId, "categories.name": req.body.category1.name };
-                    const set1 = { "$set": { "categories.$.order": req.body.category1.order } };
-
-                    const resp1 = await collection.updateOne(filter1, set1);
-
-                    const filter2 = { _id: storeId, "categories.name": req.body.category2.name };
-                    const set2 = { "$set": { "categories.$.order": req.body.category2.order } };
-
-                    const resp2 = await collection.updateOne(filter2, set2);
-                    
-                    res.status(200).json({ message: 'OK' });
-                    return;
                 } else {
                     res.status(500).json({ message: 'Method not supported' });
                     return;
                 }
-            } else if (req.method === 'DELETE') {
-                if (req.body.method === DELETE_STORE_CATEGORY_API_METHOD) {
-                    const storeId = new ObjectId(req.body.storeId);
-                    const filter = { _id: storeId };
-                    const pull = { "$pull": { "categories": { "name": req.body.categoryName } } };
-
-                    await collection.updateOne(filter, pull);
-
-                    res.status(200).json({ message: 'OK' });
-                    return;
-                } else if (req.body.method === DELETE_STORE_GROCERY_API_METHOD) {
-                    const storeId = new ObjectId(req.body.storeId);
-                    const filter = { _id: storeId, "categories.name": req.body.categoryName };
-                    const pull = { "$pull": { "categories.$.groceries": { "groceryName": req.body.groceryName } } };
-
-                    await collection.updateOne(filter, pull);
-
-                    res.status(200).json({ message: 'OK' });
-                    return;
-                } else {
-                    res.status(200).json({ message: 'Method not supported' });
-                    return;
-                }
-            } else {
-                res.status(500).json({ message: 'Method not supported' });
+            } catch (e) {
+                res.status(500).json({ error: e, message: 'Error occurred' });
                 return;
             }
-        } catch (e) {
-            res.status(500).json({ error: e, message: 'Error occurred' });
-            return;
-        }
-    })
+        })
+    , ['admin', 'local-admin']) // End authenticate roles
 );
 
 //

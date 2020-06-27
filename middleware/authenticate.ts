@@ -33,6 +33,7 @@ const authenticate = (fn: NextApiHandler) => async (req: MyNextApiRequest, res: 
             req.jwt.sub = anyDecoded.sub;
             req.jwt.name = anyDecoded.name;
             req.jwt.email = anyDecoded.email;
+            req.jwt.roles = anyDecoded.roles;
 
             return await fn(req, res);
         }

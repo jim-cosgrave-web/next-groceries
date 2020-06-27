@@ -14,7 +14,7 @@ const AdminStoresPage = () => {
         async function execute() {
             const data = await getStores();
 
-            if (isCancelled == false) {
+            if (isCancelled == false && data && data.stores) {
                 setStores(data.stores);
             }
         }

@@ -58,7 +58,14 @@ export default authenticateNoRedirect(database(async function login(
                         //
                         // Create json token here
                         //
-                        const claims = { sub: existingUser._id, name: existingUser.name, email: existingUser.email, user_id: existingUser._id.toString(), roles: existingUser.roles };
+                        const claims = { 
+                            sub: existingUser._id, 
+                            name: existingUser.name, 
+                            email: existingUser.email, 
+                            user_id: existingUser._id.toString(), 
+                            roles: existingUser.roles 
+                        };
+                        
                         const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '7d' });
 
                         res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
