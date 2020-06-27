@@ -17,8 +17,17 @@ const Grocery = (props) => {
     const noteRef = useRef<HTMLInputElement>(null);
 
     function actionAllowed(action: string) {
-        if(action == 'change-category') {
-            return user && user.roles && user.roles.indexOf('admin') > -1;
+        const allowedRoles = ['admin', 'local-admin'];
+
+        if (user && user.roles) {
+            if (action == 'change-category') {
+                //
+                // Check if the user has the proper permissions
+                //
+                const found = allowedRoles.some(r => user.roles.indexOf(r) >= 0);
+
+                return found;
+            }
         }
 
         return false;
@@ -55,7 +64,7 @@ const Grocery = (props) => {
                                     </select>
                                 </div>}
                             </div>
-                        </div> 
+                        </div>
                     }
                 </div>
                 <div className="grocery-checkbox clickable" onClick={handleToggleCheck}>
