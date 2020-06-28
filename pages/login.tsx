@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import fetch from 'isomorphic-unfetch';
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { env } from '../util/environment';
-import Link from 'next/link';
 import { LOCAL_STORAGE_USER, CHECK_ACTIVATION_CODE_API_METHOD } from '../util/constants';
 import { myGet } from '../util/myGet';
+import getUser from '../util/getUser';
 
 const userApiUrl = env.apiUrl + 'user';
 //const signUpEnabled = env.apiUrl.indexOf('localhost') > -1;
@@ -18,11 +18,35 @@ const Login = () => {
     const [signingIn, setSigningIn] = useState(false);
     const [showActivation, setShowActivation] = useState(false);
     const [showSignUp, setShowSignUp] = useState(false);
+    const [checkingAuth, setCheckingAuth] = useState(true);
+
+    const router = useRouter();
 
     const nameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const actCodeRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        const user = getUser();
+        let isCancelled = false;
+
+        if (user) {
+            router.push('/grocery-list');
+
+            setTimeout(() => {
+                if (!isCancelled) {
+                    setCheckingAuth(false);
+                }
+            }, 2000);
+        } else {
+            setCheckingAuth(false);
+        }
+
+        return () => {
+            isCancelled = true;
+        };        
+    }, []);
 
     async function handleLogin() {
         if (!valid) {
@@ -209,7 +233,7 @@ const Login = () => {
             <div className="login-wrapper">
                 <div className="login-top">
                 </div>
-                <div className="login-left">
+                {!checkingAuth && <div className="login-left">
                     <div className="login-left-wrapper">
                         <div className="flex">
                             <div className="mr-20">
@@ -287,7 +311,10 @@ const Login = () => {
                             </div>}
                         </div>
                     </div>
-                </div>
+                </div>}
+                {checkingAuth && <div className="mt-20 checking-auth">
+                    Checking authentication.  Please wait.
+                </div>}
                 <div className="login-right">
                     <div className="login-right-container">
                         <div className="login-right-title">

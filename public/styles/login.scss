@@ -6,6 +6,11 @@
     min-height: 100vh;
     flex-direction: row;
 
+    .checking-auth {
+        font-size: 16px;
+        padding: 8px;
+    }
+
     .login-left {
         width: 385px;
         height: auto;

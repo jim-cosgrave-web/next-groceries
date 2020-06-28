@@ -1,3 +1,4 @@
+- Confirm password
 - User lists - keep in local storage?  If data exists, render it quickly.  Still query back end then compare length of grocery list to know if state should be refreshed?
 
 - https://next-auth.js.org/

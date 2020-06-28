@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faListOl, faSignOutAlt, faBook, faLink, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
 import { env } from './../../util/environment';
 import fetch from 'isomorphic-unfetch';
+import { LOCAL_STORAGE_USER } from '../../util/constants';
 
 const userApiUrl = env.apiUrl + 'user';
 
@@ -65,6 +66,7 @@ const Header = () => {
     }
 
     function handleSignOut() {
+        localStorage.removeItem(LOCAL_STORAGE_USER);
         fetch(env.apiUrl + 'user?method=logout');
         router.push('/login');
     }
@@ -153,7 +155,11 @@ const Header = () => {
                 </span>
                 <button className="menu-btn">Open Menu</button>
             </div>
-            <div id="fixed-nav-bar"></div>
+            <div id="fixed-nav-bar">
+                <div id="header-icon">
+                    <img src="/images/cart-icon-white.png" width="50" />
+                </div>
+            </div>
         </div>
     );
 };
