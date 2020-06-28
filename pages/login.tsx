@@ -165,7 +165,7 @@ const Login = () => {
     function handleActCodeChange() {
         const code = actCodeRef?.current?.value;
 
-        if(code && code.trim().length > 0) {
+        if (code && code.trim().length > 0) {
             setValidActivation(true);
         } else {
             setValidActivation(false);
@@ -173,17 +173,34 @@ const Login = () => {
     }
 
     async function handleActivationCheck() {
-        if(!validActivation) {
+        if (!validActivation) {
             return;
         }
 
         const result = await myGet(userApiUrl + '?method=' + CHECK_ACTIVATION_CODE_API_METHOD + '&code=' + actCodeRef?.current?.value, null);
 
-        if(result && result.valid) {
+        if (result && result.valid) {
+            setError(false);
+            setErrorMessage('');
             setValidActivation(false);
             setShowActivation(false);
             setShowSignUp(false);
             setSignUpFlow(true);
+        } else {
+            setError(true);
+            setErrorMessage('Invalid code');
+        }
+    }
+
+    function cancelActivation() {
+        setShowActivation(false);
+        setErrorMessage('');
+        setError(false);
+    }
+
+    async function handleActivationKeyUp(e) {
+        if (e.key.toLowerCase() === 'enter') {
+            await handleActivationCheck();
         }
     }
 
@@ -208,28 +225,28 @@ const Login = () => {
                             {signUpFlow && <div className="login-form-fieldset">
                                 <div className="login-form-label">
                                     Name
-                            </div>
+                                </div>
                                 <div className="login-form-input">
                                     <input type="text" ref={nameRef} onChange={handleInputChange} />
                                 </div>
                             </div>}
-                            <div className="login-form-fieldset">
+                            {!showActivation && <div className="login-form-fieldset">
                                 <div className="login-form-label">
                                     Email Address
-                            </div>
+                                </div>
                                 <div className="login-form-input">
                                     <input type="text" ref={emailRef} onChange={handleInputChange} />
                                 </div>
-                            </div>
-                            <div className="login-form-fieldset">
+                            </div>}
+                            {!showActivation && <div className="login-form-fieldset">
                                 <div className="login-form-label">
                                     Password
-                            </div>
+                                </div>
                                 <div className="login-form-input">
                                     <input type="password" ref={passwordRef} onChange={handleInputChange} onKeyUp={handleKeyUp} />
                                 </div>
-                            </div>
-                            {!signUpFlow && <div className="login-button-wrapper">
+                            </div>}
+                            {!signUpFlow && !showActivation && <div className="login-button-wrapper">
                                 <div>
                                     <button type="submit" className={buttonClass()} onClick={handleLogin}>Login</button>
                                 </div>
@@ -257,10 +274,13 @@ const Login = () => {
                                             Activation Code
                                         </div>
                                         <div className="login-form-input">
-                                            <input type="text" ref={actCodeRef} onChange={handleActCodeChange} />
+                                            <input type="text" ref={actCodeRef} onChange={handleActCodeChange} onKeyUp={handleActivationKeyUp} />
                                         </div>
                                         <div className="mt-20">
                                             <button type="submit" className={activationButtonClass()} onClick={handleActivationCheck}>Confirm Activation Code</button>
+                                        </div>
+                                        <div className="mt-20 text-center">
+                                            <a href="#" onClick={cancelActivation}>Cancel</a>
                                         </div>
                                     </div>
                                 </div>

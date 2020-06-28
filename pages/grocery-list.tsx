@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import GroceryList from '../components/GroceryList/GroceryList';
 import StoreGroceryList from '../components/GroceryList/StoreGroceryList';
 import { NextPageContext } from 'next';
