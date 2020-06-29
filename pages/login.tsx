@@ -259,7 +259,7 @@ const Login = () => {
                                     Email Address
                                 </div>
                                 <div className="login-form-input">
-                                    <input type="text" ref={emailRef} onChange={handleInputChange} />
+                                    <input type="email" ref={emailRef} onChange={handleInputChange} />
                                 </div>
                             </div>}
                             {!showActivation && <div className="login-form-fieldset">
@@ -298,7 +298,7 @@ const Login = () => {
                                             Activation Code
                                         </div>
                                         <div className="login-form-input">
-                                            <input type="text" ref={actCodeRef} onChange={handleActCodeChange} onKeyUp={handleActivationKeyUp} />
+                                            <input type="text" autoCapitalize="none" ref={actCodeRef} onChange={handleActCodeChange} onKeyUp={handleActivationKeyUp} />
                                         </div>
                                         <div className="mt-20">
                                             <button type="submit" className={activationButtonClass()} onClick={handleActivationCheck}>Confirm Activation Code</button>
