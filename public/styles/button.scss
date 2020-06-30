@@ -4,7 +4,7 @@
     position: relative;
     z-index: 0;
     box-sizing: border-box;
-    display: inline-flex;
+    display: block;
     -webkit-box-align: center;
     align-items: center;
     font-family: Akzidenz, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -14,7 +14,7 @@
     background-image: none;
     box-shadow: none;
     border-radius: 6px;
-    text-decoration: none;
+    text-decoration: none; 
     transition: all 120ms ease 0s;
     overflow: hidden;
     padding: 10px 12px;
@@ -24,6 +24,7 @@
     border-color: rgb(184, 196, 194);
     cursor: default;
     transition: all .3s;
+    text-align: center;
 
     background-color: $primary;
     color: #fff;

@@ -113,7 +113,7 @@ const Login = () => {
     }
 
     function buttonClass() {
-        let btnClass = 'my-button'
+        let btnClass = 'my-button w-100'
 
         if (!valid) {
             btnClass += ' inactive';
@@ -177,7 +177,7 @@ const Login = () => {
     }
 
     function activationButtonClass() {
-        let btnClass = 'my-button'
+        let btnClass = 'my-button w-100'
 
         if (!validActivation) {
             btnClass += ' inactive';
@@ -271,22 +271,22 @@ const Login = () => {
                                 </div>
                             </div>}
                             {!signUpFlow && !showActivation && <div className="login-button-wrapper">
-                                <div>
+                                <div className="w-100">
                                     <button type="submit" className={buttonClass()} onClick={handleLogin}>Login</button>
                                 </div>
                                 {showSignUp && <div className="sign-up">
                                     Don't have an account? <a href="#" onClick={handleSignUpToggle}>Sign Up</a>
                                 </div>}
                             </div>}
-                            {signUpFlow && <div className="login-button-wrapper">
-                                <div>
+                            {signUpFlow && <div className="">
+                                <div className="w-100">
                                     <button type="submit" className={buttonClass()} onClick={handleSignUp}>Sign Up</button>
                                 </div>
-                                <div className="sign-up">
+                                <div className="sign-up mt-20 text-center">
                                     Have an account? <a href="#" onClick={handleSignUpToggle}>Sign In</a>
                                 </div>
                             </div>}
-                            {!showActivation && !signUpFlow && !showSignUp && <div className="login-button-wrapper">
+                            {!showActivation && !signUpFlow && !showSignUp && <div className="mt-20">
                                 <div className="sign-up">
                                     Have an activation code? <a href="#" onClick={() => setShowActivation(true)}>Click Here</a>
                                 </div>

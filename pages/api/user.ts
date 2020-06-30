@@ -214,7 +214,11 @@ export default authenticateNoRedirect(database(async function login(
             //
             // Standard GET user
             //
-            const user = await collection.findOne({ _id: new ObjectId(req.jwt.user_id) });
+            let user = null;
+
+            if(req.jwt && req.jwt.user_id) {
+                user = await collection.findOne({ _id: new ObjectId(req.jwt.user_id) });
+            }
 
             if (!user) {
                 res.status(500).json({ message: 'User not found' });
