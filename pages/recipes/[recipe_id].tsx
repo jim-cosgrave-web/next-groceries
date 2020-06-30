@@ -17,7 +17,6 @@ const RecipeByIdPage = () => {
 
         async function execute() {
             const data = await myGet(`${apiUrl}?method=getById&id=${recipe_id}`, null);
-            console.log(data);
 
             if (isCancelled == false) {
                 if (data.recipe) {
@@ -37,6 +36,9 @@ const RecipeByIdPage = () => {
         };
     }, [router.query.recipe_id]);
 
+    async function handleAddToList() {
+    }
+
     function getJSX() {
         if (!recipe) {
             return <div className="mt-20">Loading...</div>;
@@ -51,8 +53,57 @@ const RecipeByIdPage = () => {
         jsx = (
             <div>
                 <h2>{recipe.name}</h2>
+                <div className="mb-20">
+                    <div className="sub-section-title pt-10 pb-10">
+                        Ingredients
+                    </div>
+                    {getIngredientsJSX()}
+                    <div>
+                        <button className="my-button" onClick={handleAddToList}>Add to list</button>
+                    </div>
+                </div>
+                <div>
+                    <div className="sub-section-title">
+                        Categories
+                    </div>
+                    {getCategoryJSX()}
+                </div>
             </div>
         );
+
+        return jsx;
+    }
+
+    function getIngredientsJSX() {
+        if (!recipe || !recipe.ingredients) {
+            return <div>No Ingredients</div>;
+        }
+
+        let jsx = (
+            <div className="list">
+                {recipe.ingredients.map((i, index) => {
+                    return (
+                        <div className="item" key={i.name}>{i.name}</div>
+                    );
+                })}
+            </div>);
+
+        return jsx;
+    }
+
+    function getCategoryJSX() {
+        if (!recipe || !recipe.categories) {
+            return <div>No Ingredients</div>;
+        }
+
+        let jsx = (
+            <div className="list">
+                {recipe.categories.map((c, index) => {
+                    return (
+                        <div className="item" key={c}>{c}</div>
+                    );
+                })}
+            </div>);
 
         return jsx;
     }

@@ -40,7 +40,7 @@ const RecipesPage = () => {
         jsx = recipes.map((r, index) => {
             return (
                 <Link key={r._id} href={`/recipes/${r._id.toString()}`}>
-                    <div className="item" key={r.name}>
+                    <div className="item clickable" key={r.name}>
                         {r.name}
                     </div>
                 </Link>
