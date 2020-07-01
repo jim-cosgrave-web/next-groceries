@@ -2,6 +2,8 @@
 - Language filter
 - Add UNAVAILABLE AT STORE default category
 - Turn header icon into a link to grocery-list
+- Feedback form
+- Sen emails
 
 - User lists - keep in local storage?  If data exists, render it quickly.  Still query back end then compare length of grocery list to know if state should be refreshed?
 

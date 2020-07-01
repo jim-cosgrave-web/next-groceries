@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { env } from "../../util/environment";
 import { myGet } from "../../util/myGet";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const apiUrl = env.apiUrl + 'recipes';
 
 const RecipeByIdPage = () => {
     const [recipe, setRecipe] = useState(null);
     const [recipeNotFound, setRecipeNotFound] = useState(false);
+    const [mode, setMode] = useState('view');
 
     const router = useRouter();
 
@@ -36,6 +39,14 @@ const RecipeByIdPage = () => {
         };
     }, [router.query.recipe_id]);
 
+    function handleEdit() {
+        setMode('edit');
+    }
+
+    function handleView() {
+        setMode('view');
+    }
+
     async function handleAddToList() {
     }
 
@@ -52,7 +63,15 @@ const RecipeByIdPage = () => {
 
         jsx = (
             <div>
-                <h2>{recipe.name}</h2>
+                <div className="flex space-between">
+                    <div>
+                        <h2>{recipe.name}</h2>
+                    </div>
+                    <div className="clickable">
+                        {mode == 'view' && <FontAwesomeIcon icon={faEdit} onClick={handleEdit} />}
+                        {mode == 'edit' && <a onClick={handleView}>Cancel</a>}
+                    </div>
+                </div>
                 <div className="mb-20">
                     <div className="sub-section-title pt-10 pb-10">
                         Ingredients
