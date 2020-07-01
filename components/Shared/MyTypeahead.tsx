@@ -8,6 +8,7 @@ const offline = false;
 
 const MyTypeahead = (props) => {
     const [options, setOptions] = useState([]);
+    const [noOptions, setNoOptions] = useState(false);
     const ref = React.createRef<any>();
 
     useEffect(() => {
@@ -66,12 +67,28 @@ const MyTypeahead = (props) => {
                     }
                 ];
             }
+        } else if (props.type === 'categories') {
+            let data = await myGet(env.apiUrl + 'recipes?method=getCategories', null);
+            let ar = [];
+
+            if(data && data.categories) {
+                for(let i = 0; i < data.categories.length; i++) {
+                    ar.push(data.categories[i].name);
+                }
+            }
+
+            return ar;
         } else {
+            setNoOptions(true);
             return ['NO OPTIONS FOUND'];
         }
     }
 
     const handleAddClick = (selected) => {
+        if(noOptions) {
+            return;
+        }
+
         let value = null;
 
         if (selected && selected.length > 0) {
@@ -81,7 +98,7 @@ const MyTypeahead = (props) => {
         }
 
         if (!value) {
-            console.error('Selected item not found!');
+            return;
         }
 
         if (typeof (props.onAdd) == 'function') {
@@ -94,6 +111,7 @@ const MyTypeahead = (props) => {
 
     const handleKeyDown = (event) => {
         if (event.key.toLowerCase() === 'enter') {
+            handleAddClick(null);
         }
     }
 

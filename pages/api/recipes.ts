@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
+import { compare } from '../../util/compare';
 
 export default authenticate(database(async function recipesAPI(
     req: MyNextApiRequest,
@@ -24,6 +25,14 @@ export default authenticate(database(async function recipesAPI(
                 const recipe = await collection.findOne(filter);
 
                 res.status(200).json({ recipe });
+                return;
+            } else if (req.query.method === 'getCategories') {
+                const categoryCollection = db.collection('recipeCategories');
+                let categories = await categoryCollection.find().toArray();
+
+                categories.sort(compare);
+
+                res.status(200).json({ categories });
                 return;
             }
         } else if (req.method === 'POST') {

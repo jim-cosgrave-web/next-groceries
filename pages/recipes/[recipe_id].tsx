@@ -3,7 +3,8 @@ import { env } from "../../util/environment";
 import { myGet } from "../../util/myGet";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import MyTypeahead from '../../components/Shared/MyTypeahead';
 
 const apiUrl = env.apiUrl + 'recipes';
 
@@ -51,6 +52,10 @@ const RecipeByIdPage = () => {
     }
 
     function getJSX() {
+        if (mode != 'view') {
+            return null;
+        }
+
         if (!recipe) {
             return <div className="mt-20">Loading...</div>;
         }
@@ -68,9 +73,11 @@ const RecipeByIdPage = () => {
                         <h2>{recipe.name}</h2>
                     </div>
                     <div className="clickable">
-                        {mode == 'view' && <FontAwesomeIcon icon={faEdit} onClick={handleEdit} />}
-                        {mode == 'edit' && <a onClick={handleView}>Cancel</a>}
+                        <FontAwesomeIcon icon={faEdit} onClick={handleEdit} />
                     </div>
+                </div>
+                <div>
+                    <a href={recipe.link} target="__blank">Recipe Link</a>
                 </div>
                 <div className="mb-20">
                     <div className="sub-section-title pt-10 pb-10">
@@ -93,6 +100,75 @@ const RecipeByIdPage = () => {
         return jsx;
     }
 
+    async function handleAddGrocery(grocery) {
+        console.log('Adding grocery...', grocery);
+    }
+
+    async function handleAddCategory(category) {
+        console.log('Adding category...', category);
+    }
+
+    function getEditJSX() {
+        if (mode != 'edit') {
+            return null;
+        }
+
+        let jsx = null;
+
+        jsx = (
+            <div>
+                <div className="flex space-between">
+                    <div>
+                        <h2>{recipe.name}</h2>
+                    </div>
+                    <div className="clickable">
+                        <a onClick={handleView}>Cancel</a>
+                    </div>
+                </div>
+                <div className="my-form">
+                    <div className="form-fieldset">
+                        <div className="form-label">
+                            Name
+                        </div>
+                        <div className="form-input">
+                            <input type="text" defaultValue={recipe.name} />
+                        </div>
+                    </div>
+                </div>
+                <div className="my-form">
+                    <div className="form-fieldset">
+                        <div className="form-label">
+                            Link
+                        </div>
+                        <div className="form-input">
+                            <input type="text" defaultValue={recipe.link} />
+                        </div>
+                    </div>
+                </div>
+                <div className="mb-20">
+                    <div className="sub-section-title pt-10 pb-10">
+                        Ingredients
+                    </div>
+                    {getIngredientsJSX()}
+                    <div>
+                        <MyTypeahead placeholder="Add an ingredient" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
+                    </div>
+                </div>
+                <div>
+                    <div className="sub-section-title">
+                        Categories
+                    </div>
+                    {getCategoryJSX()}
+                    <div>
+                        <MyTypeahead placeholder="Add a category" type="categories" onAdd={handleAddCategory}></MyTypeahead>
+                    </div>
+                </div>
+            </div>
+        );
+
+        return jsx;
+    }
+
     function getIngredientsJSX() {
         if (!recipe || !recipe.ingredients) {
             return <div>No Ingredients</div>;
@@ -102,7 +178,16 @@ const RecipeByIdPage = () => {
             <div className="list">
                 {recipe.ingredients.map((i, index) => {
                     return (
-                        <div className="item" key={i.name}>{i.name}</div>
+                        <div className="item" key={i.name}>
+                            <div className="flex space-between">
+                                <div>
+                                    {i.name}
+                                </div>
+                                <div>
+                                    {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={handleEdit} />}
+                                </div>
+                            </div>
+                        </div>
                     );
                 })}
             </div>);
@@ -119,7 +204,16 @@ const RecipeByIdPage = () => {
             <div className="list">
                 {recipe.categories.map((c, index) => {
                     return (
-                        <div className="item" key={c}>{c}</div>
+                        <div className="item" key={c}>
+                            <div className="flex space-between">
+                                <div>
+                                    {c}
+                                </div>
+                                <div>
+                                    {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={handleEdit} />}
+                                </div>
+                            </div>
+                        </div>
                     );
                 })}
             </div>);
@@ -130,6 +224,7 @@ const RecipeByIdPage = () => {
     return (
         <div>
             {getJSX()}
+            {getEditJSX()}
         </div>
     );
 }
