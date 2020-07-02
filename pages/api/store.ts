@@ -67,6 +67,8 @@ export default authenticate(
                     }
                 } else if (req.method === 'PUT') {
                     if (req.body.method === UPDATE_STORE_GROCERY_API_METHOD) {
+                        console.log('debugging...');
+
                         const storeId = new ObjectId(req.body.storeId);
                         const categoryName = req.body.categoryName;
                         const originalName = req.body.grocery.originalName;

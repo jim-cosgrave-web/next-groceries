@@ -4,7 +4,7 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
-import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD } from '../../util/constants';
 import SubscribeToStore from '../Shared/SubscribeToStore';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
@@ -129,11 +129,13 @@ const StoreGroceryList = (props) => {
         setStoreList(clone);
 
         const body = {
-            method: UPDATE_STORE_GROCERY_API_METHOD,
+            method: UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
             store: selectedStore.value,
             category: newCategoryName,
             groceryName: groceryToMove.name
         };
+
+        //console.log(body);
 
         const resp = await fetch(postStoreApiUrl, {
             method: 'PUT',
