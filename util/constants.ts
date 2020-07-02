@@ -15,6 +15,7 @@ const UNCATEGORIZED = '__ Uncategorized __';
 const NOT_AVAILABLE_AT_STORE = 'Not Available At Store';
 
 const LOCAL_STORAGE_USER = 'GROCERY_USER';
+const LOCAL_STORAGE_STORE_LIST = 'STORE_LIST'
 
 export { 
     DATABASE_NAME,
@@ -35,5 +36,6 @@ export {
     UNCATEGORIZED,
     NOT_AVAILABLE_AT_STORE,
 
-    LOCAL_STORAGE_USER
+    LOCAL_STORAGE_USER,
+    LOCAL_STORAGE_STORE_LIST
 };

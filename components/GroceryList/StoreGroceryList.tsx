@@ -4,7 +4,7 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
-import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, LOCAL_STORAGE_STORE_LIST } from '../../util/constants';
 import SubscribeToStore from '../Shared/SubscribeToStore';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
@@ -24,10 +24,17 @@ const StoreGroceryList = (props) => {
 
     useEffect(() => {
         async function execute() {
+            const state = await getState();
+
+            if(state) {
+                setStoreList(state);
+            }
+
             const result = await getStores();
 
             if (result.success && result.selectedStore) {
-                const list = await getListData(props.listId, result.selectedStore.value)
+
+                await getListData(props.listId, result.selectedStore.value)
             } else {
                 setStoreList({ emptyList: true });
             }
@@ -55,6 +62,16 @@ const StoreGroceryList = (props) => {
         }
     }, [props.updateTime]);
 
+    function saveStoreListState(state) {
+        setStoreList(state);
+        localStorage.setItem(LOCAL_STORAGE_STORE_LIST, JSON.stringify(state));
+    }
+
+    async function getState() {
+        const state = JSON.parse(localStorage.getItem(LOCAL_STORAGE_STORE_LIST));
+        return state;
+    }
+
     async function getStores() {
         let getStoresResponse = await myGet(getStoresApiUrl, null);
 
@@ -75,7 +92,7 @@ const StoreGroceryList = (props) => {
             const lsStore = localStorage.getItem('selected-store');
             let tSelectedStore = null;
 
-            if(lsStore) {
+            if (lsStore) {
                 tSelectedStore = JSON.parse(lsStore);
             } else {
                 tSelectedStore = ddl[0];
@@ -91,7 +108,8 @@ const StoreGroceryList = (props) => {
     async function getListData(listId, storeId) {
         let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
         //console.log(getStoreListResponse);
-        setStoreList(getStoreListResponse);
+        //setStoreList(getStoreListResponse);
+        saveStoreListState(getStoreListResponse);
         setCategories(getStoreListResponse.categories);
     }
 
@@ -126,7 +144,8 @@ const StoreGroceryList = (props) => {
         newCategory.hidden = false;
         newCategory.groceries.push(groceryToMove);
 
-        setStoreList(clone);
+        //setStoreList(clone);
+        saveStoreListState(clone);
 
         const body = {
             method: UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,

@@ -1,9 +1,12 @@
 - Confirm password
+- 2 step log in (only show user name first, then a next button, then a password)
+- Limit login attempts 5 per minute
 - Language filter
 - Add UNAVAILABLE AT STORE default category
 - Feedback form
 - Send emails
 
+- 
 - User lists - keep in local storage?  If data exists, render it quickly.  Still query back end then compare length of grocery list to know if state should be refreshed?
 
 - https://next-auth.js.org/
