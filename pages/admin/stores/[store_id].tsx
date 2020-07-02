@@ -34,7 +34,9 @@ const AdminStoreByIdPage = () => {
             const storeResp = await myGet(storeDetailApiUrl + '&store_id=' + store_id, null);
 
             if (isCancelled == false) {
-                storeResp.store.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
+                console.log(storeResp.store.categories);
+                storeResp.store.categories.sort((a, b) => (parseInt(a.order) > parseInt(b.order)) ? 1 : -1);
+                console.log(storeResp.store.categories);
                 setStore(storeResp.store);
             }
         }

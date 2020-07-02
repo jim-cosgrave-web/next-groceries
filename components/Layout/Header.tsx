@@ -157,7 +157,9 @@ const Header = () => {
             </div>
             <div id="fixed-nav-bar">
                 <div id="header-icon">
-                    <img src="/images/cart-icon-white.png" width="50" />
+                    <Link href="/grocery-list">
+                        <img className="clickable" src="/images/cart-icon-white.png" width="50" />
+                    </Link>
                 </div>
             </div>
         </div>

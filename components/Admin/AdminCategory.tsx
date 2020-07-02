@@ -184,7 +184,7 @@ const AdminCategory = (props) => {
                     <div ref={provided.innerRef} {...provided.droppableProps} className="grocery-container">
                         {groceries && groceries.map((g, index) => {
                             return <AdminGrocery
-                                key={g.groceryName}
+                                key={g.groceryName + "-" + index}
                                 grocery={g}
                                 index={index}
                                 categories={props.categories}

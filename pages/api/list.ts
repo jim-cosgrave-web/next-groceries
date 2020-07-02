@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { UNCATEGORIZED } from '../../util/constants';
+import { UNCATEGORIZED, NOT_AVAILABLE_AT_STORE } from '../../util/constants';
 import { writeLog } from '../../util/logger';
 
 export default authenticate(database(async function getPrimaryListid(
@@ -87,6 +87,10 @@ export default authenticate(database(async function getPrimaryListid(
                     const storeCategory = store.categories[i];
                     let category = { name: storeCategory.name, order: storeCategory.order, groceries: [], hidden: false };
                     categories.push({ name: storeCategory.name, value: storeCategory.name, order: storeCategory.order, uncategorized: false });
+
+                    if(category.name === NOT_AVAILABLE_AT_STORE) {
+                        category.order = 99;
+                    }
 
                     //
                     // Loop over each grocery in the category

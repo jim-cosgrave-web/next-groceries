@@ -101,11 +101,47 @@ const RecipeByIdPage = () => {
     }
 
     async function handleAddGrocery(grocery) {
-        console.log('Adding grocery...', grocery);
+        let clone = { ...recipe };
+
+        let exists = clone.ingredients.find(i => i.name === grocery);
+
+        if(!exists) {
+            clone.ingredients.push({ name: grocery });
+            clone.ingredients.sort((a, b) => (a.name > b.name) ? 1 : -1);
+            setRecipe(clone);
+        }
     }
 
     async function handleAddCategory(category) {
-        console.log('Adding category...', category);
+        let clone = { ...recipe };
+
+        if(clone.categories.indexOf(category) == -1) {
+            clone.categories.push(category);
+            clone.categories.sort((a, b) => (a > b) ? 1 : -1);
+            setRecipe(clone);
+        }
+    }
+
+    async function handleRemoveIngredient(ingredient) {
+        let clone = { ...recipe };
+
+        const index = clone.ingredients.map(c => { return c.name }).indexOf(ingredient.name);
+
+        if(index != -1) {
+            clone.ingredients.splice(index, 1);
+            setRecipe(clone);
+        }
+    }
+
+    async function handleRemoveCategory(category) {
+        let clone = { ...recipe };
+
+        const index = clone.categories.indexOf(category);
+
+        if(index != -1) {
+            clone.categories.splice(index, 1);
+            setRecipe(clone);
+        }
     }
 
     function getEditJSX() {
@@ -184,7 +220,7 @@ const RecipeByIdPage = () => {
                                     {i.name}
                                 </div>
                                 <div>
-                                    {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={handleEdit} />}
+                                    {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={() => handleRemoveIngredient(i)} />}
                                 </div>
                             </div>
                         </div>
@@ -210,7 +246,7 @@ const RecipeByIdPage = () => {
                                     {c}
                                 </div>
                                 <div>
-                                    {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={handleEdit} />}
+                                    {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={() => handleRemoveCategory(c)} />}
                                 </div>
                             </div>
                         </div>
