@@ -43,6 +43,9 @@ const Grocery = (props) => {
             <div className="flex space-between">
                 <div className="flex-grow clickable grocery-left" onClick={handleEditNote}>
                     <div className="bold clickable">{grocery.name}</div>
+                    {grocery.recipe && <div>
+                        Recipe: {grocery.recipe}
+                    </div>}
                     {grocery.note && grocery.note.length > 0 &&
                         !editNote && <div onClick={() => setEditNote(true)} className="grocery-note clickable mt-10">Note: {grocery.note}</div>
                     }

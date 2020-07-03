@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { UNCATEGORIZED, NOT_AVAILABLE_AT_STORE } from '../../util/constants';
+import { UNCATEGORIZED, NOT_AVAILABLE_AT_STORE, LIST_API_POST_RECIPE } from '../../util/constants';
 import { writeLog } from '../../util/logger';
 
 export default authenticate(database(async function getPrimaryListid(
@@ -159,7 +159,36 @@ export default authenticate(database(async function getPrimaryListid(
 
                 const response = await collection.updateMany(filter, { $pull: { "groceries": { checked: true } } });
 
-                res.status(200).json({ message: 'Ok' });
+                res.status(200).json({ message: 'OK' });
+                return;
+            } else if(req.body.method === LIST_API_POST_RECIPE) {
+                const db = req.db;
+                const collection = db.collection('groceryLists');
+                const filter = { user_id: req.jwt.user_id };
+
+                const list = await collection.findOne(filter);
+
+                if(!list) {
+                    res.status(500).json({ message: 'Not Found' });
+                    return;
+                }
+
+                let newGroceries = [];
+                let groceries = req.body.groceries;
+
+                for(let i = 0; i < groceries.length; i++) {
+                    let grocery = groceries[i];
+                    let found = list.groceries.find(g => g.name.toLowerCase().trim() === grocery.name.toLowerCase().trim());
+
+                    if(!found) {
+                        newGroceries.push(grocery);
+                    }
+                }
+
+                const push = { $push: { groceries: { $each: newGroceries } } };
+                await collection.updateOne(filter, push);
+
+                res.status(200).json({ message: 'OK' });
                 return;
             } else {
                 /********************************************
