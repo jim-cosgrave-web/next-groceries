@@ -254,6 +254,19 @@ const StoreGroceryList = (props) => {
             return <div>Add some groceries!</div>
         }
 
+        const visibleCategories = storeList.categorizedList.find(c => c.hidden == false);
+        
+        if(!visibleCategories || visibleCategories.length === 0) {
+            return (
+                <div className="alert warning mb-10 mt-10">
+                    <b>Nothing on your list</b>
+                    <div className="mt-20">
+                        Add some groceries to get shopping
+                    </div>
+                </div>
+            );
+        }
+
         let html = '';
 
         html = storeList.categorizedList.map((c, cIndex) => {
