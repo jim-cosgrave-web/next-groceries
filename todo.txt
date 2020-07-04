@@ -1,5 +1,8 @@
 - Admin - Add new store
+- Admin - use type ahead of grocery add on store page
 
+- Allow password change
+- Profile page
 - Confirm password
 - 2 step log in (only show user name first, then a next button, then a password)
 - Improve front end authentication speed

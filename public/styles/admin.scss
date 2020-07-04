@@ -76,13 +76,14 @@
     }
 
     .new-category {
-        width: 90vw;
+        width: 100%
     }
 }
 
 @media only screen and (max-width: 650px) {
     .category-container {
         width: 100%;
+        margin-right: 0;
     }
 
     .admin-card {

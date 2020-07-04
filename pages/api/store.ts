@@ -14,7 +14,8 @@ import {
     UPDATE_STORE_GROCERY_API_METHOD,
     ADD_STORE_CATEGORY_API_METHOD,
     MOVE_STORE_CATEGORY_API_METHOD,
-    UPDATE_STORE_GROCERY_CATEGORY_API_METHOD
+    UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
+    ADMIN_API_POST_STORE
 } from '../../util/constants';
 
 export default authenticate(
@@ -58,6 +59,22 @@ export default authenticate(
                         const push = { '$push': { 'categories': req.body.category } };
 
                         await collection.updateOne(filter, push);
+
+                        res.status(200).json({ message: 'OK' });
+                        return;
+                    } else if (req.body.method === ADMIN_API_POST_STORE) {
+                        const store = req.body.store;
+                        delete store.isNew;
+
+                        const filter = { name: store.name, city: store.city, state: store.state };
+                        const existing = await collection.findOne(filter);
+
+                        if(existing) {
+                            res.status(500).json({ message: 'Store Already Exists' });
+                            return;
+                        }
+
+                        collection.insertOne(store);
 
                         res.status(200).json({ message: 'OK' });
                         return;

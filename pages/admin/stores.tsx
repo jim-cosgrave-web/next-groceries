@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Link from 'next/link';
+import Router from "next/router";
 
 const storeApiUrl = env.apiUrl + 'store';
 
@@ -32,6 +33,10 @@ const AdminStoresPage = () => {
         return json;
     }
 
+    function handleNewStoreClick() {
+        Router.replace('/admin/stores/create');
+    }
+
     function getStoresJSX() {
         if (!stores || stores.length == 0) {
             return <div>Loading...</div>;
@@ -55,6 +60,9 @@ const AdminStoresPage = () => {
             <h1>Admin Stores Page</h1>
             <div className="list">
                 {getStoresJSX()}
+            </div>
+            <div className="mt-20">
+                <button onClick={handleNewStoreClick} className="my-button">Add a new store</button>
             </div>
         </div>
     );
