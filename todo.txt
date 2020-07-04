@@ -1,5 +1,8 @@
+- User lists - keep in local storage?  If data exists, render it quickly.  Still query back end then compare length of grocery list to know if state should be refreshed?
+
 - Confirm password
 - 2 step log in (only show user name first, then a next button, then a password)
+- Improve front end authentication speed
 - Limit login attempts 5 per minute
 - Language filter
 - Add UNAVAILABLE AT STORE default category
@@ -7,7 +10,8 @@
 - Send emails
 - Average item price
 - Add user name to groceryLists entity for easier debugging in Atlas
+- Add modals/toasts when adding to list from a recipe
 
-- User lists - keep in local storage?  If data exists, render it quickly.  Still query back end then compare length of grocery list to know if state should be refreshed?
+
 
 - https://next-auth.js.org/

@@ -6,6 +6,7 @@ import Grocery from './Grocery';
 import { GroceryList } from '../../models/grocery-list';
 import MyTypeahead from '../Shared/MyTypeahead';
 import { compare } from '../../util/compare';
+import { LOCAL_STORAGE_A_Z_LIST } from '../../util/constants';
 
 const apiUrl = env.apiUrl + 'list?method=getList';
 const postGroceryApiUrl = env.apiUrl + 'list';
@@ -18,10 +19,16 @@ const GroceryListComponent = (props) => {
         let isCancelled = false;
 
         async function execute() {
+            const state = await getState();
+
+            if(state) {
+                setList(state);
+            }
+
             const data = await getListData();
 
             if (isCancelled == false) {
-                setList(data);
+                saveState(data);
             }
         }
 
@@ -39,7 +46,8 @@ const GroceryListComponent = (props) => {
             const data = await getListData();
 
             if (isCancelled == false) {
-                setList(data);
+                //setList(data);
+                saveState(data);
             }
         }
 
@@ -57,6 +65,16 @@ const GroceryListComponent = (props) => {
         json.groceries.sort(compare);
 
         return json;
+    }
+
+    function saveState(state) {
+        setList(state);
+        localStorage.setItem(LOCAL_STORAGE_A_Z_LIST, JSON.stringify(state));
+    }
+
+    async function getState() {
+        const state = JSON.parse(localStorage.getItem(LOCAL_STORAGE_A_Z_LIST));
+        return state;
     }
 
     function getListItemsHTML() {
@@ -108,7 +126,8 @@ const GroceryListComponent = (props) => {
 
             const response = await resp.json();
 
-            setList(response);
+            //setList(response);
+            saveState(response);
 
         } else {
             console.log('Grocery already on list...');
