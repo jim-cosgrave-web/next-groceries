@@ -62,7 +62,7 @@ const StoreGroceryList = (props) => {
         }
     }, [props.updateTime]);
 
-    function saveStoreListState(state) {
+    function saveState(state) {
         setStoreList(state);
         localStorage.setItem(LOCAL_STORAGE_STORE_LIST, JSON.stringify(state));
     }
@@ -70,6 +70,10 @@ const StoreGroceryList = (props) => {
     async function getState() {
         const state = JSON.parse(localStorage.getItem(LOCAL_STORAGE_STORE_LIST));
         return state;
+    }
+
+    async function clearState() {
+        localStorage.setItem(LOCAL_STORAGE_STORE_LIST, JSON.stringify(null));
     }
 
     async function getStores() {
@@ -109,7 +113,7 @@ const StoreGroceryList = (props) => {
         let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
         //console.log(getStoreListResponse);
         //setStoreList(getStoreListResponse);
-        saveStoreListState(getStoreListResponse);
+        saveState(getStoreListResponse);
         setCategories(getStoreListResponse.categories);
     }
 
@@ -145,7 +149,7 @@ const StoreGroceryList = (props) => {
         newCategory.groceries.push(groceryToMove);
 
         //setStoreList(clone);
-        saveStoreListState(clone);
+        saveState(clone);
 
         const body = {
             method: UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,

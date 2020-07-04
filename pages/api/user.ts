@@ -122,6 +122,7 @@ export default authenticateNoRedirect(database(async function login(
 
                     const groceryList = {
                         user_id: newUserId.toString(),
+                        user_email: email,
                         name: "Groceries",
                         groceries: []
                     };

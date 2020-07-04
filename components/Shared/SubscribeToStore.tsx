@@ -128,7 +128,7 @@ const SubscribeToStore = (props) => {
             <div>
                 {subbedStores && subbedStores.length == 0 && <div className="alert warning mb-10">
                     <b>You are not currently subscribed to any stores.</b>
-                    <div className="mt-5">
+                    <div className="mt-20">
                         Please use the search bar below to subscribe to a store and get shopping!
                     </div>
                 </div>}

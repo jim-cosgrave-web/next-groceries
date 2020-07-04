@@ -23,7 +23,7 @@ const GroceryListComponent = (props) => {
 
             if(state) {
                 setList(state);
-            }
+            } 
 
             const data = await getListData();
 
@@ -77,6 +77,10 @@ const GroceryListComponent = (props) => {
         return state;
     }
 
+    async function clearState() {
+        localStorage.setItem(LOCAL_STORAGE_A_Z_LIST, JSON.stringify(null));
+    }
+
     function getListItemsHTML() {
         if (!list || !list.groceries) {
             return <div>Loading...</div>;
@@ -95,7 +99,14 @@ const GroceryListComponent = (props) => {
                 );
             });
         } else {
-            return <div>Add some groceries!</div>
+            return (
+                <div className="alert warning mb-10">
+                    <b>Nothing on your list</b>
+                    <div className="mt-20">
+                        Add some groceries to get shopping
+                    </div>
+                </div>
+            );
         }
 
         return html;
