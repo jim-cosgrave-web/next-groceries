@@ -15,7 +15,8 @@ import {
     ADD_STORE_CATEGORY_API_METHOD,
     MOVE_STORE_CATEGORY_API_METHOD,
     UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
-    ADMIN_API_POST_STORE
+    ADMIN_API_POST_STORE,
+    NOT_AVAILABLE_AT_STORE
 } from '../../util/constants';
 
 export default authenticate(
@@ -73,6 +74,13 @@ export default authenticate(
                             res.status(500).json({ message: 'Store Already Exists' });
                             return;
                         }
+
+                        store.categories.push({
+                            name: NOT_AVAILABLE_AT_STORE,
+                            groceries: [],
+                            order: 1,
+                            notAvailable: true
+                        });
 
                         collection.insertOne(store);
 
