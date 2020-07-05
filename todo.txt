@@ -1,13 +1,13 @@
-- Checkbox - make clickable area take up more space
+- 2 step log in (only show user name first, then a next button, then a password)
 
 - Allow password change
 - Profile page
 - Confirm password
-- 2 step log in (only show user name first, then a next button, then a password)
+
 - Improve front end authentication speed
 - Limit login attempts 5 per minute
 - Language filter
-- Add UNAVAILABLE AT STORE default category
+
 - Feedback form
 - Send emails
 - Add user name to groceryLists entity for easier debugging in Atlas

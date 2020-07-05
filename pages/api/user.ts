@@ -216,15 +216,18 @@ export default authenticateNoRedirect(database(async function login(
             // Standard GET user
             //
             let user = null;
+            const filter = { _id: new ObjectId(req.jwt.user_id) };
 
             if(req.jwt && req.jwt.user_id) {
-                user = await collection.findOne({ _id: new ObjectId(req.jwt.user_id) });
+                user = await collection.findOne(filter);
             }
 
             if (!user) {
                 res.status(500).json({ message: 'User not found' });
                 return;
             }
+
+            await collection.updateOne(filter, { "$set": { "lastUse": new Date() } });
 
             res.status(200).json({ user: { 
                 _id: user._id.toString(), 

@@ -14,6 +14,7 @@ const Login = () => {
     const [validActivation, setValidActivation] = useState(false);
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [step, setStep] = useState(1);
     const [signUpFlow, setSignUpFlow] = useState(false);
     const [signingIn, setSigningIn] = useState(false);
     const [showActivation, setShowActivation] = useState(false);
@@ -45,7 +46,7 @@ const Login = () => {
 
         return () => {
             isCancelled = true;
-        };        
+        };
     }, []);
 
     async function handleLogin() {
@@ -125,13 +126,21 @@ const Login = () => {
     function handleInputChange() {
         const name = nameRef?.current?.value;
         const email = emailRef.current.value;
-        const password = passwordRef.current.value;
+        const password = passwordRef?.current?.value;
 
         if (!signUpFlow) {
-            if (email && email.trim().length > 0 && password && password.trim().length > 0) {
-                setValid(true);
-            } else {
-                setValid(false);
+            if (step == 1) {
+                if (email && email.trim().length > 0) {
+                    setValid(true);
+                } else {
+                    setValid(false);
+                }
+            } else if (step == 2) {
+                if (email && email.trim().length > 0 && password && password.trim().length > 0) {
+                    setValid(true);
+                } else {
+                    setValid(false);
+                }
             }
         } else {
             if (name && name.trim().length > 0 && email && email.trim().length > 0 && password && password.trim().length > 0) {
@@ -159,6 +168,13 @@ const Login = () => {
             } else {
                 handleSignUp();
             }
+        }
+    }
+
+    function handleEmailKeyUp(e) {
+        if (e.key.toLowerCase() === 'enter' && valid) {
+            setStep(2);
+            setValid(false);
         }
     }
 
@@ -205,6 +221,8 @@ const Login = () => {
 
         if (result && result.valid) {
             setError(false);
+            setValid(false);
+            setStep(2);
             setErrorMessage('');
             setValidActivation(false);
             setShowActivation(false);
@@ -259,10 +277,10 @@ const Login = () => {
                                     Email Address
                                 </div>
                                 <div className="login-form-input">
-                                    <input type="email" ref={emailRef} onChange={handleInputChange} />
+                                    <input type="email" ref={emailRef} onChange={handleInputChange} onKeyUp={handleEmailKeyUp} />
                                 </div>
                             </div>}
-                            {!showActivation && <div className="login-form-fieldset">
+                            {!showActivation && step == 2 && <div className="login-form-fieldset">
                                 <div className="login-form-label">
                                     Password
                                 </div>
@@ -270,9 +288,17 @@ const Login = () => {
                                     <input type="password" ref={passwordRef} onChange={handleInputChange} onKeyUp={handleKeyUp} />
                                 </div>
                             </div>}
-                            {!signUpFlow && !showActivation && <div className="login-button-wrapper">
+                            {!signUpFlow && !showActivation && step == 2 && <div className="login-button-wrapper">
                                 <div className="w-100">
                                     <button type="submit" className={buttonClass()} onClick={handleLogin}>Login</button>
+                                </div>
+                                {showSignUp && <div className="sign-up">
+                                    Don't have an account? <a href="#" onClick={handleSignUpToggle}>Sign Up</a>
+                                </div>}
+                            </div>}
+                            {!signUpFlow && !showActivation && step == 1 && <div className="login-button-wrapper">
+                                <div className="w-100">
+                                    <button type="submit" className={buttonClass()} onClick={() => setStep(2)}>Next</button>
                                 </div>
                                 {showSignUp && <div className="sign-up">
                                     Don't have an account? <a href="#" onClick={handleSignUpToggle}>Sign Up</a>
