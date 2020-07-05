@@ -82,9 +82,12 @@ export default authenticate(
                             notAvailable: true
                         });
 
-                        collection.insertOne(store);
+                        const resp = await collection.insertOne(store);
+                        const storeId = resp.insertedId;
 
-                        res.status(200).json({ message: 'OK' });
+                        const newStore = await collection.findOne({ _id: new ObjectId(storeId.toString()) });
+
+                        res.status(200).json({ message: 'OK', newStore });
                         return;
                     } else {
                         res.status(500).json({ message: 'Method not supported' });

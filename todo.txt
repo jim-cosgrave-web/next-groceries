@@ -1,5 +1,6 @@
 - Admin - Add new store
 - Admin - use type ahead of grocery add on store page
+- Checkbox - make clickable area take up more space
 
 - Allow password change
 - Profile page

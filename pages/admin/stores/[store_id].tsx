@@ -14,6 +14,7 @@ import {
     ADMIN_API_POST_STORE
 } from '../../../util/constants';
 import Confirm from '../../../components/Shared/Confirm';
+import Router from "next/router";
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
@@ -386,7 +387,8 @@ const AdminStoreByIdPage = () => {
 
             const json = await resp.json();
 
-            console.log(json);
+            //setStore(json.newStore);
+            Router.replace(`/admin/stores/${json.newStore._id.toString()}`);
         }
     }
 
