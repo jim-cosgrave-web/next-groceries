@@ -100,6 +100,14 @@ const AdminCategory = (props) => {
             return;
         }
 
+        const existing = props.category.groceries.find(g => g.groceryName.trim().toLowerCase() === groceryName.trim().toLowerCase());
+
+        if(existing) {
+            return;
+        }
+
+        groceryName = groceryName.trim();
+
         const clone = groceries.slice();
         clone.push({ groceryName });
 
