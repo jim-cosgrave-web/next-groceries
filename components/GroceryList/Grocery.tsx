@@ -41,7 +41,7 @@ const Grocery = (props) => {
 
         let html =
             <div className="flex space-between">
-                <div className="flex-grow clickable grocery-left" onClick={handleEditNote}>
+                <div className="flex-grow clickable grocery-left p-1" onClick={handleEditNote}>
                     <div className="bold clickable">{grocery.name}</div>
                     {grocery.recipe && <div>
                         Recipe: {grocery.recipe}
@@ -142,7 +142,7 @@ const Grocery = (props) => {
     }
 
     return (
-        <div className="item">
+        <div className="my-item">
             {getGroceryHTML()}
         </div>
     );

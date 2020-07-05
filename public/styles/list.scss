@@ -24,10 +24,26 @@
 
 .grocery-checkbox {
     font-size: 25px;
-    // padding: 1em;
+    padding: 0.5em;
     // background: red;
+    height: 60px;
+    width: 70px;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .grocery-left {
     max-width: 80%;
+}
+
+
+
+.list div.my-item:nth-child(odd) {
+    background: $secondary;
+}
+
+.list div.my-item:nth-child(even) {
+    border-bottom: 1px solid $secondary;
 }
