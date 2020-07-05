@@ -52,11 +52,15 @@
     max-width: 80%;
 }
 
+.new-grocery {
+    padding: 1em;
+}
 
 .grocery-container {
     .admin-grocery.new-grocery {
         background: lighten($primary, 0%);
         color: #fff;
+        padding: 1em;
     }
 }
 

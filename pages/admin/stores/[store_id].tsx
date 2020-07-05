@@ -44,8 +44,6 @@ const AdminStoreByIdPage = () => {
 
             if (isCancelled == false) {
                 storeResp.store.categories.sort((a, b) => (parseInt(a.order) > parseInt(b.order)) ? 1 : -1);
-                console.log(storeResp.store.categories);
-                //clone.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
                 setStore(storeResp.store);
             }
         }

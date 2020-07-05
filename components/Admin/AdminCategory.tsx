@@ -5,6 +5,7 @@ import { UPDATE_STORE_CATEGORY_API_METHOD, ADD_STORE_GROCERY_API_METHOD } from '
 import { env } from '../../util/environment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash, faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import MyTypeahead from '../Shared/MyTypeahead';
 
 const postStoreApiUrl = env.apiUrl + 'store';
 
@@ -90,16 +91,12 @@ const AdminCategory = (props) => {
         }
     }
 
-    async function newGroceryKeyUp(e) {
-        if (e.key.toLowerCase() === 'enter') {
-            await handleNewGroceryClick();
-        }
+    async function handleAddGrocery(grocery) {
+        await handleNewGroceryClick(grocery);
     }
 
-    async function handleNewGroceryClick() {
-        const groceryName = groceryRef.current.value.trim();
-
-        if (!groceryName || groceryName.length == 0) {
+    async function handleNewGroceryClick(groceryName) {
+        if (!groceryName || groceryName.trim().length == 0) {
             return;
         }
 
@@ -113,7 +110,7 @@ const AdminCategory = (props) => {
         const grocery = clone[clone.length - 1];
 
         setGroceries(clone);
-        groceryRef.current.value = '';
+        //groceryRef.current.value = '';
 
         const body = {
             method: ADD_STORE_GROCERY_API_METHOD,
@@ -204,13 +201,8 @@ const AdminCategory = (props) => {
                 )}
             </Droppable>
             <div className="grocery-container">
-                <div className="flex space-between admin-grocery new-grocery">
-                    <div className="p-1 flex-grow-1">
-                        <input ref={groceryRef} type="text" onKeyUp={newGroceryKeyUp} className="form-control w-100" placeholder="Add a new grocery"></input>
-                    </div>
-                    <div className="wide-icon tall-icon clickable flex flex-center" onClick={handleNewGroceryClick}>
-                        <FontAwesomeIcon icon={faPlus} />
-                    </div>
+                <div className="new-grocery">
+                    <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
                 </div>
             </div>
         </div>
