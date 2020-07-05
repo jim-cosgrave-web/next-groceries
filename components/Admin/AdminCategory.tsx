@@ -25,6 +25,10 @@ const AdminCategory = (props) => {
     }
 
     async function toggleMode(e) {
+        if(props.category.notAvailable) {
+            return;
+        }
+
         const domType = e.target.type;
 
         if (domType) {
@@ -158,10 +162,10 @@ const AdminCategory = (props) => {
                     <div onClick={toggleMode}>
                         {props.category.name}
                     </div>
-                    <div>
+                    {!props.category.notAvailable && <div>
                         <FontAwesomeIcon icon={faArrowLeft} className="mr-20" onClick={moveLeft} />
                         <FontAwesomeIcon icon={faArrowRight} onClick={moveRight} />
-                    </div>
+                    </div>}
                 </div>
             </div>}
             {mode == 'edit' && <div className="category-name clickable">

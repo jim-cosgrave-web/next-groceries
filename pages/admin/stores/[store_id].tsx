@@ -44,6 +44,8 @@ const AdminStoreByIdPage = () => {
 
             if (isCancelled == false) {
                 storeResp.store.categories.sort((a, b) => (parseInt(a.order) > parseInt(b.order)) ? 1 : -1);
+                console.log(storeResp.store.categories);
+                //clone.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
                 setStore(storeResp.store);
             }
         }
@@ -270,7 +272,19 @@ const AdminStoreByIdPage = () => {
 
     async function handleNewCategoryAdd() {
         const clone = { ...store };
-        let order = Math.max.apply(Math, clone.categories.map(function (c) { return c.order }));
+
+        if (!clone.categories) {
+            clone.categories = [];
+        }
+
+        const availableCategories = clone.categories.filter(c => { return !c.notAvailable });
+        //const availableCategories = clone.categories;
+
+        let order = 0;
+
+        if (availableCategories) {
+            order = Math.max.apply(Math, availableCategories.map(function (c) { return c.order }));
+        }
 
         if (order === Number.NEGATIVE_INFINITY) {
             order = 0;
@@ -284,8 +298,18 @@ const AdminStoreByIdPage = () => {
             groceries: []
         };
 
-        clone.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        //
+        // The not available category should be the last category
+        //
+        for (let i = 0; i < clone.categories.length; i++) {
+            if (clone.categories[i].notAvailable) {
+                clone.categories[i].order = 9999;
+            }
+        }
+
+
         clone.categories.push(newCategory);
+        clone.categories.sort((a, b) => (a.order > b.order) ? 1 : -1);
 
         setStore(clone);
 
@@ -329,6 +353,10 @@ const AdminStoreByIdPage = () => {
 
         const swap = clone.categories[otherIndex];
         const category = clone.categories[categoryIndex];
+
+        if(swap.notAvailable || category.notAvailable) {
+            return;
+        }
 
         const tempOrder = swap.order;
         swap.order = category.order;
