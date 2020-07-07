@@ -1,5 +1,5 @@
-- 2 step log in (only show user name first, then a next button, then a password)
-
+- Grocery in multiple locations: How do we handle this?  Check all instances if on store page?
+- Add ability to create new recipe
 - Allow password change
 - Profile page
 - Confirm password
@@ -7,6 +7,8 @@
 - Improve front end authentication speed
 - Limit login attempts 5 per minute
 - Language filter
+
+- API to remove duplicate store and standard groceries
 
 - Feedback form
 - Send emails

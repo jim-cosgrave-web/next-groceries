@@ -18,6 +18,7 @@ import {
     ADMIN_API_POST_STORE,
     NOT_AVAILABLE_AT_STORE
 } from '../../util/constants';
+import { titleCase } from '../../util/titleCase';
 
 export default authenticate(
     authenticateRoles(
@@ -45,14 +46,21 @@ export default authenticate(
                     }
                 } else if (req.method === 'POST') {
                     if (req.body.method === ADD_STORE_GROCERY_API_METHOD) {
-                        //push = { $push: { 'categories.$.groceries': newGrocery } };
+                        const groceryName = titleCase(req.body.grocery.groceryName);
+                        const newGrocery = { groceryName: groceryName, order: req.body.grocery.order };
                         const storeId = new ObjectId(req.body.store_id);
                         const filter = { _id: storeId, "categories.name": req.body.categoryName };
-                        const push = { '$push': { 'categories.$.groceries': req.body.grocery } };
+                        const push = { '$push': { 'categories.$.groceries': newGrocery } };
 
                         await collection.updateOne(filter, push);
 
-                        res.status(200).json({ message: 'OK' });
+                        const grocery = await groceryCollection.findOne({ name: groceryName });
+
+                        if(!grocery) {
+                            await groceryCollection.insertOne({ name: groceryName });
+                        }
+
+                        res.status(200).json({ message: 'OK', grocery });
                         return;
                     } else if (req.body.method === ADD_STORE_CATEGORY_API_METHOD) {
                         const storeId = new ObjectId(req.body.storeId);

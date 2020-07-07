@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListOl, faSignOutAlt, faBook, faLink, faLock } from '@fortawesome/free-solid-svg-icons';
+import { myGet } from '../../util/myGet';
+import { env } from '../../util/environment';
+
+const groceryApiUrl = env.apiUrl + 'groceries';
 
 const AdminPage = () => {
+    const [syncing, setSyncing] = useState(false);
+
+    async function handleSyncGroceriesClick() {
+        setSyncing(true);
+        const resp = await myGet(groceryApiUrl + '?method=sync', null);
+        setSyncing(false);
+        console.log(resp);
+    }
 
     return (
         <div>
@@ -16,7 +26,15 @@ const AdminPage = () => {
                         </div>
                     </div>
                 </Link>
+                <div className="admin-card clickable mt-20" onClick={handleSyncGroceriesClick}>
+                    <div className="nav-item">
+                        Sync Groceries
+                    </div>
+                </div>
             </div>
+            {syncing && <div className="mt-20">
+                Syncing groceries...
+            </div>}
         </div>
     );
 }
