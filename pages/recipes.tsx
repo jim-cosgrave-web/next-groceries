@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { env } from '../util/environment';
 import { myGet } from '../util/myGet';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import Router from "next/router";
 
 const apiUrl = env.apiUrl + 'recipes';
 
@@ -27,11 +30,11 @@ const RecipesPage = () => {
     }, []);
 
     function getJSX() {
-        if(!recipes) {
+        if (!recipes) {
             return <div>Loading...</div>;
         }
 
-        if(recipes && recipes.length == 0) {
+        if (recipes && recipes.length == 0) {
             return <div>No recipes</div>;
         }
 
@@ -50,12 +53,23 @@ const RecipesPage = () => {
         return jsx
     }
 
+    function handleNewClick() {
+        Router.replace('/recipes/create');
+    }
+
     return (
         <div>
-            <h1>Recipes Page</h1>
+            <div className="flex space-between">
+                <div>
+                    <h1>Recipes</h1>
+                </div>
+                <div className="clickable" onClick={handleNewClick}>
+                    <FontAwesomeIcon icon={faPlus} />
+                </div>
+            </div>
             <div className="list">
                 {getJSX()}
-            </div>           
+            </div>
         </div>
     );
 }

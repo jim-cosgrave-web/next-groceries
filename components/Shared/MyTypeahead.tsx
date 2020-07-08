@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { env } from '../../util/environment';
 import { myGet } from '../../util/myGet';
@@ -10,6 +10,7 @@ const MyTypeahead = (props) => {
     const [options, setOptions] = useState([]);
     const [noOptions, setNoOptions] = useState(false);
     const ref = React.createRef<any>();
+    const clickTimeout = useRef<any>(null);
 
     useEffect(() => {
         let isCancelled = false;
@@ -71,8 +72,8 @@ const MyTypeahead = (props) => {
             let data = await myGet(env.apiUrl + 'recipes?method=getCategories', null);
             let ar = [];
 
-            if(data && data.categories) {
-                for(let i = 0; i < data.categories.length; i++) {
+            if (data && data.categories) {
+                for (let i = 0; i < data.categories.length; i++) {
                     ar.push(data.categories[i].name);
                 }
             }
@@ -85,7 +86,7 @@ const MyTypeahead = (props) => {
     }
 
     const handleAddClick = (selected) => {
-        if(noOptions) {
+        if (noOptions) {
             return;
         }
 
@@ -105,8 +106,8 @@ const MyTypeahead = (props) => {
             props.onAdd(value);
         }
 
-        ref.current.clear();
-        ref.current.blur();
+        ref.current?.clear();
+        ref.current?.blur();
     }
 
     const handleKeyDown = (event) => {

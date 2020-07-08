@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY } from '../../util/constants';
+import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY, RECIPE_API_POST_RECIPE } from '../../util/constants';
 
 export default authenticate(database(async function recipesAPI(
     req: MyNextApiRequest,
@@ -85,6 +85,32 @@ export default authenticate(database(async function recipesAPI(
                 await collection.updateOne(filter, push);
 
                 res.status(200).json({ message: 'OK' });
+                return;
+            } else if (req.body.method === RECIPE_API_POST_RECIPE) {
+                const newRecipe = req.body.recipe;
+                delete newRecipe.isNew;
+
+                const existing = await collection.findOne({ name: newRecipe.name });
+
+                if(existing) {
+                    res.status(200).json({ message: 'Already exists' });
+                    return;
+                }
+
+                newRecipe.user_id = req.jwt.user_id;
+
+                const recipeToAdd = {
+                    user_id: req.jwt.user_id,
+                    name: newRecipe.name,
+                    link: newRecipe.link,
+                    ingredients: newRecipe.ingredients,
+                    categories: newRecipe.categories
+                }
+
+                const resp = await collection.insertOne(recipeToAdd);
+                const recipeId = resp.insertedId;
+
+                res.status(200).json({ message: 'OK', recipeId });
                 return;
             }
         } else if (req.method === 'PUT') {
