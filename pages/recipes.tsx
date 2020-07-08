@@ -5,6 +5,7 @@ import { myGet } from '../util/myGet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Router from "next/router";
+import { compare } from '../util/compare';
 
 const apiUrl = env.apiUrl + 'recipes';
 
@@ -18,6 +19,7 @@ const RecipesPage = () => {
             const data = await myGet(apiUrl, null);
 
             if (isCancelled == false) {
+                data.recipes.sort(compare);
                 setRecipes(data.recipes);
             }
         }

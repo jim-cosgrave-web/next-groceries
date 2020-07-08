@@ -4,7 +4,7 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
-import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY, RECIPE_API_POST_RECIPE } from '../../util/constants';
+import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY, RECIPE_API_POST_RECIPE, RECIPE_API_DELETE_RECIPE } from '../../util/constants';
 
 export default authenticate(database(async function recipesAPI(
     req: MyNextApiRequest,
@@ -138,6 +138,12 @@ export default authenticate(database(async function recipesAPI(
 
                 await collection.updateOne(filter, pull);
                 
+                res.status(200).json({ message: 'OK' });
+                return;
+            } else if (req.body.method === RECIPE_API_DELETE_RECIPE) {
+                const id = new ObjectId(req.body.recipeId);
+                await collection.deleteOne({ _id: id });
+
                 res.status(200).json({ message: 'OK' });
                 return;
             }

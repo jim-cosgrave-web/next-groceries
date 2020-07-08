@@ -64,6 +64,10 @@ h1 {
   margin-left: 5px;
 }
 
+.mt-50 {
+  margin-top: 50px;
+}
+
 .mt-20 {
   margin-top: 20px;
 }
@@ -186,4 +190,8 @@ svg {
   font-size: 20px;
   padding: 10px 0;
   border-bottom: 1px solid #000;
+}
+
+.danger {
+  background-color: red !important;
 }

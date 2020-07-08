@@ -6,8 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import MyTypeahead from '../../components/Shared/MyTypeahead';
-import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY, LIST_API_POST_RECIPE, RECIPE_API_POST_RECIPE } from "../../util/constants";
+import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY, LIST_API_POST_RECIPE, RECIPE_API_POST_RECIPE, RECIPE_API_DELETE_RECIPE } from "../../util/constants";
 import Router from "next/router";
+import Confirm from "../../components/Shared/Confirm";
 
 const apiUrl = env.apiUrl + 'recipes';
 const listApiUrl = env.apiUrl + 'list';
@@ -17,6 +18,7 @@ const RecipeByIdPage = () => {
     const [recipeNotFound, setRecipeNotFound] = useState(false);
     const [mode, setMode] = useState('view');
     const [newRecipeValid, setNewRecipeValid] = useState(false);
+    const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
     const router = useRouter();
 
@@ -329,6 +331,31 @@ const RecipeByIdPage = () => {
         Router.replace(`/recipes/${json.recipeId.toString()}`);
     }
 
+    function handleDeleteStep1() {
+        setIsDeleteConfirmOpen(true);
+    }
+
+    async function handleDeleteStep2() {
+        setIsDeleteConfirmOpen(false);
+
+        const body = {
+            method: RECIPE_API_DELETE_RECIPE,
+            recipeId: recipe._id
+        };
+
+        const resp = await fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        await resp.json();
+
+        Router.replace(`/recipes`);
+    }
+
     function getJSX() {
         if (mode != 'view') {
             return null;
@@ -371,6 +398,16 @@ const RecipeByIdPage = () => {
                         Categories
                     </div>
                     {getCategoryJSX()}
+                </div>
+                <div className="mt-50">
+                    <button onClick={handleDeleteStep1} className="my-button danger">DELETE</button>
+                </div>
+                <div>
+                    <Confirm
+                        isOpen={isDeleteConfirmOpen}
+                        onConfirm={handleDeleteStep2}
+                        onClose={() => setIsDeleteConfirmOpen(false)}
+                    />
                 </div>
             </div>
         );
