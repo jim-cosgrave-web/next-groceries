@@ -1,22 +1,17 @@
-- Store Grocery List - fast add UI
-
+- More interactive UI when clicking on things (loading messages/change colors of item clicked)
+- Limit login attempts 5 per minute
+- Language filter
+- Allow individual users to rename categories and move groceries.  Changes are only visible to that user.  
 
 - Allow password change
 - Profile page
 - Confirm password
-- More interactive UI when clicking on things (loading messages/change colors of item clicked)
-
+- Admin page collapse groceries
 - Improve front end authentication speed
-- Limit login attempts 5 per minute
-- Language filter
-
 - API to remove duplicate store and standard groceries
-
 - Feedback form
 - Send emails
-- Add user name to groceryLists entity for easier debugging in Atlas
 - Add modals/toasts when adding to list from a recipe
-- Allow individual users to rename categories and move groceries.  Changes are only visible to that user.  
 - Add confidence level for things that have changed
 - Average item price
 

@@ -31,6 +31,32 @@ const RecipesPage = () => {
         };
     }, []);
 
+    function getLinkClass(r) {
+        let c = "item item-hoverable clickable";
+
+        if(r.clicked) {
+            c += " item-clicked";
+        }
+        
+        return c;
+    }
+
+    function handleRecipeClick(r) {
+        const recipe = { ...r };
+        const clone = recipes.slice();
+        const index = recipes.indexOf(r);
+
+        for(let i = 0; i < clone.length; i++) {
+            if(i != index) {
+                clone[i].clicked = false;
+            } else {
+                clone[i].clicked = true;
+            }
+        }
+        
+        setRecipes(clone);
+    }
+
     function getJSX() {
         if (!recipes) {
             return <div>Loading...</div>;
@@ -45,7 +71,7 @@ const RecipesPage = () => {
         jsx = recipes.map((r, index) => {
             return (
                 <Link key={r._id} href={`/recipes/${r._id.toString()}`}>
-                    <div className="item clickable" key={r.name}>
+                    <div onClick={() => handleRecipeClick(r)} className={'item item-hoverable clickable' + (r.clicked ? ' item-clicked' : '')} key={r.name}>
                         {r.name}
                     </div>
                 </Link>

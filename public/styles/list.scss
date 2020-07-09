@@ -2,6 +2,7 @@
 
 .list div.item {
     padding: 1em;
+    transition: all .3s;
 }
 
 .list div.item:nth-child(odd) {
@@ -10,6 +11,13 @@
 
 .list div.item:nth-child(even) {
     border-bottom: 1px solid $secondary;
+}
+
+.list div.item-hoverable:hover,
+.list div.item-clicked {
+    background-color: $primary !important;
+    background: $primary !important;
+    color: #fff !important;
 }
 
 .list-category-name {

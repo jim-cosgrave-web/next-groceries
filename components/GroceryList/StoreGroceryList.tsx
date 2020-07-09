@@ -218,6 +218,11 @@ const StoreGroceryList = (props) => {
                 }
             };
 
+            let key = `${value}_checked_note`;
+            let hashKey = simpleHash(key);
+
+            //clone.groceries.push({ name: value, checked: false, note: '', hash: hashKey });
+
             const resp = await fetch(postGroceryApiUrl, {
                 method: 'POST',
                 headers: {
