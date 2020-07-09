@@ -58,8 +58,8 @@ const Confirm = (props) => {
                     </div>
                     <div className="modal-body">
                         <div className="flex space-between">
-                            <button className="clickable" onClick={handleConfirm}>Yes</button>
-                            <button className="clickable" onClick={closeModal}>No</button>
+                            <button className="clickable my-button" onClick={handleConfirm}>Yes</button>
+                            <button className="clickable my-button" onClick={closeModal}>No</button>
                         </div>
                     </div>
                 </div>

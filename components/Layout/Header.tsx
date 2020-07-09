@@ -114,19 +114,19 @@ const Header = () => {
                                 </div>
                             </div>
                         </Link>
-                        <Link href="/subscribe-to-store">
-                            <div className="nav-item" onClick={handleNav}>
-                                <div className="flex">
-                                    <FontAwesomeIcon icon={faLink} />
-                                    <a>Subscribe to Stores</a>
-                                </div>
-                            </div>
-                        </Link>
                         <Link href="/recipes">
                             <div className="nav-item" onClick={handleNav}>
                                 <div className="flex">
                                     <FontAwesomeIcon icon={faBook} />
                                     <a>Recipes</a>
+                                </div>
+                            </div>
+                        </Link>                        
+                        <Link href="/subscribe-to-store">
+                            <div className="nav-item" onClick={handleNav}>
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faLink} />
+                                    <a>Subscribe to Stores</a>
                                 </div>
                             </div>
                         </Link>
