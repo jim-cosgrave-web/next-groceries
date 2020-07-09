@@ -1,8 +1,11 @@
-- Grocery in multiple locations: How do we handle this?  Check all instances if on store page?
-- Add ability to create new recipe
+- Grocery in multiple locations: How do we handle this?  Check all instances if on store page?  
+- Confirm UI
+
+
 - Allow password change
 - Profile page
 - Confirm password
+- More interactive UI when clicking on things (loading messages/change colors of item clicked)
 
 - Improve front end authentication speed
 - Limit login attempts 5 per minute

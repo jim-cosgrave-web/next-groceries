@@ -132,7 +132,7 @@ export default authenticate(database(async function recipesAPI(
                 
                 res.status(200).json({ message: 'OK' });
                 return;
-            } else if(req.body.method === RECIPE_API_DELETE_CATEGORY) {
+            } else if (req.body.method === RECIPE_API_DELETE_CATEGORY) {
                 const filter = { _id: new ObjectId(req.body.recipe_id.toString()), user_id: req.jwt.user_id };
                 const pull = { $pull: { categories: req.body.category } };
 
@@ -142,6 +142,7 @@ export default authenticate(database(async function recipesAPI(
                 return;
             } else if (req.body.method === RECIPE_API_DELETE_RECIPE) {
                 const id = new ObjectId(req.body.recipeId);
+
                 await collection.deleteOne({ _id: id });
 
                 res.status(200).json({ message: 'OK' });
