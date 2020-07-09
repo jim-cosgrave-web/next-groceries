@@ -1,5 +1,6 @@
 export interface GroceryListItem {
     name: string,
     checked: boolean,
-    note: string
+    note: string,
+    hash: string
 }

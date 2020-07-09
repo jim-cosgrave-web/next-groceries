@@ -114,6 +114,11 @@ const Grocery = (props) => {
     async function saveNote() {
         const clone = { ...grocery };
         clone.note = noteRef.current?.value;
+
+        // if(typeof(props.onUpdate) === 'function') {
+        //     props.onUpdate(clone);
+        // }
+
         setGrocery(clone);
         setEditNote(false);
         await updateGrocery(clone);
@@ -122,6 +127,11 @@ const Grocery = (props) => {
     async function handleToggleCheck() {
         const clone = { ...grocery };
         clone.checked = !clone.checked;
+
+        if(typeof(props.onUpdate) === 'function') {
+            props.onUpdate(clone);
+        }
+
         setGrocery(clone);
         await updateGrocery(clone);
     }

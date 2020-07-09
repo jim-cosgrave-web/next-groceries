@@ -6,6 +6,7 @@ import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
 import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, LOCAL_STORAGE_STORE_LIST } from '../../util/constants';
 import SubscribeToStore from '../Shared/SubscribeToStore';
+import { simpleHash } from '../../util/simpleHash';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
@@ -241,6 +242,30 @@ const StoreGroceryList = (props) => {
         await getListData(props.listId, event.target.value);
     }
 
+    function handleGroceryUpdate(grocery) {
+        const groceryName = grocery.name;
+        const clone = { ...storeList };
+
+        for(let i = 0; i < clone.categorizedList.length; i++) {
+            const category = clone.categorizedList[i];
+
+            for(let j = 0; j < category.groceries.length; j++) {
+                const g = category.groceries[j];
+
+                if (g.name == groceryName) {
+                    category.groceries[j].checked = grocery.checked;
+                    category.groceries[j].note = grocery.note;
+
+                    let key = `${grocery.name}_${grocery.checked}_${grocery.note}`;
+                    let hashKey = simpleHash(key);
+                    category.groceries[j].hash = hashKey;
+                }
+            }
+        }
+
+        saveState(clone);
+    }
+
     function getListHTML() {
         if (!storeList) {
             return <div className="mt-10">Loading...</div>;
@@ -286,8 +311,9 @@ const StoreGroceryList = (props) => {
                                     enableCategory={true}
                                     categoryName={c.name}
                                     categories={categories}
+                                    onUpdate={handleGroceryUpdate}
                                     onCategorySet={handleGroceryCategoryChange}
-                                    key={g.name + '_' + g.checked}>
+                                    key={g.hash}>
                                 </Grocery>
                             );
                         })}

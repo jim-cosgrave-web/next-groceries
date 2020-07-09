@@ -112,7 +112,7 @@ const MyTypeahead = (props) => {
 
     const handleKeyDown = (event) => {
         if (event.key.toLowerCase() === 'enter') {
-            handleAddClick(null);
+            //handleAddClick(null);
         }
     }
 

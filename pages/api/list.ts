@@ -6,6 +6,8 @@ import { authenticate } from '../../middleware/authenticate';
 import { compare } from '../../util/compare';
 import { UNCATEGORIZED, NOT_AVAILABLE_AT_STORE, LIST_API_POST_RECIPE } from '../../util/constants';
 import { writeLog } from '../../util/logger';
+import { hash } from 'bcrypt';
+import { simpleHash } from '../../util/simpleHash';
 
 export default authenticate(database(async function getPrimaryListid(
     req: MyNextApiRequest,
@@ -25,7 +27,7 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 // The list to return
                 //
-                let list = {};
+                let list = {} as any;
 
                 if (groceryLists && groceryLists.length > 0) {
                     list = groceryLists[0];
@@ -245,8 +247,14 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 // Add the grocery and update
                 //
-                req.body.grocery.checked = false;
-                list.groceries.push(req.body.grocery);
+                const newGrocery = req.body.grocery;
+                newGrocery.checked = false;
+
+                let key = `${newGrocery.name}_${newGrocery.checked}_${newGrocery.note}`;
+                let hashKey = simpleHash(key);
+                newGrocery.hash = hashKey;
+
+                list.groceries.push(newGrocery);
                 list.groceries.sort(compare);
                 const result = await collection.replaceOne(listFilter, list);
 
@@ -275,7 +283,13 @@ export default authenticate(database(async function getPrimaryListid(
             delete req.body.grocery.order;
             delete req.body.grocery.category;
 
-            const result = await collection.updateOne(filter, { $set: { 'groceries.$': req.body.grocery } });     
+            const newGrocery = req.body.grocery;
+
+            let key = `${newGrocery.name}_${newGrocery.checked}_${newGrocery.note}`;
+            let hashKey = simpleHash(key);
+            newGrocery.hash = hashKey;
+
+            const result = await collection.updateOne(filter, { $set: { 'groceries.$': newGrocery } });     
 
             res.status(200).json({ status: result.modifiedCount });
             return;

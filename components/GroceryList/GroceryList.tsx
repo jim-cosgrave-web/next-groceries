@@ -21,7 +21,7 @@ const GroceryListComponent = (props) => {
         async function execute() {
             const state = await getState();
 
-            if(state) {
+            if(state && isCancelled == false) {
                 setList(state);
             } 
 
@@ -94,7 +94,7 @@ const GroceryListComponent = (props) => {
                     <Grocery
                         grocery={g}
                         list_id={list._id.toString()}
-                        key={g.name + '_' + g.checked}>
+                        key={g.hash}>
                     </Grocery>
                 );
             });

@@ -1,4 +1,3 @@
-- Grocery in multiple locations: How do we handle this?  Check all instances if on store page?  
 - Confirm UI
 
 
