@@ -1,4 +1,4 @@
-- Confirm UI
+- Store Grocery List - fast add UI
 
 
 - Allow password change

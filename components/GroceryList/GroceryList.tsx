@@ -7,6 +7,7 @@ import { GroceryList } from '../../models/grocery-list';
 import MyTypeahead from '../Shared/MyTypeahead';
 import { compare } from '../../util/compare';
 import { LOCAL_STORAGE_A_Z_LIST } from '../../util/constants';
+import { simpleHash } from '../../util/simpleHash';
 
 const apiUrl = env.apiUrl + 'list?method=getList';
 const postGroceryApiUrl = env.apiUrl + 'list';
@@ -124,8 +125,15 @@ const GroceryListComponent = (props) => {
                 }
             };
 
-            list.groceries.push(grocery);
-            list.groceries.sort(compare);
+            const clone = { ...list };
+
+            let key = `${value}_checked_note`;
+            let hashKey = simpleHash(key);
+
+            clone.groceries.push({ name: value, checked: false, note: '', hash: hashKey });
+            clone.groceries.sort(compare);
+
+            setList(clone);
 
             const resp = await fetch(postGroceryApiUrl, {
                 method: 'POST',
