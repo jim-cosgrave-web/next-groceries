@@ -85,7 +85,7 @@ const AdminGrocery = (props) => {
     }
 
     if(!grocery) {
-        return <div>Loading...</div>;
+        return null;
     }
 
     return (
