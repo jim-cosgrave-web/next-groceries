@@ -63,7 +63,14 @@ const RecipesPage = () => {
         }
 
         if (recipes && recipes.length == 0) {
-            return <div>No recipes</div>;
+            return (
+                <div className="alert warning mb-10">
+                    <b>No Recipes</b>
+                    <div className="mt-20">
+                        Click the "+" icon above to create a new recipe
+                    </div>
+                </div>
+            );
         }
 
         let jsx = null;

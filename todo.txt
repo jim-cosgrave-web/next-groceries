@@ -1,4 +1,5 @@
 - More interactive UI when clicking on things (loading messages/change colors of item clicked)
+- On remove checked groceries, post grocery list...the server and front end might be out of sync and it looks bad to users.
 - Limit login attempts 5 per minute
 - Language filter
 - Allow individual users to rename categories and move groceries.  Changes are only visible to that user.  

@@ -38,10 +38,18 @@ const Login = () => {
             setTimeout(() => {
                 if (!isCancelled) {
                     setCheckingAuth(false);
+
+                    setTimeout(() => {
+                        emailRef.current.focus();
+                    }, 100);
                 }
             }, 2000);
         } else {
             setCheckingAuth(false);
+
+            setTimeout(() => {
+                emailRef.current.focus();
+            }, 100);
         }
 
         return () => {
@@ -175,6 +183,11 @@ const Login = () => {
         if (e.key.toLowerCase() === 'enter' && valid) {
             setStep(2);
             setValid(false);
+
+            setTimeout(() => {
+                passwordRef.current?.focus();
+            }, 100);
+            
         }
     }
 

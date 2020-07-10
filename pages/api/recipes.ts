@@ -90,7 +90,7 @@ export default authenticate(database(async function recipesAPI(
                 const newRecipe = req.body.recipe;
                 delete newRecipe.isNew;
 
-                const existing = await collection.findOne({ name: newRecipe.name });
+                const existing = await collection.findOne({ name: newRecipe.name, user_id: req.jwt.user_id });
 
                 if(existing) {
                     res.status(200).json({ message: 'Already exists' });

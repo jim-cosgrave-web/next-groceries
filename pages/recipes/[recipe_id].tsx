@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { env } from "../../util/environment";
 import { myGet } from "../../util/myGet";
 import { useRouter } from "next/router";
@@ -6,9 +6,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import MyTypeahead from '../../components/Shared/MyTypeahead';
-import { RECIPE_API_PUT_DETAILS, RECIPE_API_POST_INGREDIENT, RECIPE_API_DELETE_INGREDIENT, RECIPE_API_POST_CATEGORY, RECIPE_API_DELETE_CATEGORY, LIST_API_POST_RECIPE, RECIPE_API_POST_RECIPE, RECIPE_API_DELETE_RECIPE } from "../../util/constants";
 import Router from "next/router";
 import Confirm from "../../components/Shared/Confirm";
+import { simpleHash } from "../../util/simpleHash";
+
+import { 
+    RECIPE_API_PUT_DETAILS, 
+    RECIPE_API_POST_INGREDIENT, 
+    RECIPE_API_DELETE_INGREDIENT, 
+    RECIPE_API_POST_CATEGORY, 
+    RECIPE_API_DELETE_CATEGORY, 
+    LIST_API_POST_RECIPE, 
+    RECIPE_API_POST_RECIPE, 
+    RECIPE_API_DELETE_RECIPE 
+} from "../../util/constants";
+
+import { ToastContainer, toast } from 'react-toastify';
 
 const apiUrl = env.apiUrl + 'recipes';
 const listApiUrl = env.apiUrl + 'list';
@@ -19,12 +32,22 @@ const RecipeByIdPage = () => {
     const [mode, setMode] = useState('view');
     const [newRecipeValid, setNewRecipeValid] = useState(false);
     const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+    const [error, setError] = useState(null);
 
     const router = useRouter();
 
     const nameRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
     const putTimeout = useRef<any>(null);
+    const startToastId = React.useRef(null);
+
+    const notifyStart = () => startToastId.current = toast('Adding recipe to your list...', {
+        position: "bottom-center",
+        hideProgressBar: true,
+        closeOnClick: true,
+        progress: undefined,
+        className: 'warning'
+    });
 
     useEffect(() => {
         const recipe_id = router.query.recipe_id;
@@ -82,16 +105,21 @@ const RecipeByIdPage = () => {
 
     async function handleConfirmAddToList() {
         let groceries = [];
+        notifyStart();
 
         if (recipe.ingredients) {
             for (let i = 0; i < recipe.ingredients.length; i++) {
                 let ingredient = recipe.ingredients[i];
 
+                let key = `${ingredient.name}_checked_note`;
+                let hashKey = simpleHash(key);
+
                 if (ingredient.checked) {
                     let grocery = {
                         name: ingredient.name,
                         checked: false,
-                        recipe: recipe.name
+                        recipe: recipe.name,
+                        hash: hashKey
                     }
 
                     groceries.push(grocery);
@@ -308,6 +336,8 @@ const RecipeByIdPage = () => {
     }
 
     async function handleSaveClick() {
+        setError(null);
+
         if (!newRecipeValid) {
             return;
         }
@@ -327,6 +357,10 @@ const RecipeByIdPage = () => {
 
         setNewRecipeValid(false);
         const json = await resp.json();
+
+        if(json && !json.recipeId) {
+            setError({ errorMessage: true });
+        }
 
         Router.replace(`/recipes/${json.recipeId.toString()}`);
     }
@@ -477,6 +511,12 @@ const RecipeByIdPage = () => {
                         <MyTypeahead placeholder="Add a category" type="categories" onAdd={handleAddCategory}></MyTypeahead>
                     </div>
                 </div>
+                {error && <div className="alert warning mb-10 mt-20">
+                    <b>Error Occurred</b>
+                    <div className="mt-20">
+                        Unable to save the recipe.  Please try again.
+                    </div>
+                </div>}
                 {recipe.isNew && <div className="mt-20">
                     <button className={saveButtonClass()} onClick={handleSaveClick}>Save</button>
                 </div>}
@@ -508,7 +548,7 @@ const RecipeByIdPage = () => {
                         Ingredients
                     </div>
                     {getIngredientsJSX()}
-                    <div>
+                    <div className="mt-20">
                         <button className="my-button" onClick={handleConfirmAddToList}>Confirm</button>
                     </div>
                 </div>
@@ -590,6 +630,7 @@ const RecipeByIdPage = () => {
             {getJSX()}
             {getEditJSX()}
             {getAddToListJSX()}
+            <ToastContainer />
         </div>
     );
 }
