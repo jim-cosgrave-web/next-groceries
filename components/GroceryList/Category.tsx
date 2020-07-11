@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from 'react';
 import fetch from 'isomorphic-unfetch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 
 const Category = (props) => {
     const [category, setCategory] = useState(props.category);
+    const [mode, setMode] = useState('view');
+
+    const nameRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (props.category) {
-            console.log(props.category.notAvailable);
             setCategory(props.category);
         }
     }, [props.category]);
@@ -28,6 +30,38 @@ const Category = (props) => {
         }
     }
 
+    async function toggleMode(e) {
+        const domType = e?.target?.type;
+
+        if (domType) {
+            return;
+        }
+
+        if (mode == 'view') {
+            setMode('edit');
+        } else {
+            const name = nameRef?.current?.value;
+
+            if(name != category.name) {
+                const clone = { ...category };
+                clone.name = name;
+                setCategory(clone);
+            }
+
+            setMode('view');
+        }
+    }
+
+    async function handleKeyUp(e) {
+        if (e.key.toLowerCase() === 'enter') {
+            await toggleMode(null);
+        }
+    }
+
+    async function handleBlur(e) {
+        await toggleMode(null);
+    }
+
     function getJSX() {
         let wrapperClass = 'list-category mt-10';
 
@@ -37,9 +71,17 @@ const Category = (props) => {
 
         let jsx = (
             <div className={wrapperClass}>
-                <div className="list-category-name">
+                {mode == 'view' && <div className="list-category-name clickable" onClick={toggleMode}>
                     {category.name}
-                </div>
+                </div>}
+                {mode == 'edit' && <div className="flex space-between list-category-name">
+                    <div className="category-input-container">
+                        <input type="text" className="form-control" onKeyUp={handleKeyUp} defaultValue={category.name} ref={nameRef} />    
+                    </div>
+                    <div className="clickable grocery-checkbox" onClick={toggleMode}>
+                        <FontAwesomeIcon icon={faSave} />
+                    </div>
+                </div>}
                 <div>
                     {getGroceriesJSX(category.groceries)}
                 </div>
