@@ -340,9 +340,9 @@ const StoreGroceryList = (props) => {
 
     return (
         <div className="mt-10">
-            {stores && stores.length > 0 && <div className="mt-10 mb-10">
+            <div className="mt-10 mb-10">
                 <MyTypeahead placeholder="Add a grocery" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
-            </div>}
+            </div>
             {storeDropDown && storeDropDown.length > 0 && <div className="mt-10">
                 <select className="select-css" onChange={handleStoreChange} defaultValue={selectedStore ? selectedStore.value : null}>
                     {storeDropDown.map((s, index) => {
@@ -352,6 +352,7 @@ const StoreGroceryList = (props) => {
                     })}
                 </select>
             </div>}
+            {(!storeDropDown || storeDropDown.length == 0) && <div className="placeholder mt-10"></div>}
             <div className="grocery-list">
                 <div className="list">
                     {getListHTML()}
