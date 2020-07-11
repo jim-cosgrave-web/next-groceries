@@ -7,6 +7,7 @@ import MyTypeahead from '../Shared/MyTypeahead';
 import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, LOCAL_STORAGE_STORE_LIST } from '../../util/constants';
 import SubscribeToStore from '../Shared/SubscribeToStore';
 import { simpleHash } from '../../util/simpleHash';
+import Category from './Category';
 
 const getStoreListApiUrl = env.apiUrl + 'list?method=getStoreList';
 const getStoresApiUrl = env.apiUrl + 'user?method=getStores';
@@ -306,32 +307,18 @@ const StoreGroceryList = (props) => {
         }
 
         let html = '';
-
+        
         html = storeList.categorizedList.map((c, cIndex) => {
             return (
-                !c.hidden && c.groceries.length > 0 && <div key={c.name}>
-                    <div className="list-category mt-10">
-                        <div className="list-category-name">
-                            {c.name}
-                        </div>
-                    </div>
-                    <div>
-                        {c.groceries && c.groceries.map((g, gIndex) => {
-                            return (
-                                <Grocery
-                                    grocery={g}
-                                    list_id={props.listId}
-                                    enableCategory={true}
-                                    categoryName={c.name}
-                                    categories={categories}
-                                    onUpdate={handleGroceryUpdate}
-                                    onCategorySet={handleGroceryCategoryChange}
-                                    key={g.hash}>
-                                </Grocery>
-                            );
-                        })}
-                    </div>
-                </div>
+                !c.hidden && c.groceries.length > 0 
+                    && <Category 
+                            key={c.name} 
+                            category={c}
+                            categories={categories}
+                            listId={props.listId}
+                            onGroceryUpdate={handleGroceryUpdate}
+                            onGroceryCategoryChange={handleGroceryCategoryChange}
+                        />
             );
         });
 

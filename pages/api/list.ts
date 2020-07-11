@@ -87,7 +87,7 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 for (let i = 0; i < store.categories.length; i++) {
                     const storeCategory = store.categories[i];
-                    let category = { name: storeCategory.name, order: storeCategory.order, groceries: [], hidden: false };
+                    let category = { name: storeCategory.name, order: storeCategory.order, groceries: [], hidden: false, notAvailable: storeCategory.notAvailable };
                     categories.push({ name: storeCategory.name, value: storeCategory.name, order: storeCategory.order, uncategorized: false });
 
                     if(category.name === NOT_AVAILABLE_AT_STORE) {
