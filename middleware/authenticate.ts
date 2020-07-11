@@ -39,6 +39,7 @@ const authenticate = (fn: NextApiHandler) => async (req: MyNextApiRequest, res: 
         }
 
         res.status(401).json({ message: 'Sorry you are not authenticated' });
+        return;
     });
 }
 

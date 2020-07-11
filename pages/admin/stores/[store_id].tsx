@@ -279,19 +279,27 @@ const AdminStoreByIdPage = () => {
         //const availableCategories = clone.categories;
 
         let order = 0;
+        let id = 1;
 
         if (availableCategories) {
             order = Math.max.apply(Math, availableCategories.map(function (c) { return c.order }));
+            id = Math.max.apply(Math, availableCategories.map(function (c) { return parseInt(c.id) }));
         }
 
         if (order === Number.NEGATIVE_INFINITY) {
             order = 0;
         }
 
+        if (id === Number.NEGATIVE_INFINITY) {
+            id = 0;
+        }
+
         order += 1;
+        id += 1;
 
         const newCategory = {
             name: newCategoryNameRef.current.value,
+            id: id.toString(),
             order: order,
             groceries: []
         };
