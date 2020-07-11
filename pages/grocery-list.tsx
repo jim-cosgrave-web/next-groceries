@@ -15,6 +15,7 @@ const GroceryListPage = ({ initialList }) => {
     const [list, setList] = useState(initialList);
     const [update, setUpdate] = useState(-1);
     const startToastId = React.useRef(null);
+    let trackedGroceries = React.useRef([]);
 
     useEffect(() => {
         const listMode = localStorage.getItem('list-mode');
@@ -79,9 +80,12 @@ const GroceryListPage = ({ initialList }) => {
         notifyStart();
 
         try {
+            const checkedGroceries = getCheckedGroceries();
+
             const body = {
                 "method": "clear-groceries",
-                "list_id": list._id
+                "list_id": list._id,
+                checkedGroceries
             };
 
             const resp = await fetch(postClearGroceriesApiUrl, {
@@ -112,6 +116,31 @@ const GroceryListPage = ({ initialList }) => {
         }
     }
 
+    function getCheckedGroceries() {
+        if(!trackedGroceries.current) {
+            return null;
+        }
+
+        return trackedGroceries.current.filter(g => g.checked);
+    }
+
+    function handleGroceryUpdate(grocery) {
+        if(!trackedGroceries.current) {
+            trackedGroceries.current = [];
+        }
+
+        //
+        // See if its already tracked
+        //
+        const gIndex = trackedGroceries.current.map(g => { return g.name }).indexOf(grocery.name);
+        
+        if(gIndex == -1) {
+            trackedGroceries.current.push(grocery);
+        } else {
+            trackedGroceries.current[gIndex] = grocery;
+        }
+    }
+
     return (
         <div className="max-width-page">
             <h1>Groceries</h1>
@@ -124,7 +153,9 @@ const GroceryListPage = ({ initialList }) => {
             </div>
             <div>
                 {
-                    (!mode || mode == 'list') ? <GroceryList updateTime={update}></GroceryList> : <StoreGroceryList updateTime={update} listId={initialList._id}></StoreGroceryList>
+                    (!mode || mode == 'list')
+                        ? <GroceryList onGroceryUpdate={handleGroceryUpdate} updateTime={update}></GroceryList>
+                        : <StoreGroceryList onGroceryUpdate={handleGroceryUpdate} updateTime={update} listId={initialList._id}></StoreGroceryList>
                 }
             </div>
             <ToastContainer />

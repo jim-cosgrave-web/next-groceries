@@ -82,6 +82,12 @@ const GroceryListComponent = (props) => {
         localStorage.setItem(LOCAL_STORAGE_A_Z_LIST, JSON.stringify(null));
     }
 
+    function handleGroceryUpdate(grocery) {
+        if(typeof(props.onGroceryUpdate) === 'function') {
+            props.onGroceryUpdate(grocery);
+        }
+    }
+
     function getListItemsHTML() {
         if (!list || !list.groceries) {
             return <div>Loading...</div>;
@@ -93,9 +99,10 @@ const GroceryListComponent = (props) => {
             html = list && list.groceries && list.groceries.map((g, index) => {
                 return (
                     <Grocery
+                        onUpdate={handleGroceryUpdate}
                         grocery={g}
                         list_id={list._id.toString()}
-                        key={g.hash}>
+                        key={g.hash ? g.hash : g.name}>
                     </Grocery>
                 );
             });

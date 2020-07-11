@@ -268,7 +268,15 @@ const StoreGroceryList = (props) => {
             }
         }
 
+        if(typeof(props.onGroceryUpdate) === 'function') {
+            props.onGroceryUpdate(grocery);
+        }
+
         saveState(clone);
+    }
+
+    function handleGroceryCheck(grocery) {
+        console.log('StoreGroceryList...', grocery);
     }
 
     function getListHTML() {

@@ -157,9 +157,22 @@ export default authenticate(database(async function getPrimaryListid(
                 const list_id = new ObjectId(req.body.list_id);
                 let filter = { _id: list_id, user_id: req.jwt.user_id };
 
-                await writeLog('Clear Groceries', filter);
+                //await writeLog('Clear Groceries', filter);
 
-                const response = await collection.updateMany(filter, { $pull: { "groceries": { checked: true } } });
+                //
+                // Pull db records that are checked
+                //
+                await collection.updateMany(filter, { $pull: { "groceries": { checked: true } } });
+
+                //
+                // Safety to make sure what the user sees as checked gets removed
+                //
+                if(req.body.checkedGroceries && req.body.checkedGroceries.length > 0) {
+                    const groceryNames = req.body.checkedGroceries.map(g => { return g.name; });
+                    const pullName = { $pull: { "groceries": { name: { $in: groceryNames } } } };
+
+                    await collection.updateMany(filter, pullName);
+                }
 
                 res.status(200).json({ message: 'OK' });
                 return;
@@ -278,7 +291,7 @@ export default authenticate(database(async function getPrimaryListid(
             const list = await collection.findOne({ _id: list_id });
             const current = list.groceries.find(g => { return g.name == req.body.grocery.name });
 
-            await writeLog('Update List Grocery', { current, updated: req.body.grocery });
+            //await writeLog('Update List Grocery', { current, updated: req.body.grocery });
 
             delete req.body.grocery.order;
             delete req.body.grocery.category;

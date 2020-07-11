@@ -1,5 +1,6 @@
-- More interactive UI when clicking on things (loading messages/change colors of item clicked)
 - On remove checked groceries, post grocery list...the server and front end might be out of sync and it looks bad to users.
+- Placeholder for elements that are loading on page load for grocery lists so UI doesnt shift
+- Store map
 - Limit login attempts 5 per minute
 - Language filter
 - Allow individual users to rename categories and move groceries.  Changes are only visible to that user.  
@@ -15,7 +16,7 @@
 - Add modals/toasts when adding to list from a recipe
 - Add confidence level for things that have changed
 - Average item price
-
+- More interactive UI when clicking on things (loading messages/change colors of item clicked)
 
 
 
