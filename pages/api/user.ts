@@ -7,7 +7,7 @@ import cookie from 'cookie';
 import { MyNextApiRequest, MyJWT } from '../../middleware/myNextApiRequest';
 import { ObjectId } from 'mongodb';
 import { authenticateNoRedirect } from '../../middleware/authenticateNoRedirect';
-import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD, CHECK_ACTIVATION_CODE_API_METHOD } from '../../util/constants';
+import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD, CHECK_ACTIVATION_CODE_API_METHOD, USER_API_RENAME_CATEGORY } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
     req: MyNextApiRequest,
@@ -16,6 +16,7 @@ export default authenticateNoRedirect(database(async function login(
     const db = req.db;
     const collection = db.collection('users');
     const listCollection = db.collection('groceryLists');
+    const userCategoriesCollection = db.collection('userCategories');
 
     if (req.method == 'POST') {
         const name: string = req.body.name;
@@ -162,6 +163,31 @@ export default authenticateNoRedirect(database(async function login(
             const user = await collection.updateOne(userFilter, pull);
 
             res.status(200).json(user);
+            return;
+        } else if (method == USER_API_RENAME_CATEGORY) {
+            const userId = req.jwt.user_id;
+            const filter = { user_id: userId, store_id: req.body.store_id, category_id: req.body.category_id };
+            const existing = await userCategoriesCollection.findOne(filter);
+
+            if(existing) {
+                //
+                // Do an update
+                //
+                await userCategoriesCollection.updateOne(filter, { $set: { name: req.body.name } })
+            } else {
+                //
+                // Do an insert
+                //
+                await userCategoriesCollection.insertOne({
+                    user_id: userId, 
+                    store_id: req.body.store_id, 
+                    category_id: req.body.category_id,
+                    name: req.body.name
+                });
+            }
+
+            res.status(200).json({ message: 'OK' });
+            return;
         }
 
         //

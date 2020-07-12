@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import fetch from 'isomorphic-unfetch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
-import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
+import { USER_API_RENAME_CATEGORY } from '../../util/constants';
+
+const userApi = env.apiUrl + 'user';
 
 const Category = (props) => {
     const [category, setCategory] = useState(props.category);
@@ -15,6 +17,8 @@ const Category = (props) => {
     useEffect(() => {
         if (props.category) {
             setCategory(props.category);
+            //console.log(props.store.value);
+            //console.log(props.category);
         }
     }, [props.category]);
 
@@ -46,6 +50,25 @@ const Category = (props) => {
                 const clone = { ...category };
                 clone.name = name;
                 setCategory(clone);
+
+                const body = {
+                    method: USER_API_RENAME_CATEGORY,
+                    store_id: props.store.value,
+                    category_id: category.id,
+                    name: name
+                };
+
+                const resp = await fetch(userApi, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(body)
+                });
+        
+                const json = await resp.json();
+        
+                console.log(json);
             }
 
             setMode('view');

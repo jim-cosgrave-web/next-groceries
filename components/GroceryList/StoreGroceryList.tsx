@@ -307,7 +307,7 @@ const StoreGroceryList = (props) => {
         }
 
         let html = '';
-        
+
         html = storeList.categorizedList.map((c, cIndex) => {
             return (
                 !c.hidden && c.groceries.length > 0 
@@ -316,6 +316,7 @@ const StoreGroceryList = (props) => {
                             category={c}
                             categories={categories}
                             listId={props.listId}
+                            store={selectedStore}
                             onGroceryUpdate={handleGroceryUpdate}
                             onGroceryCategoryChange={handleGroceryCategoryChange}
                         />
