@@ -4,7 +4,7 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
 import MyTypeahead from '../Shared/MyTypeahead';
-import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, LOCAL_STORAGE_STORE_LIST } from '../../util/constants';
+import { UPDATE_STORE_GROCERY_API_METHOD, UNCATEGORIZED, SUBSCRIBE_TO_STORE_API_METHOD, UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, LOCAL_STORAGE_STORE_LIST, LOCAL_STORAGE_SUBSCRIBED_STORES } from '../../util/constants';
 import SubscribeToStore from '../Shared/SubscribeToStore';
 import { simpleHash } from '../../util/simpleHash';
 import Category from './Category';

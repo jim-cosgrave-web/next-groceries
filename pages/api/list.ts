@@ -51,6 +51,7 @@ export default authenticate(database(async function getPrimaryListid(
                 const db = req.db;
                 const collection = db.collection('groceryLists');
                 const storesCollection = db.collection('stores');
+                const userCategoriesCollection = db.collection('userCategories');
 
                 //
                 // Create MongoDB object ids
@@ -78,9 +79,11 @@ export default authenticate(database(async function getPrimaryListid(
                     return;
                 }
 
+                const userCategories = await userCategoriesCollection.find({ user_id: req.jwt.user_id, store_id: storeId }).toArray();
+
                 let categorizedList = [];
                 let remainingGroceries = list.groceries.slice();
-                let categories = [{ name: UNCATEGORIZED, value: '', uncategorized: true, order: 0 }];
+                let ddlCategories = [{ name: UNCATEGORIZED, value: '', uncategorized: true, order: 0 }];
 
                 //
                 // Loop over each category
@@ -94,10 +97,25 @@ export default authenticate(database(async function getPrimaryListid(
                         order: storeCategory.order, 
                         groceries: [], 
                         hidden: false, 
-                        notAvailable: storeCategory.notAvailable 
+                        notAvailable: storeCategory.notAvailable,
+                        isCustomized: false
                     };
-                    
-                    categories.push({ name: storeCategory.name, value: storeCategory.name, order: storeCategory.order, uncategorized: false });
+
+                    //
+                    // Check if the user has settings that override the default store settings
+                    //
+                    if(userCategories && userCategories.length > 0) {
+                        const customCategory = userCategories.find(c => c.category_id == category.id);
+
+                        if(customCategory) {
+                            if(customCategory.name && customCategory.name.trim().length > 0) {
+                                category.name = customCategory.name;
+                                category.isCustomized = true;
+                            }
+                        }
+                    }
+
+                    ddlCategories.push({ name: storeCategory.name, value: storeCategory.name, order: storeCategory.order, uncategorized: false });
 
                     if(category.name === NOT_AVAILABLE_AT_STORE) {
                         category.order = 99;
@@ -136,7 +154,7 @@ export default authenticate(database(async function getPrimaryListid(
                     }
                 }
 
-                categories.sort((a, b) => a.order - b.order);
+                ddlCategories.sort((a, b) => a.order - b.order);
                 categorizedList = categorizedList.sort((a, b) => a.order - b.order);
 
                 if (remainingGroceries && remainingGroceries.length > 0) {
@@ -146,7 +164,8 @@ export default authenticate(database(async function getPrimaryListid(
 
                 let resp = {
                     categorizedList,
-                    categories
+                    categories: ddlCategories,
+                    userCategories
                 };
 
                 res.status(200).json(resp);

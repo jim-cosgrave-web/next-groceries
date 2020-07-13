@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { env } from '../../util/environment';
 import Grocery from './Grocery';
-import { USER_API_RENAME_CATEGORY } from '../../util/constants';
+import { USER_API_RENAME_CATEGORY, LOCAL_STORAGE_STORE_LIST } from '../../util/constants';
 
 const userApi = env.apiUrl + 'user';
 
@@ -50,6 +50,8 @@ const Category = (props) => {
                 const clone = { ...category };
                 clone.name = name;
                 setCategory(clone);
+                setMode('view');
+                localStorage.setItem(LOCAL_STORAGE_STORE_LIST, JSON.stringify(null));
 
                 const body = {
                     method: USER_API_RENAME_CATEGORY,
@@ -67,11 +69,7 @@ const Category = (props) => {
                 });
         
                 const json = await resp.json();
-        
-                console.log(json);
             }
-
-            setMode('view');
         }
     }
 
@@ -95,7 +93,7 @@ const Category = (props) => {
         let jsx = (
             <div className={wrapperClass}>
                 {mode == 'view' && <div className="list-category-name clickable" onClick={toggleMode}>
-                    {category.name}
+                    {category.isCustomized ? '*' : ''} {category.name}
                 </div>}
                 {mode == 'edit' && <div className="flex space-between list-category-name">
                     <div className="category-input-container">
