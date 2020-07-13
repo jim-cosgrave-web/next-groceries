@@ -69,6 +69,8 @@ const Category = (props) => {
                 });
         
                 const json = await resp.json();
+            } else {
+                setMode('view');
             }
         }
     }
