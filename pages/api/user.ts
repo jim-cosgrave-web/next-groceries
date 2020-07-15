@@ -7,7 +7,13 @@ import cookie from 'cookie';
 import { MyNextApiRequest, MyJWT } from '../../middleware/myNextApiRequest';
 import { ObjectId } from 'mongodb';
 import { authenticateNoRedirect } from '../../middleware/authenticateNoRedirect';
-import { SUBSCRIBE_TO_STORE_API_METHOD, UNSUBSCRIBE_FROM_STORE_API_METHOD, CHECK_ACTIVATION_CODE_API_METHOD, USER_API_RENAME_CATEGORY } from '../../util/constants';
+
+import { 
+    SUBSCRIBE_TO_STORE_API_METHOD, 
+    UNSUBSCRIBE_FROM_STORE_API_METHOD, 
+    CHECK_ACTIVATION_CODE_API_METHOD, 
+    USER_API_RENAME_CATEGORY 
+} from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
     req: MyNextApiRequest,
@@ -170,10 +176,17 @@ export default authenticateNoRedirect(database(async function login(
             const existing = await userCategoriesCollection.findOne(filter);
 
             if(existing) {
-                //
-                // Do an update
-                //
-                await userCategoriesCollection.updateOne(filter, { $set: { name: req.body.name } })
+                if(req.body.name == req.body.originalName) {
+                    //
+                    // Do a delete
+                    //
+                    await userCategoriesCollection.deleteOne(filter);
+                } else {
+                    //
+                    // Do an update
+                    //
+                    await userCategoriesCollection.updateOne(filter, { $set: { name: req.body.name, modifiedOn: new Date() } });
+                }
             } else {
                 //
                 // Do an insert
@@ -182,11 +195,13 @@ export default authenticateNoRedirect(database(async function login(
                     user_id: userId, 
                     store_id: req.body.store_id, 
                     category_id: req.body.category_id,
-                    name: req.body.name
+                    name: req.body.name,
+                    originalName: req.body.originalName,
+                    createdOn: new Date()
                 });
             }
 
-            res.status(200).json({ message: 'OK' });
+            res.status(200).json({ message: 'OK', body: req.body });
             return;
         }
 

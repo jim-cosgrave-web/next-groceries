@@ -17,8 +17,6 @@ const Category = (props) => {
     useEffect(() => {
         if (props.category) {
             setCategory(props.category);
-            //console.log(props.store.value);
-            //console.log(props.category);
         }
     }, [props.category]);
 
@@ -44,10 +42,20 @@ const Category = (props) => {
         if (mode == 'view') {
             setMode('edit');
         } else {
-            const name = nameRef?.current?.value;
+            let name = nameRef?.current?.value;
 
             if(name != category.name) {
+                name = name.trim();
+
                 const clone = { ...category };
+
+                if(name === '') {
+                    name = category.originalName;
+                    clone.isCustomized = false;
+                } else {
+                    clone.isCustomized = true;
+                }
+
                 clone.name = name;
                 setCategory(clone);
                 setMode('view');
@@ -57,7 +65,8 @@ const Category = (props) => {
                     method: USER_API_RENAME_CATEGORY,
                     store_id: props.store.value,
                     category_id: category.id,
-                    name: name
+                    name: name,
+                    originalName: category.originalName
                 };
 
                 const resp = await fetch(userApi, {
