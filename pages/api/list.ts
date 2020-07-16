@@ -135,7 +135,8 @@ export default authenticate(database(async function getPrimaryListid(
                             const listGrocery = list.groceries[k];
                             const order = storeGrocery.order;
 
-                            if (listGrocery.name == storeGrocery.groceryName) {
+                            if (listGrocery.name.toLowerCase().trim() == storeGrocery.groceryName.toLowerCase().trim()) {
+                                listGrocery.name = storeGrocery.groceryName;
                                 listGrocery.order = order;
                                 listGrocery.category = storeCategory;
                                 category.groceries.push(listGrocery);
@@ -159,7 +160,7 @@ export default authenticate(database(async function getPrimaryListid(
                 categorizedList = categorizedList.sort((a, b) => a.order - b.order);
 
                 if (remainingGroceries && remainingGroceries.length > 0) {
-                    let uncategorized = { name: UNCATEGORIZED, uncategorized: true, groceries: remainingGroceries };
+                    let uncategorized = { name: UNCATEGORIZED, uncategorized: true, groceries: remainingGroceries, hidden: false };
                     categorizedList.splice(0, 0, uncategorized);
                 }
 
