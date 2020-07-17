@@ -63,7 +63,39 @@ export default authenticate(database(async function groceriesList(
                 await collection.insertMany(groceriesToAdd);
             }
 
-            res.status(200).json({ message: 'New method...', groceriesToAdd, groceriesToUpdate });
+            res.status(200).json({ message: 'OK', groceriesToAdd, groceriesToUpdate });
+            return;
+        } else if (req.query.method === 'clean') {
+            const groceries = await collection.find().toArray();
+            let uniqueGroceries = [];
+            let duplicateGroceries = [];
+    
+            //
+            // Find the uniques and the duplicates
+            //
+            for(let i = 0; i < groceries.length; i++) {
+                let grocery = groceries[i];
+                grocery.name = titleCase(grocery.name);
+
+                let index = uniqueGroceries.map(g => { return titleCase(g.name); }).indexOf(grocery.name);
+    
+                if(index == -1) {
+                    uniqueGroceries.push(grocery);
+                } else {
+                    duplicateGroceries.push(grocery);
+                }
+            }
+
+            //
+            // Remove duplicates
+            //
+            let duplicatesToRemove = duplicateGroceries.map(g => { return g._id });
+
+            if(duplicatesToRemove.length > 0) {
+                await collection.deleteMany({ _id: { $in: duplicatesToRemove } });
+            }
+    
+            res.status(200).json({ message: 'OK', duplicatesToRemove });
             return;
         }
     } else {

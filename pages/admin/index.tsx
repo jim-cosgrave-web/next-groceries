@@ -6,12 +6,19 @@ import { env } from '../../util/environment';
 const groceryApiUrl = env.apiUrl + 'groceries';
 
 const AdminPage = () => {
-    const [syncing, setSyncing] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     async function handleSyncGroceriesClick() {
-        setSyncing(true);
+        setLoading(true);
         const resp = await myGet(groceryApiUrl + '?method=sync', null);
-        setSyncing(false);
+        setLoading(false);
+        console.log(resp);
+    }
+
+    async function handleCleanGroceriesClick() {
+        setLoading(true);
+        const resp = await myGet(groceryApiUrl + '?method=clean', null);
+        setLoading(false);
         console.log(resp);
     }
 
@@ -31,9 +38,14 @@ const AdminPage = () => {
                         Sync Groceries
                     </div>
                 </div>
+                <div className="admin-card clickable mt-20" onClick={handleCleanGroceriesClick}>
+                    <div className="nav-item">
+                        Clean Groceries
+                    </div>
+                </div>
             </div>
-            {syncing && <div className="mt-20">
-                Syncing groceries...
+            {loading && <div className="mt-20">
+                Doing stuff...
             </div>}
         </div>
     );
