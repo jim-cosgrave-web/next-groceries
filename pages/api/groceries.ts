@@ -75,6 +75,7 @@ export default authenticate(database(async function groceriesList(
             //
             for(let i = 0; i < groceries.length; i++) {
                 let grocery = groceries[i];
+                grocery.originalName = grocery.name;
                 grocery.name = titleCase(grocery.name);
 
                 let index = uniqueGroceries.map(g => { return titleCase(g.name); }).indexOf(grocery.name);
@@ -94,8 +95,27 @@ export default authenticate(database(async function groceriesList(
             if(duplicatesToRemove.length > 0) {
                 await collection.deleteMany({ _id: { $in: duplicatesToRemove } });
             }
+
+            let testGroceries = uniqueGroceries.filter(g => g.name.toLowerCase().indexOf('new') > -1 || g.name.toLowerCase().indexOf('test') > -1);
+
+            if(testGroceries.length > 0) {
+                let testIds = testGroceries.map(g => { return g._id });
+                await collection.deleteMany({ _id: { $in: testIds } });
+            }
+
+            for(let i = 0; i < uniqueGroceries.length; i++) {
+                let grocery = uniqueGroceries[i];
+
+                if(grocery.name != grocery.originalName) {
+                    const filter = { _id: grocery._id };
+                    const update = { $set: { name: grocery.name }};
+
+                    await collection.updateOne(filter, update);
+                    console.log('doing an update')
+                }
+            }
     
-            res.status(200).json({ message: 'OK', duplicatesToRemove });
+            res.status(200).json({ message: 'OK', duplicatesToRemove, testGroceries });
             return;
         }
     } else {
