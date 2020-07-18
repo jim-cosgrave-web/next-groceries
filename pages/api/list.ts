@@ -8,6 +8,7 @@ import { UNCATEGORIZED, NOT_AVAILABLE_AT_STORE, LIST_API_POST_RECIPE } from '../
 import { writeLog } from '../../util/logger';
 import { hash } from 'bcrypt';
 import { simpleHash } from '../../util/simpleHash';
+import { titleCase } from '../../util/titleCase';
 
 export default authenticate(database(async function getPrimaryListid(
     req: MyNextApiRequest,
@@ -256,7 +257,8 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 // Upsert the grocery to create it if it doesnt exist already
                 //
-                const upsertGroceryResp = await groceryCollection.update({ name: { $regex: new RegExp("^" + groceryName, "i") } }, { name: groceryName }, { upsert: true });
+                //const upsertGroceryResp = await groceryCollection.update({ name: { $regex: new RegExp("^" + groceryName, "i") } }, { name: groceryName }, { upsert: true });
+                const upsertGroceryResp = await groceryCollection.update({ name: { $regex: new RegExp("^" + groceryName, "i") } }, { name: titleCase(groceryName) }, { upsert: true });
 
                 //
                 // Create list filter

@@ -54,7 +54,7 @@ export default authenticate(database(async function groceriesList(
                     groceriesToAdd.push({ name: titleCase(current) });
                 } else {
                     if(current != exists.name) {
-                        groceriesToUpdate.push({ name: current });
+                        groceriesToUpdate.push({ name: titleCase(current) });
                     }
                 }
             }
@@ -111,7 +111,7 @@ export default authenticate(database(async function groceriesList(
                     const update = { $set: { name: grocery.name }};
 
                     await collection.updateOne(filter, update);
-                    console.log('doing an update')
+                    //console.log('doing an update')
                 }
             }
     

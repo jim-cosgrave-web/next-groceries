@@ -1,18 +1,9 @@
-export function titleCase( str ) {
+export function titleCase(str) {
     if(!str) {
         return;
     }
 
-    str = str.trim();
-
-    var splitStr = str.toLowerCase().split(' ');
-    for (var i = 0; i < splitStr.length; i++) {
-        // You do not need to check if i is larger than splitStr length, as your for does that for you
-        // Assign it back to the array
-        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
-    }
-    // Directly return the joined string
-    let ret = splitStr.join(' ');
-
-    return ret
+    let separators = [ ' ', '-' ];
+    var regex = new RegExp('(^|[' + separators.join('') + '])(\\w)', 'g');
+    return str.toLowerCase().replace(regex, function(x) { return x.toUpperCase(); });
 }

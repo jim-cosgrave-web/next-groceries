@@ -151,7 +151,7 @@ export default authenticate(
                         //
                         // Update the grocery collection in case this doesnt currently exist
                         //
-                        groceryCollection.update({ name: groceryName.toLowerCase() }, { name: groceryName }, { upsert: true });
+                        //groceryCollection.update({ name: groceryName.toLowerCase() }, { name: groceryName }, { upsert: true });
 
                         let groceryCategory = findCategoryWithGrocery(store, groceryName);
 
