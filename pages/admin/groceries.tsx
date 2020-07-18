@@ -30,7 +30,7 @@ const AdminGroceriesPage = () => {
     }, []);
  
     function getJSX() {
-        if(!groceries) {
+        if(!groceries || !visibleGroceries) {
             return <div>Loading...</div>;
         }
 

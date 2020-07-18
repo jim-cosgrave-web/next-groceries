@@ -5,6 +5,9 @@ import { NextPageContext } from 'next';
 import { myGet } from '../util/myGet';
 import { env } from '../util/environment';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 import { ToastContainer, toast } from 'react-toastify';
 
 const getListApiUrl = env.apiUrl + 'list?method=getList';
@@ -142,14 +145,16 @@ const GroceryListPage = ({ initialList }) => {
     }
 
     return (
-        <div className="max-width-page">
+        <div className="max-width-page mb-100">
             <h1>Groceries</h1>
             <div className="btn-group">
                 <button className={listBtnClass()} onClick={() => changeMode('list')}>List</button>
                 <button className={storeBtnClass()} onClick={() => changeMode('store')}>Store</button>
             </div>
-            <div className="mt-10">
-                <button className="btn w-100 danger" onClick={handleClearGroceries}>Remove Checked Items</button>
+            <div className="mt-10 clear-btn">
+                <button className="btn w-100 danger" onClick={handleClearGroceries}>
+                    <FontAwesomeIcon icon={faTrash} />
+                </button>
             </div>
             <div>
                 {
