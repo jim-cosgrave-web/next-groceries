@@ -415,16 +415,16 @@ const RecipeByIdPage = () => {
                         <FontAwesomeIcon icon={faEdit} onClick={handleEdit} />
                     </div>
                 </div>
-                <div>
+                {recipe.link && recipe.link.length > 0 && <div>
                     <a href={recipe.link} target="__blank">Recipe Link</a>
-                </div>
+                </div>}
                 <div className="mb-20">
                     <div className="sub-section-title pt-10 pb-10">
                         Ingredients
                     </div>
                     {getIngredientsJSX()}
                     <div className="mt-20">
-                        <button className="my-button" onClick={handleAddToList}>Add to List</button>
+                        <button className="my-button w-100" onClick={handleAddToList}>Add to List</button>
                     </div>
                 </div>
                 <div>
@@ -434,7 +434,7 @@ const RecipeByIdPage = () => {
                     {getCategoryJSX()}
                 </div>
                 <div className="mt-50">
-                    <button onClick={handleDeleteStep1} className="my-button danger">DELETE</button>
+                    <button onClick={handleDeleteStep1} className="my-button danger w-100">DELETE</button>
                 </div>
                 <div>
                     <Confirm
