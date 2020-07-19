@@ -4,6 +4,8 @@ import { database } from '../../middleware/database';
 import { MyNextApiRequest } from '../../middleware/myNextApiRequest';
 import { compare } from '../../util/compare';
 import { titleCase } from '../../util/titleCase';
+import { GROCERY_API_PUT_GROCERY } from '../../util/constants';
+import { ObjectId } from 'mongodb';
 
 export default authenticate(database(async function groceriesList(
     req: MyNextApiRequest,
@@ -51,10 +53,10 @@ export default authenticate(database(async function groceriesList(
                 const exists = groceries.find(g => g.name.toLowerCase().trim() === current.toLowerCase().trim());
 
                 if(!exists) {
-                    groceriesToAdd.push({ name: titleCase(current) });
+                    groceriesToAdd.push({ name: titleCase(current), createdOn: new Date(), modifiedOn: new Date(), modifiedBy: 'Sync' });
                 } else {
                     if(current != exists.name) {
-                        groceriesToUpdate.push({ name: titleCase(current) });
+                        groceriesToUpdate.push({ name: titleCase(current), modifiedOn: new Date(), modifiedBy: 'Sync' });
                     }
                 }
             }
@@ -108,7 +110,7 @@ export default authenticate(database(async function groceriesList(
 
                 if(grocery.name != grocery.originalName) {
                     const filter = { _id: grocery._id };
-                    const update = { $set: { name: grocery.name }};
+                    const update = { $set: { name: grocery.name, modifiedOn: new Date(), modifiedBy: 'Clean' }};
 
                     await collection.updateOne(filter, update);
                     //console.log('doing an update')
@@ -118,6 +120,22 @@ export default authenticate(database(async function groceriesList(
             res.status(200).json({ message: 'OK', duplicatesToRemove, testGroceries });
             return;
         }
+    } else if (req.method == 'PUT') {
+        if(req.body.method === GROCERY_API_PUT_GROCERY) {
+            const filter = { _id: new ObjectId(req.body.grocery._id) };
+            const set = { $set: { name: req.body.newName, modifiedOn: new Date(), modifiedBy: req.jwt.email }};
+
+            await collection.updateOne(filter, set);
+
+            res.status(200).json({ message: 'OK' });
+            return;
+        }
+    } else if (req.method == 'DELETE') {
+        const filter = { _id: new ObjectId(req.body.grocery._id) };
+        await collection.deleteOne(filter);
+
+        res.status(200).json({ message: 'OK' });
+        return
     } else {
         res.status(500).json({ message: 'Method not supported' });
         return;

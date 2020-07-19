@@ -57,7 +57,7 @@ export default authenticate(
                         const grocery = await groceryCollection.findOne({ name: groceryName });
 
                         if(!grocery) {
-                            await groceryCollection.insertOne({ name: groceryName });
+                            await groceryCollection.insertOne({ name: groceryName, createdOn: new Date(), createdBy: req.jwt.email, modifiedOn: new Date(), modifiedBy: req.jwt.email });
                         }
 
                         res.status(200).json({ message: 'OK', grocery });

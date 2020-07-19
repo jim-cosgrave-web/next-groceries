@@ -12,14 +12,12 @@ const AdminPage = () => {
         setLoading(true);
         const resp = await myGet(groceryApiUrl + '?method=sync', null);
         setLoading(false);
-        console.log(resp);
     }
 
     async function handleCleanGroceriesClick() {
         setLoading(true);
         const resp = await myGet(groceryApiUrl + '?method=clean', null);
         setLoading(false);
-        console.log(resp);
     }
 
     return (
@@ -34,7 +32,7 @@ const AdminPage = () => {
                     </div>
                 </Link>
                 <Link href="/admin/groceries">
-                    <div className="admin-card clickable">
+                    <div className="admin-card clickable mt-20">
                         <div className="nav-item">
                             <a>Groceries</a>
                         </div>

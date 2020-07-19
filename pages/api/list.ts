@@ -258,7 +258,21 @@ export default authenticate(database(async function getPrimaryListid(
                 // Upsert the grocery to create it if it doesnt exist already
                 //
                 //const upsertGroceryResp = await groceryCollection.update({ name: { $regex: new RegExp("^" + groceryName, "i") } }, { name: groceryName }, { upsert: true });
-                const upsertGroceryResp = await groceryCollection.update({ name: { $regex: new RegExp("^" + groceryName, "i") } }, { name: titleCase(groceryName) }, { upsert: true });
+                const upsertGroceryResp = await groceryCollection.update(
+                    { 
+                        name: { $regex: new RegExp("^" + groceryName, "i") } 
+                    }, 
+                    { 
+                        name: titleCase(groceryName),
+                        createdOn: new Date(),
+                        createdBy: req.jwt.email,
+                        modifiedOn: new Date(),
+                        modifiedBy: req.jwt.email
+                    }, 
+                    { 
+                        upsert: true 
+                    }
+                );
 
                 //
                 // Create list filter
