@@ -143,7 +143,10 @@ export default authenticate(database(async function getPrimaryListid(
                                 category.groceries.push(listGrocery);
 
                                 const index = remainingGroceries.indexOf(listGrocery);
-                                remainingGroceries.splice(index, 1);
+
+                                if(index > -1) {
+                                    remainingGroceries.splice(index, 1);
+                                }
                             }
                         }
                     }

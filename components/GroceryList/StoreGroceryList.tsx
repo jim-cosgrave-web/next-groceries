@@ -117,8 +117,7 @@ const StoreGroceryList = (props) => {
 
     async function getListData(listId, storeId) {
         let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
-        //console.log(getStoreListResponse);
-        //setStoreList(getStoreListResponse);
+
         saveState(getStoreListResponse);
         setCategories(getStoreListResponse.categories);
     }
