@@ -343,7 +343,7 @@ const StoreGroceryList = (props) => {
                     })}
                 </select>
             </div>}
-            {(!storeDropDown || storeDropDown.length == 0) && <div className="placeholder mt-10"></div>}
+            {(!storeDropDown || storeDropDown.length == 0) && (!stores) && <div className="placeholder mt-10"></div>}
             <div className="grocery-list">
                 <div className="list">
                     {getListHTML()}

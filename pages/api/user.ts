@@ -121,7 +121,8 @@ export default authenticateNoRedirect(database(async function login(
                         name: name,
                         password: hash,
                         stores: [],
-                        roles: []
+                        roles: [],
+                        createdOn: new Date()
                     };
 
                     const newUserResponse = await collection.insertOne(user);
@@ -251,6 +252,11 @@ export default authenticateNoRedirect(database(async function login(
             }
 
             res.status(200).json({ valid: false });
+            return;
+        } else if (method === 'adminUsers') {
+            const users = await collection.find().toArray();
+
+            res.status(200).json({ message: 'OK', users });
             return;
         } else {
             //

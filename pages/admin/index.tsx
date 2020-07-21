@@ -38,6 +38,13 @@ const AdminPage = () => {
                         </div>
                     </div>
                 </Link>
+                <Link href="/admin/users">
+                    <div className="admin-card clickable mt-20">
+                        <div className="nav-item">
+                            <a>Users</a>
+                        </div>
+                    </div>
+                </Link>
                 <div className="admin-card clickable mt-20" onClick={handleSyncGroceriesClick}>
                     <div className="nav-item">
                         Sync Groceries
