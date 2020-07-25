@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Router from "next/router";
+import Loader from '../components/Shared/Loader';
 
 const Index = () => {
     useEffect(() => {
@@ -10,7 +11,7 @@ const Index = () => {
 
     return (
         <div>
-            <h1>Loading...</h1>
+            <Loader />
         </div>
     )
 }

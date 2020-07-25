@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
     const router = useRouter();
 
     function getHeader() {
-        if (router.pathname === '/login') {
+        if (router.pathname === '/login' || router.pathname === '/') {
             return null;
         } else {
             return <Header />;
@@ -14,7 +14,7 @@ const Layout = ({ children }) => {
     }
 
     function getWrapperClass() {
-        if (router.pathname === '/login') {
+        if (router.pathname === '/login' || router.pathname === '/') {
             return null;
         } else {
             return  "page-wrapper";
