@@ -53,10 +53,9 @@
 }
 
 .grocery-left {
-    max-width: 80%;
+    max-width: 75%;
+    width: 75%;
 }
-
-
 
 .list div.my-item:nth-child(odd) {
     background: $secondary;
@@ -68,4 +67,11 @@
 
 .category-input-container {
     width: 65%;
+}
+
+@media only screen and (max-width: 360px) {
+    .grocery-checkbox {
+        width: 25%;
+        max-width: 25%;
+    }
 }
