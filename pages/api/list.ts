@@ -202,7 +202,7 @@ export default authenticate(database(async function getPrimaryListid(
                 // Safety to make sure what the user sees as checked gets removed
                 //
                 if(req.body.checkedGroceries && req.body.checkedGroceries.length > 0) {
-                    const groceryNames = req.body.checkedGroceries.map(g => { return g.name; });
+                    const groceryNames = req.body.checkedGroceries.map(g => { return titleCase(g.name); });
                     const pullName = { $pull: { "groceries": { name: { $in: groceryNames } } } };
 
                     await collection.updateMany(filter, pullName);

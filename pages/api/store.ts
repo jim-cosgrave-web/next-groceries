@@ -103,12 +103,11 @@ export default authenticate(
                     }
                 } else if (req.method === 'PUT') {
                     if (req.body.method === UPDATE_STORE_GROCERY_API_METHOD) {
-                        console.log('debugging...');
 
                         const storeId = new ObjectId(req.body.storeId);
                         const categoryName = req.body.categoryName;
                         const originalName = req.body.grocery.originalName;
-                        const newName = req.body.grocery.groceryName;
+                        const newName = titleCase(req.body.grocery.groceryName);
 
                         const filter = { _id: storeId };
                         const set = { '$set': { "categories.$[category].groceries.$[grocery].groceryName": newName } };
