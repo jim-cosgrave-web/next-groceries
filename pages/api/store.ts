@@ -16,7 +16,8 @@ import {
     MOVE_STORE_CATEGORY_API_METHOD,
     UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
     ADMIN_API_POST_STORE,
-    NOT_AVAILABLE_AT_STORE
+    NOT_AVAILABLE_AT_STORE,
+    ADMIN_API_STORE_CLEAN_GROCERIES
 } from '../../util/constants';
 import { titleCase } from '../../util/titleCase';
 
@@ -97,7 +98,78 @@ export default authenticate(
 
                         res.status(200).json({ message: 'OK', newStore });
                         return;
+                    } else if (req.body.method === ADMIN_API_STORE_CLEAN_GROCERIES) {
+                        //
+                        // Get the store
+                        //
+                        const filter = { _id: new ObjectId(req.body.store._id) };
+                        const store = await collection.findOne(filter);
+
+                        let data = [];
+
+                        //
+                        // Loop over each category
+                        //
+                        for(let i = 0; i < store.categories.length; i++) {
+                            const category = store.categories[i];
+
+                            let uniqueGroceries = [];
+                            let duplicateGroceries = [];
+
+                            //
+                            // Loop over each grocery in the category and find duplicates
+                            //
+                            for(let j = 0; j < category.groceries.length; j++) {
+                                let grocery = category.groceries[j];
+                                grocery.originalName = grocery.groceryName;
+                                grocery.groceryName = titleCase(grocery.groceryName);
+
+                                let index = uniqueGroceries.map(g => { return titleCase(g.groceryName); }).indexOf(grocery.groceryName);
+
+                                if(index == -1) {
+                                    uniqueGroceries.push(grocery);
+                                } else {
+                                    duplicateGroceries.push(grocery);
+                                }
+                            }
+
+                            //
+                            // Remove duplicates
+                            //
+                            let duplicatesToRemove = duplicateGroceries.map(g => { return g.order });
+
+                            if(duplicatesToRemove.length > 0) {
+                                const filter = { _id: new ObjectId(req.body.store._id), "categories.name": category.name };
+                                const pull = { "$pull": { "categories.$.groceries": { "order": { $in: duplicatesToRemove } } } };
+                                data.push({ filter, pull });
+                                await collection.updateMany(filter, pull);
+                            }
+
+                            for(let j = 0; j < uniqueGroceries.length; j++) {
+                                let grocery = uniqueGroceries[j];
+
+                                if(grocery.groceryName != grocery.originalName) {
+                                    data.push({ updatedName: grocery.groceryName })
+
+                                    const set = { '$set': { 
+                                        "categories.$[category].groceries.$[grocery].groceryName": grocery.groceryName,
+                                        "categories.$[category].groceries.$[grocery].modifiedOn": new Date(),
+                                        "categories.$[category].groceries.$[grocery].modifiedBy": "Clean"
+                                    } };
+
+                                    const arrayFilters = { 'arrayFilters': [{ "category.name": category.name }, { "grocery.groceryName": grocery.originalName }], multi: true };
+            
+                                    await collection.update(filter, set, arrayFilters);
+                                }
+                            }
+                        }
+
+
+                        res.status(200).json({ message: req.body, data });
+                        return;
                     } else {
+                        
+
                         res.status(500).json({ message: 'Method not supported' });
                         return;
                     }

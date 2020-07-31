@@ -8,6 +8,7 @@ import { faTrash, faArrowLeft, faArrowRight, faMinusCircle, faPlusCircle } from 
 import MyTypeahead from '../Shared/MyTypeahead';
 
 import { ToastContainer, toast } from 'react-toastify';
+import { titleCase } from '../../util/titleCase';
 
 const postStoreApiUrl = env.apiUrl + 'store';
 
@@ -128,7 +129,9 @@ const AdminCategory = (props) => {
             return;
         }
 
-        const existing = props.category.groceries.find(g => g.groceryName.trim().toLowerCase() === groceryName.trim().toLowerCase());
+        groceryName = titleCase(groceryName);
+
+        const existing = props.category.groceries.find(g => titleCase(g.groceryName.trim()) === titleCase(groceryName.trim()));
 
         if (existing) {
             notifyExists();

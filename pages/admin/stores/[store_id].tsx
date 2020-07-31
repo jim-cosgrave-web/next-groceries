@@ -11,7 +11,8 @@ import {
     DELETE_STORE_GROCERY_API_METHOD,
     ADD_STORE_CATEGORY_API_METHOD,
     MOVE_STORE_CATEGORY_API_METHOD,
-    ADMIN_API_POST_STORE
+    ADMIN_API_POST_STORE,
+    ADMIN_API_STORE_CLEAN_GROCERIES
 } from '../../../util/constants';
 import Confirm from '../../../components/Shared/Confirm';
 import Router from "next/router";
@@ -360,7 +361,7 @@ const AdminStoreByIdPage = () => {
         const swap = clone.categories[otherIndex];
         const category = clone.categories[categoryIndex];
 
-        if(swap.notAvailable || category.notAvailable) {
+        if (swap.notAvailable || category.notAvailable) {
             return;
         }
 
@@ -426,6 +427,24 @@ const AdminStoreByIdPage = () => {
         }
     }
 
+    async function handleCleanGroceries() {
+        const body = {
+            method: ADMIN_API_STORE_CLEAN_GROCERIES,
+            store
+        };
+
+        const resp = await fetch(storeApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+        console.log(json);
+    }
+
     //
     // Generate the page JSX
     //
@@ -440,24 +459,32 @@ const AdminStoreByIdPage = () => {
 
         const categoryNames = store.categories.map(c => { return c.name });
 
-        let jsx = <DragDropContext onDragEnd={handleDragEnd}>
-            {store.categories.map((c, index) => {
-                return (
-                    <AdminCategory
-                        key={c.name}
-                        category={c}
-                        categories={categoryNames}
-                        store={store}
-                        onCategorySet={handleCategorySet}
-                        onCategoryDelete={handleCategoryDelete_step1}
-                        onGroceryAdd={handleGroceryAdd}
-                        onGroceryDelete={handleGroceryDelete}
-                        onMove={handleMove}
-                    >
-                    </AdminCategory>
-                );
-            })}
-        </DragDropContext>
+        let jsx =
+            <div>
+                <div className="mb-20">
+                    <button className="btn warning w-100 alert" onClick={handleCleanGroceries}>Clean Groceries</button>
+                </div>
+                <div className="flex">
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        {store.categories.map((c, index) => {
+                            return (
+                                <AdminCategory
+                                    key={c.name}
+                                    category={c}
+                                    categories={categoryNames}
+                                    store={store}
+                                    onCategorySet={handleCategorySet}
+                                    onCategoryDelete={handleCategoryDelete_step1}
+                                    onGroceryAdd={handleGroceryAdd}
+                                    onGroceryDelete={handleGroceryDelete}
+                                    onMove={handleMove}
+                                >
+                                </AdminCategory>
+                            );
+                        })}
+                    </DragDropContext>
+                </div>
+            </div>
 
         return jsx;
     }
