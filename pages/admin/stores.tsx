@@ -62,7 +62,7 @@ const AdminStoresPage = () => {
                 {getStoresJSX()}
             </div>
             <div className="mt-20">
-                <button onClick={handleNewStoreClick} className="my-button">Add a new store</button>
+                <button onClick={handleNewStoreClick} className="my-button w-100">Add a new store</button>
             </div>
         </div>
     );

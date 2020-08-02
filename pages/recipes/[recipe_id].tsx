@@ -498,7 +498,7 @@ const RecipeByIdPage = () => {
                         Ingredients
                     </div>
                     {getIngredientsJSX()}
-                    <div>
+                    <div className="mt-10">
                         <MyTypeahead placeholder="Add an ingredient" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
                     </div>
                 </div>
@@ -507,7 +507,7 @@ const RecipeByIdPage = () => {
                         Categories
                     </div>
                     {getCategoryJSX()}
-                    <div>
+                    <div className="mt-10">
                         <MyTypeahead placeholder="Add a category" type="categories" onAdd={handleAddCategory}></MyTypeahead>
                     </div>
                 </div>

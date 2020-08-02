@@ -460,7 +460,7 @@ const AdminStoreByIdPage = () => {
         const categoryNames = store.categories.map(c => { return c.name });
 
         let jsx =
-            <div>
+            <div className="w-100">
                 <div className="mb-20">
                     <button className="btn warning w-100 alert" onClick={handleCleanGroceries}>Clean Groceries</button>
                 </div>
@@ -537,7 +537,7 @@ const AdminStoreByIdPage = () => {
                     onClose={() => setCategoryConfirm(false)}
                 />
             </div>
-            <div className="flex align-top">
+            <div className="flex align-top w-100">
                 {getCreateJSX()}
                 {getJSX()}
             </div>

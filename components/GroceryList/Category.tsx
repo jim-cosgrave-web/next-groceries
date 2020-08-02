@@ -98,7 +98,7 @@ const Category = (props) => {
         let wrapperClass = 'list-category mt-10';
 
         if(category.notAvailable) {
-            wrapperClass = 'list-category not-available mt-50'
+            wrapperClass = 'list-category not-available mt-10'
         } 
 
         let jsx = (
