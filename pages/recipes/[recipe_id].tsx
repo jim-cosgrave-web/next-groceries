@@ -128,6 +128,7 @@ const RecipeByIdPage = () => {
 
             const body = {
                 method: LIST_API_POST_RECIPE,
+                recipeName: recipe.name,
                 groceries
             };
 
@@ -549,7 +550,7 @@ const RecipeByIdPage = () => {
                     </div>
                     {getIngredientsJSX()}
                     <div className="mt-20">
-                        <button className="my-button" onClick={handleConfirmAddToList}>Confirm</button>
+                        <button className="my-button w-100" onClick={handleConfirmAddToList}>Confirm</button>
                     </div>
                 </div>
             </div>

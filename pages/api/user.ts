@@ -12,7 +12,8 @@ import {
     SUBSCRIBE_TO_STORE_API_METHOD, 
     UNSUBSCRIBE_FROM_STORE_API_METHOD, 
     CHECK_ACTIVATION_CODE_API_METHOD, 
-    USER_API_RENAME_CATEGORY 
+    USER_API_RENAME_CATEGORY, 
+    USER_MEAL_API_GET
 } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
@@ -23,6 +24,7 @@ export default authenticateNoRedirect(database(async function login(
     const collection = db.collection('users');
     const listCollection = db.collection('groceryLists');
     const userCategoriesCollection = db.collection('userCategories');
+    const mealsCollection = db.collection('userMeals');
 
     if (req.method == 'POST') {
         const name: string = req.body.name;
@@ -257,6 +259,12 @@ export default authenticateNoRedirect(database(async function login(
             const users = await collection.find().toArray();
 
             res.status(200).json({ message: 'OK', users });
+            return;
+        } else if (method === USER_MEAL_API_GET) {
+            const filter = { user_id: req.jwt.user_id };
+            const meals = await mealsCollection.find(filter).toArray();
+
+            res.status(200).json({ message: 'OK', meals });
             return;
         } else {
             //

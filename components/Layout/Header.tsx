@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faListOl, faSignOutAlt, faBook, faLink, faLock, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faSignOutAlt, faBook, faLink, faLock, faUser, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 import { env } from './../../util/environment';
 import fetch from 'isomorphic-unfetch';
 import { LOCAL_STORAGE_USER } from '../../util/constants';
@@ -111,6 +111,14 @@ const Header = () => {
                                 <div className="flex">
                                     <FontAwesomeIcon icon={faListOl} />
                                     <a>Grocery List</a>
+                                </div>
+                            </div>
+                        </Link>
+                        <Link href="/meals">
+                            <div className="nav-item" onClick={handleNav}>
+                                <div className="flex">
+                                    <FontAwesomeIcon icon={faLightbulb} />
+                                    <a>Meals</a>
                                 </div>
                             </div>
                         </Link>

@@ -15,6 +15,8 @@ export default authenticate(database(async function getPrimaryListid(
     res: NextApiResponse
 ) {
     try {
+        const mealsCollection = req.db.collection('userMeals');
+
         if (req.method === 'GET') {
             if (req.query.method == 'getList') {
                 /********************************************
@@ -236,6 +238,14 @@ export default authenticate(database(async function getPrimaryListid(
 
                 const push = { $push: { groceries: { $each: newGroceries } } };
                 await collection.updateOne(filter, push);
+
+                const meal = {
+                    user_id: req.jwt.user_id,
+                    name: req.body.recipeName,
+                    addedOn: new Date()
+                }
+
+                await mealsCollection.insertOne(meal);
 
                 res.status(200).json({ message: 'OK' });
                 return;
