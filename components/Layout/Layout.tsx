@@ -6,6 +6,7 @@ const Layout = ({ children }) => {
     const [isMouseDown, setIsMouseDown] = useState(false);
     const [startPos, setStartPos] = useState(null);
     const [endPos, setEndPos] = useState(null);
+    const swipeDistance = 200;
 
     const router = useRouter();
 
@@ -56,7 +57,7 @@ const Layout = ({ children }) => {
             return;
         }
 
-        if(startPos && newPos < startPos && startPos - newPos > 100) {
+        if(startPos && newPos < startPos && startPos - newPos > swipeDistance) {
             //
             // Swipe left
             //
@@ -68,7 +69,7 @@ const Layout = ({ children }) => {
             }
             
             router.push(newPage);
-        } else if (startPos && newPos > startPos && newPos - startPos > 100) {
+        } else if (startPos && newPos > startPos && newPos - startPos > swipeDistance) {
             //
             // Swipe right
             //
