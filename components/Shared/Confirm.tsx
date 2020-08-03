@@ -9,7 +9,8 @@ const customStyles = {
         bottom: 'auto',
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
-        padding: '0'
+        padding: '0',
+        backgroundColor: 'red'
     }
 };
 
@@ -49,7 +50,7 @@ const Confirm = (props) => {
                 isOpen={modalIsOpen}
                 onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
-                style={customStyles}
+                style={customStyles} 
                 contentLabel="Example Modal"
             >
                 <div className="modal-wrapper">

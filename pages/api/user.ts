@@ -13,7 +13,9 @@ import {
     UNSUBSCRIBE_FROM_STORE_API_METHOD, 
     CHECK_ACTIVATION_CODE_API_METHOD, 
     USER_API_RENAME_CATEGORY, 
-    USER_MEAL_API_GET
+    USER_MEAL_API_GET,
+    USER_MEAL_API_ADD,
+    USER_MEAL_API_DELETE
 } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
@@ -204,7 +206,16 @@ export default authenticateNoRedirect(database(async function login(
                 });
             }
 
-            res.status(200).json({ message: 'OK', body: req.body });
+            res.status(200).json({ message: 'OK' });
+            return;
+        } else if (method === USER_MEAL_API_ADD) {
+            const meal = req.body.meal;
+            delete meal._id;
+
+            meal.user_id = req.jwt.user_id;
+            await mealsCollection.insertOne(meal);
+
+            res.status(200).json({ message: 'OK' })
             return;
         }
 
@@ -294,8 +305,16 @@ export default authenticateNoRedirect(database(async function login(
             }});
 
             return;
-        }
+        } 
 
         res.status(500).json({ message: 'Method not supported' });
+    } else if (req.method === 'DELETE') {
+        if(req.body.method === USER_MEAL_API_DELETE) {
+            const filter = { _id: new ObjectId(req.body.meal._id) };
+            await mealsCollection.deleteOne(filter);
+
+            res.status(200).json({ message: 'OK' });
+            return;
+        }      
     }
 }));
