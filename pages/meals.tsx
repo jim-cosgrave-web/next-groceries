@@ -83,10 +83,14 @@ const MealsPage = () => {
             });
 
             const json = await resp.json();
+
+            meal._id = json._id;
+            setMeals(clone);
         }
     }
 
     function handleDeleteClick(meal) {
+        console.log(meal);
         setIsConfirmOpen(true);
         setMealToDelete(meal);
     }
@@ -116,7 +120,6 @@ const MealsPage = () => {
 
         const json = await resp.json();
 
-        console.log(json);
     }
 
     //

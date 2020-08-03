@@ -213,9 +213,9 @@ export default authenticateNoRedirect(database(async function login(
             delete meal._id;
 
             meal.user_id = req.jwt.user_id;
-            await mealsCollection.insertOne(meal);
+            const doc = await mealsCollection.insertOne(meal);
 
-            res.status(200).json({ message: 'OK' })
+            res.status(200).json({ message: 'OK', _id: doc.ops[0]._id })
             return;
         }
 
