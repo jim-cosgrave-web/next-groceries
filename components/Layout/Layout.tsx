@@ -26,14 +26,24 @@ const Layout = ({ children }) => {
     }
 
     function handleMouseDown(e) {
-        setIsMouseDown(true);
-        setStartPos(e.clientX);
+        if(e && e.touches) {
+            //console.log(e.touches[0]);
+            setIsMouseDown(true);
+            //setStartPos(e.clientX);
+            setStartPos(e.touches[0].clientX);
+        }
+    }
+
+    function handleTouchMove(e) {
+        if(e && e.touches && e.touches.length > 0) {
+            setEndPos(e.touches[0].clientX)
+        }
     }
 
     function handleMouseUp(e) {
         setIsMouseDown(false);
-        const newPos = e.clientX;
-
+        //console.log(startPos, endPos);
+        const newPos = endPos;
         const pages = ['/grocery-list', '/meals', '/recipes'];
         const currentPage = router.pathname;
         const pageIndex = pages.indexOf(currentPage);
@@ -46,22 +56,24 @@ const Layout = ({ children }) => {
             return;
         }
 
-        if(startPos && e.clientX < startPos && startPos - e.clientX > 100) {
+        if(startPos && newPos < startPos && startPos - newPos > 100) {
             //
             // Swipe left
             //
             let newPage = pages[0];
+            console.log('swipe left');
 
             if(pageIndex + 1 < pages.length) {
                 newPage = pages[pageIndex + 1];
             }
             
             router.push(newPage);
-        } else if (startPos && e.clientX > startPos && e.clientX - startPos > 100) {
+        } else if (startPos && newPos > startPos && newPos - startPos > 100) {
             //
             // Swipe right
             //
             let newPage = pages[pages.length - 1];
+            console.log('swipe right');
 
             if(pageIndex - 1 >= 0) {
                 newPage = pages[pageIndex - 1];
@@ -71,10 +83,15 @@ const Layout = ({ children }) => {
         }
 
         setStartPos(null);
+        setEndPos(null);
     }
 
     return (
-        <div onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onTouchStart={handleMouseDown} onTouchEnd={handleMouseUp}>
+        <div onMouseDown={handleMouseDown} 
+             onMouseUp={handleMouseUp} 
+             onTouchStart={handleMouseDown} 
+             onTouchEnd={handleMouseUp}
+             onTouchMove={handleTouchMove} >
             {getHeader()}
             <div className={getWrapperClass()}>
                 {children}
