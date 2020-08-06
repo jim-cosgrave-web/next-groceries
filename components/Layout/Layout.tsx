@@ -68,7 +68,7 @@ const Layout = ({ children }) => {
                 newPage = pages[pageIndex + 1];
             }
             
-            router.push(newPage);
+            //router.push(newPage);
         } else if (startPos && newPos > startPos && newPos - startPos > swipeDistance) {
             //
             // Swipe right
@@ -80,7 +80,7 @@ const Layout = ({ children }) => {
                 newPage = pages[pageIndex - 1];
             }
 
-            router.push(newPage);
+            //router.push(newPage);
         }
 
         setStartPos(null);
