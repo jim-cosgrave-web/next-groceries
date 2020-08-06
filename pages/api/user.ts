@@ -77,13 +77,21 @@ export default authenticateNoRedirect(database(async function login(
                             roles: existingUser.roles 
                         };
                         
-                        const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '7d' });
+                        //const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+                        //
+                        // No expiration
+                        //
+                        const jwt = sign(claims, process.env.JWT_SECRET);
 
                         res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
                             httpOnly: true,
                             secure: process.env.NODE_ENV !== 'development',
                             sameSite: 'strict',
-                            maxAge: 36288000,
+                            //
+                            // No expiration
+                            // 
+                            // maxAge: 36288000,
                             path: '/'
                         }));
 
