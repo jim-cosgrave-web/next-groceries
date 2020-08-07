@@ -53,7 +53,7 @@ const Layout = ({ children }) => {
         // Page not set up in rotation.  Default to grocery-list.
         //
         if(pageIndex === -1) {
-            router.push('/grocery-list');
+            //router.push('/grocery-list');
             return;
         }
 
