@@ -83,6 +83,7 @@ export default authenticateNoRedirect(database(async function login(
                         // No expiration
                         //
                         const jwt = sign(claims, process.env.JWT_SECRET);
+                        const tenYears = (10 * 365 * 24 * 60 * 60);
 
                         res.setHeader('Set-Cookie', cookie.serialize('auth', jwt, {
                             httpOnly: true,
@@ -92,6 +93,7 @@ export default authenticateNoRedirect(database(async function login(
                             // No expiration
                             // 
                             // maxAge: 36288000,
+                            maxAge: tenYears,
                             path: '/'
                         }));
 
