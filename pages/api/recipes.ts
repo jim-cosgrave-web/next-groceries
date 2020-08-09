@@ -116,7 +116,13 @@ export default authenticate(database(async function recipesAPI(
         } else if (req.method === 'PUT') {
             if(req.body.method === RECIPE_API_PUT_DETAILS) {
                 const filter = { _id: new ObjectId(req.body.recipe_id.toString()), user_id: req.jwt.user_id };
-                const set = { $set: { name: req.body.name, link: req.body.link } };
+                const set = { 
+                    $set: { 
+                        name: req.body.name, 
+                        link: req.body.link,
+                        ingredients: req.body.ingredients
+                    } 
+                };
 
                 await collection.updateOne(filter, set);
 

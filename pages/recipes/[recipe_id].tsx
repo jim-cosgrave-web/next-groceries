@@ -119,6 +119,7 @@ const RecipeByIdPage = () => {
                         name: ingredient.name,
                         checked: false,
                         recipe: recipe.name,
+                        note: ingredient.note,
                         hash: hashKey
                     }
 
@@ -295,6 +296,7 @@ const RecipeByIdPage = () => {
         const link = linkRef?.current?.value;
 
         if (!recipe.isNew) {
+
             if (putTimeout.current) {
                 clearTimeout(putTimeout.current);
             }
@@ -304,7 +306,8 @@ const RecipeByIdPage = () => {
                     method: RECIPE_API_PUT_DETAILS,
                     recipe_id: recipe._id,
                     name: name,
-                    link: link
+                    link: link,
+                    ingredients: recipe.ingredients
                 };
 
                 const resp = await fetch(apiUrl, {
@@ -568,6 +571,14 @@ const RecipeByIdPage = () => {
         setRecipe(clone);
     }
 
+    async function handleIngredientNoteChange(i, e) {
+        const input = e.target.value;
+
+        i.note = input;
+
+        await putRecipeDetails();
+    }
+
     function getIngredientsJSX() {
         if (!recipe || !recipe.ingredients) {
             return <div>No Ingredients</div>;
@@ -580,7 +591,13 @@ const RecipeByIdPage = () => {
                         <div className="item" key={i.name}>
                             <div className="flex space-between">
                                 <div>
-                                    {i.name}
+                                    <div>
+                                        {i.name}
+                                    </div>
+                                    <div className="mt-10">
+                                        {mode == 'edit' && <input type="text" className="form-control w-100" placeholder="Add a note..." onChange={(e) => handleIngredientNoteChange(i, e)} defaultValue={i.note} />}
+                                        {mode != 'edit' && i.note && i.note.length > 0 && <div><i>Note: {i.note}</i></div>}
+                                    </div>
                                 </div>
                                 <div>
                                     {mode == 'edit' && <FontAwesomeIcon className="clickable" icon={faTrash} onClick={() => handleRemoveIngredient(i)} />}

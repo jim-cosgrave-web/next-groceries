@@ -89,10 +89,6 @@ export default authenticateNoRedirect(database(async function login(
                             httpOnly: true,
                             secure: process.env.NODE_ENV !== 'development',
                             sameSite: 'strict',
-                            //
-                            // No expiration
-                            // 
-                            // maxAge: 36288000,
                             maxAge: tenYears,
                             path: '/'
                         }));
