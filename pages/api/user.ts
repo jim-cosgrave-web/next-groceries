@@ -15,7 +15,8 @@ import {
     USER_API_RENAME_CATEGORY, 
     USER_MEAL_API_GET,
     USER_MEAL_API_ADD,
-    USER_MEAL_API_DELETE
+    USER_MEAL_API_DELETE,
+    ADMIN_API_CHANGE_USER_PASSWORD
 } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
@@ -322,5 +323,18 @@ export default authenticateNoRedirect(database(async function login(
             res.status(200).json({ message: 'OK' });
             return;
         }      
+    } else if (req.method === 'PUT') {
+        if(req.body.method === ADMIN_API_CHANGE_USER_PASSWORD) {
+            const filter = { _id: new ObjectId(req.body.user._id) };
+            
+            hash(req.body.user.password, 10, async function (err, hash) {
+                //const user = await collection.find(filter).toArray();
+                await collection.updateOne(filter, { "$set": { "password": hash } });
+
+
+                res.status(200).json({ message: 'OK' });
+                return;
+            });
+        }
     }
 }));

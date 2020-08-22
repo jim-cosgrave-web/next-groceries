@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import { formatDate } from '../../util/formatDate';
+import { ADMIN_API_CHANGE_USER_PASSWORD } from '../../util/constants';
 
 const apiUrl = env.apiUrl + 'user';
 
@@ -61,6 +62,31 @@ const AdminUsersPage = () => {
         setVisibleUsers(visible);
     }
 
+    async function handleChangePassword(user) {
+        //console.log('changing password for...', user);
+
+        const body = {
+            method: ADMIN_API_CHANGE_USER_PASSWORD,
+            user
+        };
+
+        const resp = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+
+        console.log(json);
+    }
+
+    async function handlePasswordInputChange(e, user) {
+        user.password = e.target.value;
+    }
+
     function getJSX() {
         if (!users || users.length == 0) {
             return <div>Loading...</div>;
@@ -90,6 +116,19 @@ const AdminUsersPage = () => {
                     </div>
                     <div>
                         Last Use: {formatDate(u.lastUse)}
+                    </div>
+                    <div>
+                        <div className="flex space-between">
+                            <div>Change Password:</div>
+                            <div><input type="text" className="form-control" onChange={(e) => handlePasswordInputChange(e, u)} /></div>
+                            <div>
+                                <button 
+                                  className="my-button"
+                                  onClick={() => handleChangePassword(u)}>
+                                    Save
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
