@@ -22,6 +22,7 @@ import {
 } from "../../util/constants";
 
 import { ToastContainer, toast } from 'react-toastify';
+import Breadcrumbs from "../../components/Shared/Breadcrumbs";
 
 const apiUrl = env.apiUrl + 'recipes';
 const listApiUrl = env.apiUrl + 'list';
@@ -645,6 +646,9 @@ const RecipeByIdPage = () => {
 
     return (
         <div>
+            <div>
+                <Breadcrumbs></Breadcrumbs>
+            </div>
             {getJSX()}
             {getEditJSX()}
             {getAddToListJSX()}

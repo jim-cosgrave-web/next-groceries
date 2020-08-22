@@ -104,7 +104,12 @@ const Category = (props) => {
         let jsx = (
             <div className={wrapperClass}>
                 {mode == 'view' && <div className="list-category-name clickable" onClick={toggleMode}>
-                    {category.isCustomized ? '*' : ''} {category.name}
+                    <div>
+                        {category.isCustomized ? '*' : ''} {category.name}
+                    </div>
+                    {category.subCategoryName && <div className="mt-10 sub-category-name">
+                        {category.subCategoryName}
+                    </div>}
                 </div>}
                 {mode == 'edit' && <div className="flex space-between list-category-name">
                     <div className="category-input-container">

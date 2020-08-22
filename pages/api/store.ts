@@ -296,7 +296,10 @@ export default authenticate(
                     } else if (req.body.method === UPDATE_STORE_CATEGORY_API_METHOD) {
                         const storeId = new ObjectId(req.body.store_id);
                         const uFilter = { _id: storeId, "categories.name": req.body.previousCategoryName };
-                        const uSet = { "$set": { "categories.$.name": req.body.newCategoryName } };
+                        const uSet = { "$set": { 
+                            "categories.$.name": req.body.newCategoryName, 
+                            "categories.$.subCategoryName": req.body.subCategoryName
+                        } };
 
                         await collection.updateOne(uFilter, uSet);
 

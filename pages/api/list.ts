@@ -97,6 +97,7 @@ export default authenticate(database(async function getPrimaryListid(
                     let category = { 
                         id: storeCategory.id, 
                         name: storeCategory.name, 
+                        subCategoryName: storeCategory.subCategoryName,
                         originalName: storeCategory.name,
                         order: storeCategory.order, 
                         groceries: [], 

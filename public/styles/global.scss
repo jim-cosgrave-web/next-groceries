@@ -162,6 +162,10 @@ h1 {
   flex-grow: 1;
 }
 
+.no-wrap {
+  flex-wrap: nowrap;
+}
+
 .align-top {
   align-items: initial;
 }

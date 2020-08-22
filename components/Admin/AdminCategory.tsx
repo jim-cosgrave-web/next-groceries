@@ -18,6 +18,8 @@ const AdminCategory = (props) => {
     const [groceriesVisible, setGroceriesVisible] = useState(false);
 
     const nameRef = useRef<HTMLInputElement>(null);
+    const subCategoryNameRef = useRef<HTMLInputElement>(null);
+
     const startToastId = React.useRef(null);
 
     const notifySuccess = () => startToastId.current = toast('Added grocery!', {
@@ -74,22 +76,24 @@ const AdminCategory = (props) => {
             const clone = props.category;
             const previousCategoryName = clone.name;
             clone.name = nameRef.current?.value;
+            clone.subCategoryName = subCategoryNameRef.current?.value;
 
             setMode('view');
 
-            await saveCategoryName(previousCategoryName, clone.name);
+            await saveCategoryName(previousCategoryName, clone.name, clone.subCategoryName);
         }
     }
 
     //
     // Save a category name change
     //
-    async function saveCategoryName(previousCategoryName, newCategoryName) {
+    async function saveCategoryName(previousCategoryName, newCategoryName, subCategoryName) {
         const body = {
             method: UPDATE_STORE_CATEGORY_API_METHOD,
             store_id: props.store._id,
-            previousCategoryName: previousCategoryName,
-            newCategoryName: newCategoryName
+            previousCategoryName,
+            newCategoryName,
+            subCategoryName
         };
 
         const resp = await fetch(postStoreApiUrl, {
@@ -108,8 +112,9 @@ const AdminCategory = (props) => {
     //
     async function handleKeyUp(e) {
         if (e.key.toLowerCase() === 'enter') {
-            await saveCategoryName(props.category.name, nameRef.current.value);
+            await saveCategoryName(props.category.name, nameRef.current.value, subCategoryNameRef.current.value);
             props.category.name = nameRef.current.value;
+            props.category.subCategoryName = subCategoryNameRef.current.value;
             setMode('view');
         }
     }
@@ -205,17 +210,22 @@ const AdminCategory = (props) => {
     return (
         <div className="category-container">
             {mode == 'view' && <div className="category-name clickable">
-                <div className="flex space-between">
-                    <div className="flex">
+                <div className="flex space-between no-wrap">
+                    <div className="flex no-wrap">
                         <div className="pr-10 clickable" onClick={toggleGroceries}>
                             {groceriesVisible && <FontAwesomeIcon icon={faMinusCircle} />}
                             {!groceriesVisible && <FontAwesomeIcon icon={faPlusCircle} />}
                         </div>
                         <div onClick={toggleMode}>
-                            {props.category.name}
+                            <div>
+                                {props.category.name}
+                            </div>
+                            {props.category.subCategoryName && <div className="mt-10 sub-category-name">
+                                {props.category.subCategoryName}
+                            </div>}
                         </div>
                     </div>
-                    {!props.category.notAvailable && <div>
+                    {!props.category.notAvailable && <div className="admin-arrows">
                         <FontAwesomeIcon icon={faArrowLeft} className="mr-20" onClick={moveLeft} />
                         <FontAwesomeIcon icon={faArrowRight} onClick={moveRight} />
                     </div>}
@@ -224,12 +234,23 @@ const AdminCategory = (props) => {
             {mode == 'edit' && <div className="category-name clickable">
                 <div className="flex space-between">
                     <div className="flex-grow-1" onClick={toggleMode}>
+                        <div>
                         <input
                             className="form-control category-input"
                             type="text"
                             ref={nameRef}
                             onKeyUp={handleKeyUp}
                             defaultValue={props.category.name} />
+                        </div>
+                        <div>
+                            <input 
+                                className="form-control category-input mt-10"
+                                type="text"
+                                placeholder="Sub Category Name"
+                                ref={subCategoryNameRef}
+                                defaultValue={props.category.subCategoryName}
+                            />
+                        </div>
                     </div>
                     <div className="clickable" onClick={deleteCategory}>
                         <FontAwesomeIcon icon={faTrash} />
