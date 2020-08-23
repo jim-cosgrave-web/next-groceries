@@ -1,0 +1,18 @@
+.grid-container {
+    position: relative;
+}
+
+.grid {
+    position: relative;
+}
+
+.grid:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+.grid-cell:hover {
+    background: yellow;
+    border: 1px solid #000;
+}

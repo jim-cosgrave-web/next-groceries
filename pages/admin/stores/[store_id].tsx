@@ -16,6 +16,7 @@ import {
 } from '../../../util/constants';
 import Confirm from '../../../components/Shared/Confirm';
 import Router from "next/router";
+import Grid from '../../../components/Admin/Grid';
 
 const storeApiUrl = env.apiUrl + 'store';
 const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
@@ -461,6 +462,9 @@ const AdminStoreByIdPage = () => {
 
         let jsx =
             <div className="w-100">
+                <div className="mb-20">
+                    <Grid />
+                </div>
                 <div className="mb-20">
                     <button className="btn warning w-100 alert" onClick={handleCleanGroceries}>Clean Groceries</button>
                 </div>
