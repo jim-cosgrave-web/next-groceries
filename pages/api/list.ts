@@ -266,7 +266,7 @@ export default authenticate(database(async function getPrimaryListid(
                 // Create parameters
                 //
                 const list_id = new ObjectId(req.body.list_id);
-                const groceryName = req.body.grocery.name.trim();
+                const groceryName = titleCase(req.body.grocery.name.trim());
 
                 //
                 // Upsert the grocery to create it if it doesnt exist already
@@ -291,7 +291,8 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 // Create list filter
                 //
-                const groceryFilter = { _id: list_id, user_id: req.jwt.user_id, "groceries.name": { $regex: new RegExp("^" + groceryName, "i") } };
+                //const groceryFilter = { _id: list_id, user_id: req.jwt.user_id, "groceries.name": { $regex: new RegExp("^" + groceryName, "i") } };
+                const groceryFilter = { _id: list_id, user_id: req.jwt.user_id, "groceries.name": groceryName };
 
                 //
                 // Check if the grocery is already on the list
