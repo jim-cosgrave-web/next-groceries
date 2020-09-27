@@ -8,11 +8,11 @@ import { MyNextApiRequest, MyJWT } from '../../middleware/myNextApiRequest';
 import { ObjectId } from 'mongodb';
 import { authenticateNoRedirect } from '../../middleware/authenticateNoRedirect';
 
-import { 
-    SUBSCRIBE_TO_STORE_API_METHOD, 
-    UNSUBSCRIBE_FROM_STORE_API_METHOD, 
-    CHECK_ACTIVATION_CODE_API_METHOD, 
-    USER_API_RENAME_CATEGORY, 
+import {
+    SUBSCRIBE_TO_STORE_API_METHOD,
+    UNSUBSCRIBE_FROM_STORE_API_METHOD,
+    CHECK_ACTIVATION_CODE_API_METHOD,
+    USER_API_RENAME_CATEGORY,
     USER_MEAL_API_GET,
     USER_MEAL_API_ADD,
     USER_MEAL_API_DELETE,
@@ -43,7 +43,7 @@ export default authenticateNoRedirect(database(async function login(
         if (req.body.method && req.body.method.length > 0) {
             method = req.body.method;
         }
-        
+
         if (method === 'login') {
             //
             // Validate that parameters were supplied
@@ -60,7 +60,7 @@ export default authenticateNoRedirect(database(async function login(
             if (!existingUser) {
                 res.status(401).json({ status: 'Unsuccessful login' });
             } else {
-                
+
 
                 compare(password, existingUser.password, async function (err, result) {
                     //
@@ -70,14 +70,14 @@ export default authenticateNoRedirect(database(async function login(
                         //
                         // Create json token here
                         //
-                        const claims = { 
-                            sub: existingUser._id, 
-                            name: existingUser.name, 
-                            email: existingUser.email, 
-                            user_id: existingUser._id.toString(), 
-                            roles: existingUser.roles 
+                        const claims = {
+                            sub: existingUser._id,
+                            name: existingUser.name,
+                            email: existingUser.email,
+                            user_id: existingUser._id.toString(),
+                            roles: existingUser.roles
                         };
-                        
+
                         //const jwt = sign(claims, process.env.JWT_SECRET, { expiresIn: '7d' });
 
                         //
@@ -148,11 +148,11 @@ export default authenticateNoRedirect(database(async function login(
 
                     await listCollection.insert(groceryList);
 
-                    res.status(200).json({ status: 'ok'});
+                    res.status(200).json({ status: 'ok' });
                     return;
                 });
             }
-        } else if (method == SUBSCRIBE_TO_STORE_API_METHOD ) {
+        } else if (method == SUBSCRIBE_TO_STORE_API_METHOD) {
             //let push = { $push: { 'categories': newCategory } };
             const store_id = new ObjectId(req.body.store_id);
             const userFilter = { _id: new ObjectId(req.jwt.user_id) };
@@ -160,14 +160,14 @@ export default authenticateNoRedirect(database(async function login(
 
             let alreadySubbed = false;
 
-            for(let i = 0; i < user.stores.length; i++) {
-                if(user.stores[i].name == req.body.name) {
+            for (let i = 0; i < user.stores.length; i++) {
+                if (user.stores[i].name == req.body.name) {
                     alreadySubbed = true;
                     break;
                 }
             }
 
-            if(!alreadySubbed) {
+            if (!alreadySubbed) {
                 const newStore = { store_id: req.body.store_id, name: req.body.name }
                 user.stores.push(newStore)
                 await collection.updateOne(userFilter, { $push: { 'stores': newStore } });
@@ -187,8 +187,8 @@ export default authenticateNoRedirect(database(async function login(
             const filter = { user_id: userId, store_id: req.body.store_id, category_id: req.body.category_id };
             const existing = await userCategoriesCollection.findOne(filter);
 
-            if(existing) {
-                if(req.body.name == req.body.originalName) {
+            if (existing) {
+                if (req.body.name == req.body.originalName) {
                     //
                     // Do a delete
                     //
@@ -204,8 +204,8 @@ export default authenticateNoRedirect(database(async function login(
                 // Do an insert
                 //
                 await userCategoriesCollection.insertOne({
-                    user_id: userId, 
-                    store_id: req.body.store_id, 
+                    user_id: userId,
+                    store_id: req.body.store_id,
                     category_id: req.body.category_id,
                     name: req.body.name,
                     originalName: req.body.originalName,
@@ -266,7 +266,7 @@ export default authenticateNoRedirect(database(async function login(
 
             const doc = await activationCollection.findOne(filter);
 
-            if(doc) {
+            if (doc) {
                 res.status(200).json({ valid: true });
                 return
             }
@@ -291,7 +291,7 @@ export default authenticateNoRedirect(database(async function login(
             let user = null;
             const filter = { _id: new ObjectId(req.jwt.user_id) };
 
-            if(req.jwt && req.jwt.user_id) {
+            if (req.jwt && req.jwt.user_id) {
                 user = await collection.findOne(filter);
             }
 
@@ -302,31 +302,33 @@ export default authenticateNoRedirect(database(async function login(
 
             await collection.updateOne(filter, { "$set": { "lastUse": new Date() } });
 
-            res.status(200).json({ user: { 
-                _id: user._id.toString(), 
-                username: user.username, 
-                email: user.email, 
-                name: user.name,
-                roles: user.roles,
-                stores: user.stores
-            }});
+            res.status(200).json({
+                user: {
+                    _id: user._id.toString(),
+                    username: user.username,
+                    email: user.email,
+                    name: user.name,
+                    roles: user.roles,
+                    stores: user.stores
+                }
+            });
 
             return;
-        } 
+        }
 
         res.status(500).json({ message: 'Method not supported' });
     } else if (req.method === 'DELETE') {
-        if(req.body.method === USER_MEAL_API_DELETE) {
+        if (req.body.method === USER_MEAL_API_DELETE) {
             const filter = { _id: new ObjectId(req.body.meal._id) };
             await mealsCollection.deleteOne(filter);
 
             res.status(200).json({ message: 'OK' });
             return;
-        }      
+        }
     } else if (req.method === 'PUT') {
-        if(req.body.method === ADMIN_API_CHANGE_USER_PASSWORD) {
+        if (req.body.method === ADMIN_API_CHANGE_USER_PASSWORD) {
             const filter = { _id: new ObjectId(req.body.user._id) };
-            
+
             hash(req.body.user.password, 10, async function (err, hash) {
                 //const user = await collection.find(filter).toArray();
                 await collection.updateOne(filter, { "$set": { "password": hash } });
