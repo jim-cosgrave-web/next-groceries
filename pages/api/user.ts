@@ -16,7 +16,8 @@ import {
     USER_MEAL_API_GET,
     USER_MEAL_API_ADD,
     USER_MEAL_API_DELETE,
-    ADMIN_API_CHANGE_USER_PASSWORD
+    ADMIN_API_CHANGE_USER_PASSWORD,
+    ADMIN_API_DELETE_USER
 } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
@@ -321,6 +322,17 @@ export default authenticateNoRedirect(database(async function login(
         if (req.body.method === USER_MEAL_API_DELETE) {
             const filter = { _id: new ObjectId(req.body.meal._id) };
             await mealsCollection.deleteOne(filter);
+
+            res.status(200).json({ message: 'OK' });
+            return;
+        } else if (req.body.method === ADMIN_API_DELETE_USER) {
+            const userFilter = { _id: new ObjectId(req.body.user_id) };
+            const userIdFilter = { user_id: req.body.user_id };
+
+            await mealsCollection.deleteMany(userIdFilter);
+            await userCategoriesCollection.deleteMany(userIdFilter);
+            await listCollection.deleteMany(userIdFilter);
+            await collection.deleteOne(userFilter);
 
             res.status(200).json({ message: 'OK' });
             return;

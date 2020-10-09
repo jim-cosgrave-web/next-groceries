@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import { formatDate } from '../../util/formatDate';
-import { ADMIN_API_CHANGE_USER_PASSWORD } from '../../util/constants';
+import { ADMIN_API_CHANGE_USER_PASSWORD, ADMIN_API_DELETE_USER } from '../../util/constants';
+import Confirm from '../../components/Shared/Confirm';
+import user from '../api/user';
 
 const apiUrl = env.apiUrl + 'user';
 
@@ -10,6 +12,8 @@ const AdminUsersPage = () => {
     const [users, setUsers] = useState(null);
     const [visibleUsers, setVisibleUsers] = useState(null);
     const searchRef = useRef<HTMLInputElement>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
 
     useEffect(() => {
         let isCancelled = false;
@@ -18,7 +22,7 @@ const AdminUsersPage = () => {
             const data = await myGet(apiUrl + '?method=adminUsers', null);
 
             if (isCancelled == false && data && data.users) {
-                for(let i = 0; i < data.users.length; i++) {
+                for (let i = 0; i < data.users.length; i++) {
                     data.users[i].dtLastLogin = new Date(data.users[i].lastLogin)
                 }
 
@@ -49,10 +53,10 @@ const AdminUsersPage = () => {
 
         let visible = [];
 
-        for(let i = 0; i < clone.length; i++) {
+        for (let i = 0; i < clone.length; i++) {
             let user = clone[i];
 
-            if(user.username.trim().toLowerCase().indexOf(searchTerm) > -1
+            if (user.username.trim().toLowerCase().indexOf(searchTerm) > -1
                 || user.email.trim().toLowerCase().indexOf(searchTerm) > -1
                 || user.name.trim().toLowerCase().indexOf(searchTerm) > -1) {
                 visible.push(user);
@@ -87,12 +91,51 @@ const AdminUsersPage = () => {
         user.password = e.target.value;
     }
 
+    function handleDeleteClickStep1(user) {
+        setIsConfirmOpen(true);
+        setUserToDelete(user);
+    }
+
+    async function handleDeleteClickStep2() {
+        setIsConfirmOpen(false);
+
+        const body = {
+            method: ADMIN_API_DELETE_USER,
+            user_id: userToDelete._id.toString()
+        };
+
+        const resp = await fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+
+        setUserToDelete(null);
+
+        const data = await myGet(apiUrl + '?method=adminUsers', null);
+
+        if (data && data.users) {
+            for (let i = 0; i < data.users.length; i++) {
+                data.users[i].dtLastLogin = new Date(data.users[i].lastLogin)
+            }
+
+            data.users = data.users.sort((a, b) => b.dtLastLogin - a.dtLastLogin);
+
+            setUsers(data.users);
+            setVisibleUsers(data.users);
+        }
+    }
+
     function getJSX() {
         if (!users || users.length == 0) {
             return <div>Loading...</div>;
         }
 
-        if(!visibleUsers || visibleUsers.length == 0) {
+        if (!visibleUsers || visibleUsers.length == 0) {
             return <div>Nothing found...</div>
         }
 
@@ -122,13 +165,23 @@ const AdminUsersPage = () => {
                             <div>Change Password:</div>
                             <div><input type="text" className="form-control" onChange={(e) => handlePasswordInputChange(e, u)} /></div>
                             <div>
-                                <button 
-                                  className="my-button"
-                                  onClick={() => handleChangePassword(u)}>
+                                <button
+                                    className="my-button"
+                                    onClick={() => handleChangePassword(u)}>
                                     Save
                                 </button>
                             </div>
                         </div>
+                    </div>
+                    <div className="mt-20 w-100">
+                        <button className="my-button danger w-100" onClick={() => handleDeleteClickStep1(u)}>DELETE USER</button>
+                    </div>
+                    <div>
+                        <Confirm
+                            isOpen={isConfirmOpen}
+                            onConfirm={handleDeleteClickStep2}
+                            onClose={() => setIsConfirmOpen(false)}
+                        />
                     </div>
                 </div>
             );
