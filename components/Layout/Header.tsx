@@ -22,6 +22,10 @@ const Header = () => {
             const user = await getUser();
 
             if (isCancelled == false && user) {
+                if (!user.stores || user.stores.length === 0) {
+                    router.push('/subscribe-to-store');
+                }
+
                 setUser(user);
             }
         }
@@ -129,7 +133,7 @@ const Header = () => {
                                     <a>Recipes</a>
                                 </div>
                             </div>
-                        </Link>                        
+                        </Link>
                         <Link href="/subscribe-to-store">
                             <div className="nav-item" onClick={handleNav}>
                                 <div className="flex">
