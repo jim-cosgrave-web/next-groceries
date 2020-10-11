@@ -10,15 +10,15 @@ import Router from "next/router";
 import Confirm from "../../components/Shared/Confirm";
 import { simpleHash } from "../../util/simpleHash";
 
-import { 
-    RECIPE_API_PUT_DETAILS, 
-    RECIPE_API_POST_INGREDIENT, 
-    RECIPE_API_DELETE_INGREDIENT, 
-    RECIPE_API_POST_CATEGORY, 
-    RECIPE_API_DELETE_CATEGORY, 
-    LIST_API_POST_RECIPE, 
-    RECIPE_API_POST_RECIPE, 
-    RECIPE_API_DELETE_RECIPE 
+import {
+    RECIPE_API_PUT_DETAILS,
+    RECIPE_API_POST_INGREDIENT,
+    RECIPE_API_DELETE_INGREDIENT,
+    RECIPE_API_POST_CATEGORY,
+    RECIPE_API_DELETE_CATEGORY,
+    LIST_API_POST_RECIPE,
+    RECIPE_API_POST_RECIPE,
+    RECIPE_API_DELETE_RECIPE
 } from "../../util/constants";
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -363,7 +363,7 @@ const RecipeByIdPage = () => {
         setNewRecipeValid(false);
         const json = await resp.json();
 
-        if(json && !json.recipeId) {
+        if (json && !json.recipeId) {
             setError({ errorMessage: true });
         }
 
@@ -646,9 +646,6 @@ const RecipeByIdPage = () => {
 
     return (
         <div>
-            <div>
-                <Breadcrumbs></Breadcrumbs>
-            </div>
             {getJSX()}
             {getEditJSX()}
             {getAddToListJSX()}

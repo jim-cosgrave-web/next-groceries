@@ -4,9 +4,9 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import MyTypeahead from '../Shared/MyTypeahead';
 
-import { 
-    UNCATEGORIZED, 
-    UPDATE_STORE_GROCERY_CATEGORY_API_METHOD, 
+import {
+    UNCATEGORIZED,
+    UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
     LOCAL_STORAGE_STORE_LIST
 } from '../../util/constants';
 
@@ -32,14 +32,13 @@ const StoreGroceryList = (props) => {
         async function execute() {
             const state = await getState();
 
-            if(state) {
+            if (state) {
                 setStoreList(state);
             }
 
             const result = await getStores();
 
             if (result.success && result.selectedStore) {
-
                 await getListData(props.listId, result.selectedStore.value)
             } else {
                 setStoreList({ emptyList: true });
@@ -117,6 +116,8 @@ const StoreGroceryList = (props) => {
 
     async function getListData(listId, storeId) {
         let getStoreListResponse = await myGet(getStoreListApiUrl + `&listId=${listId}&storeId=${storeId}`, null);
+
+        console.log(getStoreListResponse);
 
         saveState(getStoreListResponse);
         setCategories(getStoreListResponse.categories);
@@ -255,10 +256,10 @@ const StoreGroceryList = (props) => {
         const groceryName = grocery.name;
         const clone = { ...storeList };
 
-        for(let i = 0; i < clone.categorizedList.length; i++) {
+        for (let i = 0; i < clone.categorizedList.length; i++) {
             const category = clone.categorizedList[i];
 
-            for(let j = 0; j < category.groceries.length; j++) {
+            for (let j = 0; j < category.groceries.length; j++) {
                 const g = category.groceries[j];
 
                 if (g.name == groceryName) {
@@ -272,7 +273,7 @@ const StoreGroceryList = (props) => {
             }
         }
 
-        if(typeof(props.onGroceryUpdate) === 'function') {
+        if (typeof (props.onGroceryUpdate) === 'function') {
             props.onGroceryUpdate(grocery);
         }
 
@@ -297,8 +298,8 @@ const StoreGroceryList = (props) => {
         }
 
         const visibleCategories = storeList.categorizedList.find(c => c.hidden == false);
-        
-        if(!visibleCategories || visibleCategories.length === 0) {
+
+        if (!visibleCategories || visibleCategories.length === 0) {
             return (
                 <div className="alert warning mb-10 mt-10">
                     <b>Nothing on your list</b>
@@ -313,16 +314,16 @@ const StoreGroceryList = (props) => {
 
         html = storeList.categorizedList.map((c, cIndex) => {
             return (
-                !c.hidden && c.groceries.length > 0 
-                    && <Category 
-                            key={c.name} 
-                            category={c}
-                            categories={categories}
-                            listId={props.listId}
-                            store={selectedStore}
-                            onGroceryUpdate={handleGroceryUpdate}
-                            onGroceryCategoryChange={handleGroceryCategoryChange}
-                        />
+                !c.hidden && c.groceries.length > 0
+                && <Category
+                    key={c.name}
+                    category={c}
+                    categories={categories}
+                    listId={props.listId}
+                    store={selectedStore}
+                    onGroceryUpdate={handleGroceryUpdate}
+                    onGroceryCategoryChange={handleGroceryCategoryChange}
+                />
             );
         });
 

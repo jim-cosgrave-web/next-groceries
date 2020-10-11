@@ -462,9 +462,9 @@ const AdminStoreByIdPage = () => {
 
         let jsx =
             <div className="w-100">
-                <div className="mb-20">
+                {/* <div className="mb-20">
                     <Grid />
-                </div>
+                </div> */}
                 <div className="mb-20">
                     <button className="btn warning w-100 alert" onClick={handleCleanGroceries}>Clean Groceries</button>
                 </div>

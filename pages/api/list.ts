@@ -94,14 +94,14 @@ export default authenticate(database(async function getPrimaryListid(
                 for (let i = 0; i < store.categories.length; i++) {
                     const storeCategory = store.categories[i];
 
-                    let category = { 
-                        id: storeCategory.id, 
-                        name: storeCategory.name, 
+                    let category = {
+                        id: storeCategory.id,
+                        name: storeCategory.name,
                         subCategoryName: storeCategory.subCategoryName,
                         originalName: storeCategory.name,
-                        order: storeCategory.order, 
-                        groceries: [], 
-                        hidden: false, 
+                        order: storeCategory.order,
+                        groceries: [],
+                        hidden: false,
                         notAvailable: storeCategory.notAvailable,
                         isCustomized: false
                     };
@@ -109,11 +109,11 @@ export default authenticate(database(async function getPrimaryListid(
                     //
                     // Check if the user has settings that override the default store settings
                     //
-                    if(userCategories && userCategories.length > 0) {
+                    if (userCategories && userCategories.length > 0) {
                         const customCategory = userCategories.find(c => c.category_id == category.id);
 
-                        if(customCategory) {
-                            if(customCategory.name && customCategory.name.trim().length > 0) {
+                        if (customCategory) {
+                            if (customCategory.name && customCategory.name.trim().length > 0) {
                                 category.name = customCategory.name;
                                 category.isCustomized = true;
                             }
@@ -122,7 +122,7 @@ export default authenticate(database(async function getPrimaryListid(
 
                     ddlCategories.push({ name: storeCategory.name, value: storeCategory.name, order: storeCategory.order, uncategorized: false });
 
-                    if(category.name === NOT_AVAILABLE_AT_STORE) {
+                    if (category.name === NOT_AVAILABLE_AT_STORE) {
                         category.order = 99;
                     }
 
@@ -147,7 +147,7 @@ export default authenticate(database(async function getPrimaryListid(
 
                                 const index = remainingGroceries.indexOf(listGrocery);
 
-                                if(index > -1) {
+                                if (index > -1) {
                                     remainingGroceries.splice(index, 1);
                                 }
                             }
@@ -204,7 +204,7 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 // Safety to make sure what the user sees as checked gets removed
                 //
-                if(req.body.checkedGroceries && req.body.checkedGroceries.length > 0) {
+                if (req.body.checkedGroceries && req.body.checkedGroceries.length > 0) {
                     const groceryNames = req.body.checkedGroceries.map(g => { return titleCase(g.name); });
                     const pullName = { $pull: { "groceries": { name: { $in: groceryNames } } } };
 
@@ -213,14 +213,14 @@ export default authenticate(database(async function getPrimaryListid(
 
                 res.status(200).json({ message: 'OK' });
                 return;
-            } else if(req.body.method === LIST_API_POST_RECIPE) {
+            } else if (req.body.method === LIST_API_POST_RECIPE) {
                 const db = req.db;
                 const collection = db.collection('groceryLists');
                 const filter = { user_id: req.jwt.user_id };
 
                 const list = await collection.findOne(filter);
 
-                if(!list) {
+                if (!list) {
                     res.status(500).json({ message: 'Not Found' });
                     return;
                 }
@@ -228,11 +228,11 @@ export default authenticate(database(async function getPrimaryListid(
                 let newGroceries = [];
                 let groceries = req.body.groceries;
 
-                for(let i = 0; i < groceries.length; i++) {
+                for (let i = 0; i < groceries.length; i++) {
                     let grocery = groceries[i];
                     let found = list.groceries.find(g => g.name.toLowerCase().trim() === grocery.name.toLowerCase().trim());
 
-                    if(!found) {
+                    if (!found) {
                         newGroceries.push(grocery);
                     }
                 }
@@ -273,18 +273,18 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 //const upsertGroceryResp = await groceryCollection.update({ name: { $regex: new RegExp("^" + groceryName, "i") } }, { name: groceryName }, { upsert: true });
                 const upsertGroceryResp = await groceryCollection.update(
-                    { 
-                        name: { $regex: new RegExp("^" + groceryName, "i") } 
-                    }, 
-                    { 
+                    {
+                        name: { $regex: new RegExp("^" + groceryName, "i") }
+                    },
+                    {
                         name: titleCase(groceryName),
                         createdOn: new Date(),
                         createdBy: req.jwt.email,
                         modifiedOn: new Date(),
                         modifiedBy: req.jwt.email
-                    }, 
-                    { 
-                        upsert: true 
+                    },
+                    {
+                        upsert: true
                     }
                 );
 
@@ -363,7 +363,7 @@ export default authenticate(database(async function getPrimaryListid(
             let hashKey = simpleHash(key);
             newGrocery.hash = hashKey;
 
-            const result = await collection.updateOne(filter, { $set: { 'groceries.$': newGrocery } });     
+            const result = await collection.updateOne(filter, { $set: { 'groceries.$': newGrocery } });
 
             res.status(200).json({ status: result.modifiedCount });
             return;
