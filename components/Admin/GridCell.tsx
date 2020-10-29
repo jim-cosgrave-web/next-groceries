@@ -28,17 +28,18 @@ const GridCell = (props) => {
     }
 
     function handleMouseEnter() {
-        if(props.mouseDown) {
+        if (props.mouseDown) {
             setClicked(!clicked);
         }
     }
 
     return (
-        <div style={styles.gridCell} 
-             className="grid-cell" 
-             onClick={handleClick}
-             onMouseEnter={handleMouseEnter} />
-    ); 
+        // <div style={styles.gridCell} 
+        //      className="grid-cell" 
+        //      onClick={handleClick}
+        //      onMouseEnter={handleMouseEnter} />
+        <div></div>
+    );
 };
 
 export default GridCell;
