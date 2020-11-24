@@ -21,6 +21,8 @@ const MealsPage = () => {
     // Page load
     //
     useEffect(() => {
+
+
         let isCancelled = false;
 
         async function execute() {
@@ -87,6 +89,10 @@ const MealsPage = () => {
             meal._id = json._id;
             setMeals(clone);
         }
+
+        newMealRef.current.value = '';
+        newNoteRef.current.value = '';
+
     }
 
     function handleDeleteClick(meal) {
