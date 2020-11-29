@@ -413,7 +413,7 @@ const RecipeByIdPage = () => {
         jsx = (
             <div>
                 <div className="flex space-between">
-                    <div>
+                    <div className="w-75">
                         <h2>{recipe.name}</h2>
                     </div>
                     <div className="clickable">
@@ -478,23 +478,23 @@ const RecipeByIdPage = () => {
                         Changes are automatically saved as you modify fields, ingredients, or categories
                     </div>
                 </div>}
-                <div className="my-form">
-                    <div className="form-fieldset">
-                        <div className="form-label">
-                            Name
+                <div className="my-form w-100">
+                    <div className="form-fieldset w-100">
+                        <div>
+                            <h3>Name</h3>
                         </div>
                         <div className="form-input">
-                            <input ref={nameRef} onKeyUp={handleNameChange} type="text" defaultValue={recipe.name} />
+                            <input ref={nameRef} onKeyUp={handleNameChange} type="text" className="w-100" defaultValue={recipe.name} />
                         </div>
                     </div>
                 </div>
-                <div className="my-form">
-                    <div className="form-fieldset">
-                        <div className="form-label">
-                            Link
+                <div className="my-form w-100">
+                    <div className="form-fieldset w-100">
+                        <div>
+                            <h3>Link</h3>
                         </div>
                         <div className="form-input">
-                            <input ref={linkRef} onKeyUp={handleLinkChange} type="text" defaultValue={recipe.link} />
+                            <input ref={linkRef} onKeyUp={handleLinkChange} type="text" className="w-100" defaultValue={recipe.link} />
                         </div>
                     </div>
                 </div>
@@ -591,7 +591,7 @@ const RecipeByIdPage = () => {
                     return (
                         <div className="item" key={i.name}>
                             <div className="flex space-between">
-                                <div>
+                                <div className="w-75">
                                     <div>
                                         {i.name}
                                     </div>
