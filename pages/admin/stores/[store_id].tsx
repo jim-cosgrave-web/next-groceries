@@ -12,7 +12,8 @@ import {
     ADD_STORE_CATEGORY_API_METHOD,
     MOVE_STORE_CATEGORY_API_METHOD,
     ADMIN_API_POST_STORE,
-    ADMIN_API_STORE_CLEAN_GROCERIES
+    ADMIN_API_STORE_CLEAN_GROCERIES,
+    ADMIN_API_STORE_RESTORE
 } from '../../../util/constants';
 import Confirm from '../../../components/Shared/Confirm';
 import Router from "next/router";
@@ -24,6 +25,7 @@ const storeDetailApiUrl = env.apiUrl + 'store?method=getStoreDetails';
 const AdminStoreByIdPage = () => {
     const [store, setStore] = useState(null);
     const [isCategoryConfirmOpen, setCategoryConfirm] = useState(false);
+    const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false);
     const [mode, setMode] = useState('edit');
 
     const router = useRouter();
@@ -446,6 +448,37 @@ const AdminStoreByIdPage = () => {
         console.log(json);
     }
 
+    async function handleRestoreFromBackupStep1() {
+        setIsRestoreConfirmOpen(true);
+    }
+
+    async function handleRestoreFromBackupStep2() {
+        console.log('here we go...');
+
+        const body = {
+            method: ADMIN_API_STORE_RESTORE,
+            store
+        };
+
+        const resp = await fetch(storeApiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        const json = await resp.json();
+
+        console.log(json);
+        setIsRestoreConfirmOpen(false);
+
+        const storeResp = await myGet(storeDetailApiUrl + '&store_id=' + store._id.toString(), null);
+
+        storeResp.store.categories.sort((a, b) => (parseInt(a.order) > parseInt(b.order)) ? 1 : -1);
+        setStore(storeResp.store);
+    }
+
     //
     // Generate the page JSX
     //
@@ -467,6 +500,9 @@ const AdminStoreByIdPage = () => {
                 </div> */}
                 <div className="mb-20">
                     <button className="btn warning w-100 alert" onClick={handleCleanGroceries}>Clean Groceries</button>
+                </div>
+                <div className="mb-20">
+                    <button className="btn warning w-100 alert" onClick={handleRestoreFromBackupStep1}>Restore From Backup</button>
                 </div>
                 <div className="flex">
                     <DragDropContext onDragEnd={handleDragEnd}>
@@ -539,6 +575,13 @@ const AdminStoreByIdPage = () => {
                     isOpen={isCategoryConfirmOpen}
                     onConfirm={handleCategoryDelete_step2}
                     onClose={() => setCategoryConfirm(false)}
+                />
+            </div>
+            <div>
+                <Confirm
+                    isOpen={isRestoreConfirmOpen}
+                    onConfirm={handleRestoreFromBackupStep2}
+                    onClose={() => setIsRestoreConfirmOpen(false)}
                 />
             </div>
             <div className="flex align-top w-100">

@@ -17,7 +17,8 @@ import {
     UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
     ADMIN_API_POST_STORE,
     NOT_AVAILABLE_AT_STORE,
-    ADMIN_API_STORE_CLEAN_GROCERIES
+    ADMIN_API_STORE_CLEAN_GROCERIES,
+    ADMIN_API_STORE_RESTORE
 } from '../../util/constants';
 import { titleCase } from '../../util/titleCase';
 
@@ -189,9 +190,41 @@ export default authenticate(
 
                         res.status(200).json({ message: req.body, data });
                         return;
+                    } else if (req.body.method === ADMIN_API_STORE_RESTORE) {
+                        /* 
+                        Restore the store data from the latest backup
+                        */
+                        const storeId = req.body.store._id.toString();
+
+                        const backup = await backupCollection.findOne(
+                            { storeId: storeId },
+                            { sort: { timestamp: -1 } }
+                        );
+
+                        if (!backup) {
+                            res.status(500).json({ message: 'No backups found' });
+                            return;
+                        }
+                        const storeFilter = { _id: new ObjectId(req.body.store._id) };
+
+                        //
+                        // Check if the store exists
+                        //
+                        const store = await collection.findOne(storeFilter);
+
+                        if (!store) {
+                            res.status(500).json({ message: 'No store found' });
+                            return;
+                        }
+
+                        delete backup.timestamp;
+                        delete backup.storeId;
+                        backup._id = store._id;
+
+                        await collection.replaceOne(storeFilter, backup);
+
+                        res.status(200).json({ store, backup });
                     } else {
-
-
                         res.status(500).json({ message: 'Method not supported' });
                         return;
                     }
