@@ -123,6 +123,97 @@ const TutorialPage = () => {
                         <img src="/images/tutorial/groceries-tutorial-08.png" />
                     </div>
                 </div>
+                <div className="tutorial-section">
+                    <div className="tutorial-title">
+                        Categorize Groceries
+                    </div>
+                    <div className="tutorial-text">
+                        Just like on the "List" mode, when you click on a grocery in "Store" mode, you will get the option to enter a note.  However, in store mode
+                        you also get a dropdown list that lets you categorize an item at a specific store.
+                        <br />
+                        <br />
+                        <h2>BE CAREFUL!</h2>
+                        In the screenshot below, the user is shopping at Aldi in Lemont IL.  Clicking on the dropdown in screenshot "1" shows you a list categories or ailse that are configured for this store.
+                        Clicking on a new category will move Apples from their current location to another category/aisle.
+                        <span className="emphasis">&nbsp;&nbsp;Any changes you make will be seen by other users</span>
+                        <br />
+                        <br />
+                        Clicking in the area marked by "2" will save your note just like on the list screen.
+                    </div>
+                    <div>
+                        <img src="/images/tutorial/groceries-tutorial-09.png" />
+                    </div>
+                </div>
+                <div className="tutorial-section">
+                    <div className="tutorial-title">
+                        Uncategorized Groceries
+                    </div>
+                    <div className="tutorial-text">
+                        Categorizing groceries is a crowed sourced effort.  As you add new groceries, they will first show up in an "__ Uncategorized __" category.
+                        If you know where the grocery is found at the store, update the category for future use.  If you are unsure, you can always update
+                        the category when you find it at the store.
+                        <br />
+                        <br />
+                        With enough help from the community we can get everything categorized!
+                    </div>
+                    <div>
+                        <img src="/images/tutorial/groceries-tutorial-10.png" />
+                    </div>
+                </div>
+                <div className="tutorial-section">
+                    <div className="tutorial-title">
+                        Navigating the App
+                    </div>
+                    <div className="tutorial-text">
+                        To open the menu, click the hamburger icon by the "1".
+                        <br />
+                        <br />
+                        To return to your shopping list at any time, click the cart icon by the "2".
+                    </div>
+                    <div>
+                        <img src="/images/tutorial/groceries-tutorial-11.png" />
+                    </div>
+                </div>
+                <div className="tutorial-section">
+                    <div className="tutorial-title">
+                        Menu
+                    </div>
+                    <div className="tutorial-text">
+                        Here is a brief description of the menu options
+
+                        <ol>
+                            <li>Katie Cosgrave
+                                <ul><li>This is the name of the logged in user.  Click your name to go to the profile page.</li></ul>
+                            </li>
+                            <li>Grocery list
+                                <ul><li>Navigates you back to your grocery list</li></ul>
+                            </li>
+                            <li>Meals/Meal Plans
+                                <ul><li>Navigates you to a screen where you can track meal plans for the week.</li></ul>
+                            </li>
+                            <li>Recipes
+                                <ul><li>Navigates you to a screen where you can manage your own recipes.  Recipes contain a list of ingredients which can be added to your list in bulk if you are meal planning.</li></ul>
+                            </li>
+                            <li>Subscribe to Stores
+                                <ul><li>Navigates you to a page where you can subscribe to different stores.  Subscribed stores show up in the dropdown list when in store mode on your shopping list.</li></ul>
+                            </li>
+                        </ol>
+                    </div>
+                    <div>
+                        <img src="/images/tutorial/groceries-tutorial-12.png" />
+                    </div>
+                </div>
+                <div className="tutorial-section">
+                    <div className="tutorial-title">
+                        Profile Page
+                    </div>
+                    <div className="tutorial-text">
+                        When you click on your name in the menu, you are navigated to the profile page.  Currently this page only allows you to update your password.
+                    </div>
+                    <div>
+                        <img src="/images/tutorial/groceries-tutorial-13.png" />
+                    </div>
+                </div>
             </div>
         </div>
     );
