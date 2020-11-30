@@ -4,6 +4,7 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 
 const groceryApiUrl = env.apiUrl + 'groceries';
+const storeApiUrl = env.apiUrl + 'store';
 
 const AdminPage = () => {
     const [loading, setLoading] = useState(false);
@@ -17,6 +18,13 @@ const AdminPage = () => {
     async function handleCleanGroceriesClick() {
         setLoading(true);
         const resp = await myGet(groceryApiUrl + '?method=clean', null);
+        setLoading(false);
+    }
+
+    async function handleBackupClick() {
+        setLoading(true);
+        const resp = await myGet(storeApiUrl + '?method=backup', null);
+        console.log(resp);
         setLoading(false);
     }
 
@@ -45,6 +53,11 @@ const AdminPage = () => {
                         </div>
                     </div>
                 </Link>
+                <div className="admin-card clickable mt-20" onClick={handleBackupClick}>
+                    <div className="nav-item">
+                        Backup Stores
+                    </div>
+                </div>
                 <div className="admin-card clickable mt-20" onClick={handleSyncGroceriesClick}>
                     <div className="nav-item">
                         Sync Groceries

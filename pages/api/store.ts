@@ -30,6 +30,7 @@ export default authenticate(
             try {
                 const db = req.db;
                 const collection = db.collection('stores');
+                const backupCollection = db.collection('storeBackup');
                 const groceryCollection = db.collection('groceries');
 
                 if (req.method === 'GET') {
@@ -44,6 +45,25 @@ export default authenticate(
 
                         res.status(200).json({ store });
                         return;
+                    } else if (req.query.method == 'backup') {
+                        /*
+                          Take a backup of the stores
+                        */
+                        var stores = await collection.find().toArray();
+
+                        for (var i = 0; i < stores.length; i++) {
+                            const store = stores[i];
+                            const storeId = store._id.toString();
+                            delete store._id;
+
+                            store.timestamp = new Date();
+                            store.storeId = storeId;
+
+                            await backupCollection.insertOne(store);
+                        }
+
+                        res.status(200).json({ message: 'OK' });
+                        return;
                     }
                 } else if (req.method === 'POST') {
                     if (req.body.method === ADD_STORE_GROCERY_API_METHOD) {
@@ -57,7 +77,7 @@ export default authenticate(
 
                         const grocery = await groceryCollection.findOne({ name: groceryName });
 
-                        if(!grocery) {
+                        if (!grocery) {
                             await groceryCollection.insertOne({ name: groceryName, createdOn: new Date(), createdBy: req.jwt.email, modifiedOn: new Date(), modifiedBy: req.jwt.email });
                         }
 
@@ -79,7 +99,7 @@ export default authenticate(
                         const filter = { name: store.name, city: store.city, state: store.state };
                         const existing = await collection.findOne(filter);
 
-                        if(existing) {
+                        if (existing) {
                             res.status(500).json({ message: 'Store Already Exists' });
                             return;
                         }
@@ -110,7 +130,7 @@ export default authenticate(
                         //
                         // Loop over each category
                         //
-                        for(let i = 0; i < store.categories.length; i++) {
+                        for (let i = 0; i < store.categories.length; i++) {
                             const category = store.categories[i];
 
                             let uniqueGroceries = [];
@@ -119,14 +139,14 @@ export default authenticate(
                             //
                             // Loop over each grocery in the category and find duplicates
                             //
-                            for(let j = 0; j < category.groceries.length; j++) {
+                            for (let j = 0; j < category.groceries.length; j++) {
                                 let grocery = category.groceries[j];
                                 grocery.originalName = grocery.groceryName;
                                 grocery.groceryName = titleCase(grocery.groceryName);
 
                                 let index = uniqueGroceries.map(g => { return titleCase(g.groceryName); }).indexOf(grocery.groceryName);
 
-                                if(index == -1) {
+                                if (index == -1) {
                                     uniqueGroceries.push(grocery);
                                 } else {
                                     duplicateGroceries.push(grocery);
@@ -138,27 +158,29 @@ export default authenticate(
                             //
                             let duplicatesToRemove = duplicateGroceries.map(g => { return g.order });
 
-                            if(duplicatesToRemove.length > 0) {
+                            if (duplicatesToRemove.length > 0) {
                                 const filter = { _id: new ObjectId(req.body.store._id), "categories.name": category.name };
                                 const pull = { "$pull": { "categories.$.groceries": { "order": { $in: duplicatesToRemove } } } };
                                 data.push({ filter, pull });
                                 await collection.updateMany(filter, pull);
                             }
 
-                            for(let j = 0; j < uniqueGroceries.length; j++) {
+                            for (let j = 0; j < uniqueGroceries.length; j++) {
                                 let grocery = uniqueGroceries[j];
 
-                                if(grocery.groceryName != grocery.originalName) {
+                                if (grocery.groceryName != grocery.originalName) {
                                     data.push({ updatedName: grocery.groceryName })
 
-                                    const set = { '$set': { 
-                                        "categories.$[category].groceries.$[grocery].groceryName": grocery.groceryName,
-                                        "categories.$[category].groceries.$[grocery].modifiedOn": new Date(),
-                                        "categories.$[category].groceries.$[grocery].modifiedBy": "Clean"
-                                    } };
+                                    const set = {
+                                        '$set': {
+                                            "categories.$[category].groceries.$[grocery].groceryName": grocery.groceryName,
+                                            "categories.$[category].groceries.$[grocery].modifiedOn": new Date(),
+                                            "categories.$[category].groceries.$[grocery].modifiedBy": "Clean"
+                                        }
+                                    };
 
                                     const arrayFilters = { 'arrayFilters': [{ "category.name": category.name }, { "grocery.groceryName": grocery.originalName }], multi: true };
-            
+
                                     await collection.update(filter, set, arrayFilters);
                                 }
                             }
@@ -168,7 +190,7 @@ export default authenticate(
                         res.status(200).json({ message: req.body, data });
                         return;
                     } else {
-                        
+
 
                         res.status(500).json({ message: 'Method not supported' });
                         return;
@@ -296,10 +318,12 @@ export default authenticate(
                     } else if (req.body.method === UPDATE_STORE_CATEGORY_API_METHOD) {
                         const storeId = new ObjectId(req.body.store_id);
                         const uFilter = { _id: storeId, "categories.name": req.body.previousCategoryName };
-                        const uSet = { "$set": { 
-                            "categories.$.name": req.body.newCategoryName, 
-                            "categories.$.subCategoryName": req.body.subCategoryName
-                        } };
+                        const uSet = {
+                            "$set": {
+                                "categories.$.name": req.body.newCategoryName,
+                                "categories.$.subCategoryName": req.body.subCategoryName
+                            }
+                        };
 
                         await collection.updateOne(uFilter, uSet);
 
@@ -355,7 +379,7 @@ export default authenticate(
                 return;
             }
         })
-    , ['admin', 'local-admin']) // End authenticate roles
+        , ['admin', 'local-admin']) // End authenticate roles
 );
 
 //
