@@ -66,6 +66,10 @@ const RecipeByIdPage = () => {
                     }
 
                     setRecipe(data.recipe);
+
+                    if (!data.recipe.ingredients || data.recipe.ingredients.length == 0) {
+                        setMode('edit');
+                    }
                 } else {
                     setRecipeNotFound(true);
                 }
@@ -93,6 +97,7 @@ const RecipeByIdPage = () => {
     }, [router.query.recipe_id]);
 
     function handleEdit() {
+        console.log('setting mode edit...');
         setMode('edit');
     }
 
@@ -368,6 +373,8 @@ const RecipeByIdPage = () => {
         }
 
         Router.replace(`/recipes/${json.recipeId.toString()}`);
+        handleEdit();
+
     }
 
     function handleDeleteStep1() {
@@ -488,34 +495,44 @@ const RecipeByIdPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className="my-form w-100">
-                    <div className="form-fieldset w-100">
-                        <div>
-                            <h3>Link</h3>
-                        </div>
-                        <div className="form-input">
-                            <input ref={linkRef} onKeyUp={handleLinkChange} type="text" className="w-100" defaultValue={recipe.link} />
+                {recipe.isNew && <div>
+                    <div className="alert warning mb-10">
+                        <b>Creating a new recipe</b>
+                        <div className="mt-20">
+                            Name and save your recipe first.  Then you can add ingredients, categories, and a link.
                         </div>
                     </div>
-                </div>
-                <div className="mb-20">
-                    <div className="sub-section-title pt-10 pb-10">
-                        Ingredients
+                </div>}
+                {!recipe.isNew && <div>
+                    <div className="my-form w-100">
+                        <div className="form-fieldset w-100">
+                            <div>
+                                <h3>Link</h3>
+                            </div>
+                            <div className="form-input">
+                                <input ref={linkRef} onKeyUp={handleLinkChange} type="text" className="w-100" defaultValue={recipe.link} />
+                            </div>
+                        </div>
                     </div>
-                    {getIngredientsJSX()}
-                    <div className="mt-10">
-                        <MyTypeahead placeholder="Add an ingredient" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
+                    <div className="mb-20">
+                        <div className="sub-section-title pt-10 pb-10">
+                            Ingredients
                     </div>
-                </div>
-                <div>
-                    <div className="sub-section-title">
-                        Categories
+                        {getIngredientsJSX()}
+                        <div className="mt-10">
+                            <MyTypeahead placeholder="Add an ingredient" type="groceries" onAdd={handleAddGrocery}></MyTypeahead>
+                        </div>
                     </div>
-                    {getCategoryJSX()}
-                    <div className="mt-10">
-                        <MyTypeahead placeholder="Add a category" type="categories" onAdd={handleAddCategory}></MyTypeahead>
+                    <div>
+                        <div className="sub-section-title">
+                            Categories
                     </div>
-                </div>
+                        {getCategoryJSX()}
+                        <div className="mt-10">
+                            <MyTypeahead placeholder="Add a category" type="categories" onAdd={handleAddCategory}></MyTypeahead>
+                        </div>
+                    </div>
+                </div>}
                 {error && <div className="alert warning mb-10 mt-20">
                     <b>Error Occurred</b>
                     <div className="mt-20">
