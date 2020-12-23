@@ -88,6 +88,8 @@ export default authenticate(database(async function getPrimaryListid(
                 let remainingGroceries = list.groceries.slice();
                 let ddlCategories = [{ name: UNCATEGORIZED, value: '', uncategorized: true, order: 0 }];
 
+                let locationMap = new Object();
+
                 //
                 // Loop over each category
                 //
@@ -139,11 +141,34 @@ export default authenticate(database(async function getPrimaryListid(
                             const listGrocery = list.groceries[k];
                             const order = storeGrocery.order;
 
-                            if (listGrocery.name.toLowerCase().trim() == storeGrocery.groceryName.toLowerCase().trim()) {
+                            //
+                            // Normalize the name for comparison
+                            //
+                            var groceryNameMap = listGrocery.name.toLowerCase().trim();
+
+                            //
+                            // Check if the grocery is part of the category
+                            //
+                            if (groceryNameMap == storeGrocery.groceryName.toLowerCase().trim()) {
                                 listGrocery.name = storeGrocery.groceryName;
                                 listGrocery.order = order;
                                 listGrocery.category = storeCategory;
                                 category.groceries.push(listGrocery);
+
+                                //
+                                // Keep a map of the grocery name so we can tell which groceries are in multiple categories
+                                //
+                                if (!locationMap[groceryNameMap]) {
+                                    //
+                                    // Iniitalize an array if it doesnt exist already
+                                    //
+                                    locationMap[groceryNameMap] = [];
+                                }
+
+                                //
+                                // Add the category
+                                //
+                                locationMap[groceryNameMap].push(storeCategory.name);
 
                                 const index = remainingGroceries.indexOf(listGrocery);
 
@@ -171,10 +196,29 @@ export default authenticate(database(async function getPrimaryListid(
                     categorizedList.splice(0, 0, uncategorized);
                 }
 
+                //
+                // Loop over each category so we can set multiple locations for groceries that are in two spots
+                //
+                for (let i = 0; i < categorizedList.length; i++) {
+                    const category = categorizedList[i];
+
+                    // Loop over each grocery in the category
+                    //
+                    for (let j = 0; j < category.groceries.length; j++) {
+                        let grocery = category.groceries[j];
+                        const locations = locationMap[grocery.name.toLowerCase().trim()];
+
+                        if (locations && locations.length > 1) {
+                            grocery.locations = "Multiple locations: " + locations.join(", ");;
+                        }
+                    }
+                }
+
                 let resp = {
                     categorizedList,
                     categories: ddlCategories,
-                    userCategories
+                    userCategories,
+                    locationMap
                 };
 
                 res.status(200).json(resp);

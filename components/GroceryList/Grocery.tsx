@@ -43,6 +43,9 @@ const Grocery = (props) => {
             <div className="flex space-between">
                 <div className="flex-grow clickable grocery-left p-1" onClick={handleEditNote}>
                     <div className="bold clickable">{grocery.name}</div>
+                    {grocery.locations && <div className="grocery-note">
+                        {grocery.locations}
+                    </div>}
                     {grocery.recipe && <div>
                         Recipe: {grocery.recipe}
                     </div>}
