@@ -128,7 +128,7 @@ const Grocery = (props) => {
         const clone = { ...grocery };
         clone.checked = !clone.checked;
 
-        if(typeof(props.onUpdate) === 'function') {
+        if (typeof (props.onUpdate) === 'function') {
             props.onUpdate(clone);
         }
 
@@ -138,6 +138,7 @@ const Grocery = (props) => {
 
     async function updateGrocery(grocery) {
         const body = { list_id: listId, grocery: grocery };
+
 
         const resp = await fetch(updateGroceryUrl, {
             method: 'PUT',

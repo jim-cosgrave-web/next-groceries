@@ -194,7 +194,6 @@ export default authenticate(database(async function getPrimaryListid(
                 const list_id = new ObjectId(req.body.list_id);
                 let filter = { _id: list_id, user_id: req.jwt.user_id };
 
-                //await writeLog('Clear Groceries', filter);
 
                 //
                 // Pull db records that are checked
@@ -323,6 +322,7 @@ export default authenticate(database(async function getPrimaryListid(
                 //
                 const newGrocery = req.body.grocery;
                 newGrocery.checked = false;
+                newGrocery.name = titleCase(newGrocery.name.trim());
 
                 let key = `${newGrocery.name}_${newGrocery.checked}_${newGrocery.note}`;
                 let hashKey = simpleHash(key);
