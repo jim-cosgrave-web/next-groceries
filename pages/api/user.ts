@@ -17,7 +17,8 @@ import {
     USER_MEAL_API_ADD,
     USER_MEAL_API_DELETE,
     ADMIN_API_CHANGE_USER_PASSWORD,
-    ADMIN_API_DELETE_USER
+    ADMIN_API_DELETE_USER,
+    USER_MEAL_API_PUT
 } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
@@ -349,6 +350,21 @@ export default authenticateNoRedirect(database(async function login(
                 res.status(200).json({ message: 'OK' });
                 return;
             });
+        } else if (req.body.method === USER_MEAL_API_PUT) {
+            //
+            // Update a meal
+            // 
+            const filter = { _id: new ObjectId(req.body.meal._id.toString()), user_id: req.jwt.user_id };
+            const set = {
+                $set: {
+                    note: req.body.meal.note
+                }
+            };
+
+            await mealsCollection.updateOne(filter, set);
+
+            res.status(200).json({ message: 'OK' });
+            return;
         }
     }
 }));
