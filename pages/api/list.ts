@@ -286,6 +286,8 @@ export default authenticate(database(async function getPrimaryListid(
                 const meal = {
                     user_id: req.jwt.user_id,
                     name: req.body.recipeName,
+                    recipeLink: req.body.recipeLink,
+                    recipeId: req.body.recipeId,
                     addedOn: new Date()
                 }
 

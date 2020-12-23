@@ -3,12 +3,13 @@ import { env } from "../../util/environment";
 import { myGet } from "../../util/myGet";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faCheckSquare, faChevronLeft, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 import MyTypeahead from '../../components/Shared/MyTypeahead';
 import Router from "next/router";
 import Confirm from "../../components/Shared/Confirm";
 import { simpleHash } from "../../util/simpleHash";
+import Link from 'next/link';
 
 import {
     RECIPE_API_PUT_DETAILS,
@@ -136,7 +137,9 @@ const RecipeByIdPage = () => {
             const body = {
                 method: LIST_API_POST_RECIPE,
                 recipeName: recipe.name,
-                groceries
+                groceries,
+                recipeLink: recipe.link,
+                recipeId: router.query.recipe_id
             };
 
             const resp = await fetch(listApiUrl, {
@@ -475,8 +478,9 @@ const RecipeByIdPage = () => {
                         {recipe.name !== '' && <h2>{recipe.name}</h2>}
                         {recipe.name === '' && <h2>Create a New Recipe</h2>}
                     </div>
-                    {!recipe.isNew && <div className="clickable">
-                        <a onClick={handleView}>Back to view</a>
+                    {!recipe.isNew && <div className="clickable success-text">
+                        {/* <a onClick={handleView}>Back to view</a> */}
+                        <FontAwesomeIcon className="clickable" icon={faCheck} onClick={handleView} />
                     </div>}
                 </div>
                 {!recipe.isNew && <div className="alert warning mb-10">
@@ -663,6 +667,16 @@ const RecipeByIdPage = () => {
 
     return (
         <div>
+            <div className="clickable mt-20 mb-20">
+                <Link href="/recipes">
+                    <div className="flex">
+                        <FontAwesomeIcon icon={faChevronLeft} />
+                        <div className="ml-10 sub-section-title">
+                            Back to recipe list
+                        </div>
+                    </div>
+                </Link>
+            </div>
             {getJSX()}
             {getEditJSX()}
             {getAddToListJSX()}
