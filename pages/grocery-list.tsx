@@ -13,6 +13,8 @@ import { ToastContainer, toast } from 'react-toastify';
 const getListApiUrl = env.apiUrl + 'list?method=getList';
 const postClearGroceriesApiUrl = env.apiUrl + 'list';
 
+import AddToHome from '../components/Shared/AddToHome';
+
 const GroceryListPage = ({ initialList }) => {
     const [mode, setMode] = useState('list');
     const [list, setList] = useState(initialList);
@@ -120,7 +122,7 @@ const GroceryListPage = ({ initialList }) => {
     }
 
     function getCheckedGroceries() {
-        if(!trackedGroceries.current) {
+        if (!trackedGroceries.current) {
             return null;
         }
 
@@ -128,7 +130,7 @@ const GroceryListPage = ({ initialList }) => {
     }
 
     function handleGroceryUpdate(grocery) {
-        if(!trackedGroceries.current) {
+        if (!trackedGroceries.current) {
             trackedGroceries.current = [];
         }
 
@@ -136,8 +138,8 @@ const GroceryListPage = ({ initialList }) => {
         // See if its already tracked
         //
         const gIndex = trackedGroceries.current.map(g => { return g.name }).indexOf(grocery.name);
-        
-        if(gIndex == -1) {
+
+        if (gIndex == -1) {
             trackedGroceries.current.push(grocery);
         } else {
             trackedGroceries.current[gIndex] = grocery;
@@ -164,6 +166,7 @@ const GroceryListPage = ({ initialList }) => {
                 }
             </div>
             <ToastContainer />
+            <AddToHome />
         </div>
     );
 }
