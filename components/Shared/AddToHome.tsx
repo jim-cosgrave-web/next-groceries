@@ -10,7 +10,7 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, 0%)',
         padding: '0',
         maxHeight: '70vh',
         maxWidth: '85vw',
@@ -24,7 +24,7 @@ const customStyles = {
 };
 
 const headerStyles = {
-    padding: '.65em',
+    padding: '.5em',
     border: '1px solid #000',
     fontSize: '18px',
     backgroundColor: '#21313a',
@@ -35,7 +35,7 @@ const bodyStyles = {
     borderLeft: '1px solid #000',
     borderRight: '1px solid #000',
     overflow: 'auto',
-    maxHeight: '370px'
+    maxHeight: '350px'
 }
 
 const footerStyles = {
