@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import { env } from '../../util/environment';
+import { USER_API_ADD_TO_HOME_OK } from '../../util/constants';
 
 const customStyles = {
     content: {
@@ -22,7 +24,7 @@ const customStyles = {
 };
 
 const headerStyles = {
-    padding: '1em',
+    padding: '.65em',
     border: '1px solid #000',
     fontSize: '22px',
     backgroundColor: '#21313a',
@@ -43,11 +45,25 @@ const footerStyles = {
 
 Modal.setAppElement('#__next');
 
+const apiUrl = env.apiUrl + 'user';
+
 const AddToHome = (props) => {
     const [modalIsOpen, setIsOpen] = useState(true);
 
-    function handleGotItClick() {
+    async function handleGotItClick() {
         setIsOpen(false);
+
+        const body = {
+            method: USER_API_ADD_TO_HOME_OK
+        };
+
+        const resp = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
     }
 
     return (
@@ -58,10 +74,14 @@ const AddToHome = (props) => {
                 isOpen={modalIsOpen}
             >
                 <div id="add-to-home-header" className="flex space-between" style={headerStyles}>
-                    <div>
+                    <div style={{
+                        width: '75%'
+                    }}>
                         Add to Home Screen
                     </div>
-                    <div>
+                    <div style={{
+                        width: '25%'
+                    }}>
                         <button className="clickable my-button"
                             onClick={handleGotItClick}
                             style={{

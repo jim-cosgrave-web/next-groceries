@@ -18,7 +18,8 @@ import {
     USER_MEAL_API_DELETE,
     ADMIN_API_CHANGE_USER_PASSWORD,
     ADMIN_API_DELETE_USER,
-    USER_MEAL_API_PUT
+    USER_MEAL_API_PUT,
+    USER_API_ADD_TO_HOME_OK
 } from '../../util/constants';
 
 export default authenticateNoRedirect(database(async function login(
@@ -226,6 +227,25 @@ export default authenticateNoRedirect(database(async function login(
 
             res.status(200).json({ message: 'OK', _id: doc.ops[0]._id })
             return;
+        } else if (method === USER_API_ADD_TO_HOME_OK) {
+            //
+            // This method will mark the user as having seen the add to home screen message
+            //
+            const userFilter = { _id: new ObjectId(req.jwt.user_id) };
+            const user = await collection.findOne(userFilter);
+
+            //
+            // Handle event when the user isnt found for some reason
+            //
+            if (!user) {
+                res.status(404).json({ message: 'User not found' });
+                return;
+            }
+
+            collection.updateOne(userFilter, { $set: { addToHomeScreenSeenAt: new Date() } });
+
+            res.status(200).json({ message: 'OK' });
+            return;
         }
 
         //
@@ -311,7 +331,8 @@ export default authenticateNoRedirect(database(async function login(
                     email: user.email,
                     name: user.name,
                     roles: user.roles,
-                    stores: user.stores
+                    stores: user.stores,
+                    addToHomeScreenSeenAt: user.addToHomeScreenSeenAt
                 }
             });
 

@@ -7,6 +7,8 @@ import { env } from './../../util/environment';
 import fetch from 'isomorphic-unfetch';
 import { LOCAL_STORAGE_USER } from '../../util/constants';
 
+import AddToHome from '../Shared/AddToHome';
+
 const userApiUrl = env.apiUrl + 'user';
 
 const Header = () => {
@@ -27,6 +29,7 @@ const Header = () => {
                 }
 
                 setUser(user);
+                console.log(user);
             }
         }
 
@@ -182,6 +185,7 @@ const Header = () => {
                     </Link>
                 </div>
             </div>
+            {user && !user.addToHomeScreenSeenAt && <AddToHome />}
         </div>
     );
 };

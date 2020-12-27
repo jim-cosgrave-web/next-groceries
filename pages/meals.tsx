@@ -172,7 +172,6 @@ const MealsPage = () => {
             });
 
             const json = await resp.json();
-            console.log(json);
         }, 1000);
     }
 

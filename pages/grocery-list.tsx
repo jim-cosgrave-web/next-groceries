@@ -166,7 +166,7 @@ const GroceryListPage = ({ initialList }) => {
                 }
             </div>
             <ToastContainer />
-            <AddToHome />
+            {/* <AddToHome /> */}
         </div>
     );
 }
