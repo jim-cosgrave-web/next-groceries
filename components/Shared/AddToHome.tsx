@@ -12,7 +12,7 @@ const customStyles = {
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
         padding: '0',
-        maxHeight: '75vh',
+        maxHeight: '70vh',
         maxWidth: '85vw',
         overflow: 'hidden',
         border: '0',
@@ -26,7 +26,7 @@ const customStyles = {
 const headerStyles = {
     padding: '.65em',
     border: '1px solid #000',
-    fontSize: '22px',
+    fontSize: '18px',
     backgroundColor: '#21313a',
     color: '#fff'
 }
@@ -87,7 +87,7 @@ const AddToHome = (props) => {
                             style={{
                                 backgroundColor: '#54925e'
                             }}>
-                            Got it!
+                            OK!
                     </button>
                     </div>
                 </div>
