@@ -10,7 +10,7 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%, 0%)',
+        transform: 'translate(-50%, -34%)',
         padding: '0',
         maxHeight: '70vh',
         maxWidth: '85vw',
