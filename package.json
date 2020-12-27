@@ -26,6 +26,7 @@
     "mongodb": "^3.5.7",
     "next": "^9.4.2",
     "next-connect": "^0.6.6",
+    "next-pwa": "^5.0.1",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
     "react-bootstrap-typeahead": "^4.2.2",
