@@ -33,7 +33,7 @@ const bodyStyles = {
     borderLeft: '1px solid #000',
     borderRight: '1px solid #000',
     overflow: 'auto',
-    maxHeight: '400px'
+    maxHeight: '370px'
 }
 
 const footerStyles = {
@@ -57,8 +57,19 @@ const AddToHome = (props) => {
                 contentLabel="Add to Home Screen"
                 isOpen={modalIsOpen}
             >
-                <div id="add-to-home-header" style={headerStyles}>
-                    Add to Home Screen
+                <div id="add-to-home-header" className="flex space-between" style={headerStyles}>
+                    <div>
+                        Add to Home Screen
+                    </div>
+                    <div>
+                        <button className="clickable my-button"
+                            onClick={handleGotItClick}
+                            style={{
+                                backgroundColor: '#54925e'
+                            }}>
+                            Got it!
+                    </button>
+                    </div>
                 </div>
                 <div id="add-to-home-body" style={bodyStyles}>
                     <div style={{
@@ -69,16 +80,6 @@ const AddToHome = (props) => {
                     <div>
                         <img src="/images/tutorial/add-to-home-iphone.png" />
                     </div>
-                </div>
-                <div id="add-to-home-footer" style={footerStyles}>
-
-                    <button className="clickable my-button w-100"
-                        onClick={handleGotItClick}
-                        style={{
-                            backgroundColor: '#54925e'
-                        }}>
-                        Got it!
-                    </button>
                 </div>
             </Modal>
         </div>
