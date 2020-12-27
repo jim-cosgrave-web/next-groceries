@@ -35,7 +35,8 @@ const bodyStyles = {
     borderLeft: '1px solid #000',
     borderRight: '1px solid #000',
     overflow: 'auto',
-    maxHeight: '350px'
+    maxHeight: '350px',
+    textAlign: 'center'
 }
 
 const footerStyles = {
