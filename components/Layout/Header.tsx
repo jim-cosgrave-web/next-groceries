@@ -185,8 +185,7 @@ const Header = () => {
                     </Link>
                 </div>
             </div>
-            {/* {user && !user.addToHomeScreenSeenAt && <AddToHome />} */}
-            <AddToHome />
+            {user && !user.addToHomeScreenSeenAt && <AddToHome />}
         </div>
     );
 };
