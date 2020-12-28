@@ -4,6 +4,10 @@ import { myGet } from '../../util/myGet';
 import { env } from '../../util/environment';
 import MyTypeahead from '../Shared/MyTypeahead';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { faSquare } from '@fortawesome/free-regular-svg-icons';
+
 import {
     UNCATEGORIZED,
     UPDATE_STORE_GROCERY_CATEGORY_API_METHOD,
@@ -25,6 +29,7 @@ const StoreGroceryList = (props) => {
     const [selectedStore, setSelectedStore] = useState(null);
     const [storeDropDown, setStoreDropDown] = useState(null);
     const [categories, setCategories] = useState(null);
+    const [allCategoriesAreVisible, setAlLCategoriesVisible] = useState(false);
 
     const router = useRouter();
 
@@ -312,20 +317,37 @@ const StoreGroceryList = (props) => {
 
         let html = '';
 
-        html = storeList.categorizedList.map((c, cIndex) => {
-            return (
-                !c.hidden && c.groceries.length > 0
-                && <Category
-                    key={c.name}
-                    category={c}
-                    categories={categories}
-                    listId={props.listId}
-                    store={selectedStore}
-                    onGroceryUpdate={handleGroceryUpdate}
-                    onGroceryCategoryChange={handleGroceryCategoryChange}
-                />
-            );
-        });
+        if (!allCategoriesAreVisible) {
+            html = storeList.categorizedList.map((c, cIndex) => {
+                return (
+                    !c.hidden && c.groceries.length > 0
+                    && <Category
+                        key={c.name}
+                        category={c}
+                        categories={categories}
+                        listId={props.listId}
+                        store={selectedStore}
+                        onGroceryUpdate={handleGroceryUpdate}
+                        onGroceryCategoryChange={handleGroceryCategoryChange}
+                    />
+                );
+            });
+        } else {
+
+            html = storeList.categorizedList.map((c, cIndex) => {
+                return (
+                    <Category
+                        key={c.name}
+                        category={c}
+                        categories={categories}
+                        listId={props.listId}
+                        store={selectedStore}
+                        onGroceryUpdate={handleGroceryUpdate}
+                        onGroceryCategoryChange={handleGroceryCategoryChange}
+                    />
+                );
+            });
+        }
 
         return html;
     }
@@ -345,6 +367,16 @@ const StoreGroceryList = (props) => {
                 </select>
             </div>}
             {(!storeDropDown || storeDropDown.length == 0) && (!stores) && <div className="placeholder mt-10"></div>}
+            <div className="clickable" onClick={() => { setAlLCategoriesVisible(!allCategoriesAreVisible) }}
+                style={{
+                    paddingTop: '10px',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                {allCategoriesAreVisible && <FontAwesomeIcon icon={faCheckSquare} />}
+                {!allCategoriesAreVisible && <FontAwesomeIcon icon={faSquare} />}
+                <div style={{ paddingLeft: '12px' }}>Show sections without groceries</div>
+            </div>
             <div className="grocery-list">
                 <div className="list">
                     {getListHTML()}

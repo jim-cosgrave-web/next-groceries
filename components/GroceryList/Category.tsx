@@ -44,12 +44,12 @@ const Category = (props) => {
         } else {
             let name = nameRef?.current?.value;
 
-            if(name != category.name) {
+            if (name != category.name) {
                 name = name.trim();
 
                 const clone = { ...category };
 
-                if(name === '') {
+                if (name === '') {
                     name = category.originalName;
                     clone.isCustomized = false;
                 } else {
@@ -76,7 +76,7 @@ const Category = (props) => {
                     },
                     body: JSON.stringify(body)
                 });
-        
+
                 const json = await resp.json();
             } else {
                 setMode('view');
@@ -97,12 +97,18 @@ const Category = (props) => {
     function getJSX() {
         let wrapperClass = 'list-category mt-10';
 
-        if(category.notAvailable) {
+        if (category.notAvailable) {
             wrapperClass = 'list-category not-available mt-10'
-        } 
+        }
+
+        let emptyStyle = {};
+
+        if (!category.groceries || category.groceries.length == 0) {
+            emptyStyle = { opacity: '.5' };
+        }
 
         let jsx = (
-            <div className={wrapperClass}>
+            <div className={wrapperClass} style={emptyStyle}>
                 {mode == 'view' && <div className="list-category-name clickable" onClick={toggleMode}>
                     <div>
                         {category.isCustomized ? '*' : ''} {category.name}
@@ -113,7 +119,7 @@ const Category = (props) => {
                 </div>}
                 {mode == 'edit' && <div className="flex space-between list-category-name">
                     <div className="category-input-container">
-                        <input type="text" className="form-control" onKeyUp={handleKeyUp} defaultValue={category.name} ref={nameRef} />    
+                        <input type="text" className="form-control" onKeyUp={handleKeyUp} defaultValue={category.name} ref={nameRef} />
                     </div>
                     <div className="clickable grocery-checkbox" onClick={toggleMode}>
                         <FontAwesomeIcon icon={faSave} />
@@ -144,6 +150,10 @@ const Category = (props) => {
                     </Grocery>
                 );
             }));
+
+        // if (groceriesJSX.length == 0) {
+        //     return <div style={{ padding: '1em' }}>Nothing in this section!</div>
+        // }
 
         return groceriesJSX;
     }
