@@ -35,8 +35,7 @@ const bodyStyles = {
     borderLeft: '1px solid #000',
     borderRight: '1px solid #000',
     overflow: 'auto',
-    maxHeight: '350px',
-    textAlign: 'center'
+    maxHeight: '350px'
 }
 
 const footerStyles = {
@@ -81,7 +80,9 @@ const AddToHome = (props) => {
                         Add to Home Screen
                     </div>
                     <div style={{
-                        width: '25%'
+                        width: '25%',
+                        display: 'flex',
+                        justifyContent: 'flex-end'
                     }}>
                         <button className="clickable my-button"
                             onClick={handleGotItClick}
@@ -96,10 +97,49 @@ const AddToHome = (props) => {
                     <div style={{
                         padding: '1em'
                     }}>
-                        Follow these steps to add the Groceries app to your home screen for easy access.
-                    </div>
-                    <div>
-                        <img src="/images/tutorial/add-to-home-iphone.png" />
+                        <div style={{ marginBottom: '40px' }}>
+                            <div style={{
+                                fontSize: '25px',
+                                fontWeight: 'bold'
+                            }}>
+                                iPad or iPhone
+                            </div>
+                            <div>
+                                <ol style={{
+                                    color: '#444',
+                                    fontSize: '16px'
+                                }}>
+                                    <li>Tap the icon with an arrow pointing up out of a box</li>
+                                    <li>Scroll down until you see a button that says "Add to Home Screen"</li>
+                                    <li>Click this button and you will be prompted to enter the name of the app (this is what will show on your home screen)</li>
+                                    <li>Click the "Add" button</li>
+                                </ol>
+                            </div>
+                            <div>
+                                <img src="/images/tutorial/add-to-home-iphone.png" />
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{
+                                fontSize: '25px',
+                                fontWeight: 'bold'
+                            }}>
+                                Adroid (Chrome)
+                            </div>
+                            <div>
+                                <ol style={{
+                                    color: '#444',
+                                    fontSize: '16px'
+                                }}>
+                                    <li>Tap the menu icon (3 dots in the upper right hand corner)</li>
+                                    <li>Tap "Add to Home Screen"</li>
+                                    <li>You can enter a name for the shortcut and then Chrome will add it to your home screen</li>
+                                </ol>
+                            </div>
+                            <div>
+                                <img src="/images/tutorial/add-to-home-android.png" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </Modal>
