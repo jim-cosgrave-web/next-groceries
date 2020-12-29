@@ -5,7 +5,7 @@ import { env } from '../../util/environment';
 import MyTypeahead from '../Shared/MyTypeahead';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { faCheckSquare, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import { faSquare } from '@fortawesome/free-regular-svg-icons';
 
 import {
@@ -29,7 +29,8 @@ const StoreGroceryList = (props) => {
     const [selectedStore, setSelectedStore] = useState(null);
     const [storeDropDown, setStoreDropDown] = useState(null);
     const [categories, setCategories] = useState(null);
-    const [allCategoriesAreVisible, setAlLCategoriesVisible] = useState(false);
+    const [allCategoriesAreVisible, setAllCategoriesVisible] = useState(false);
+    const [orderIsReversed, setReverseOrder] = useState(false);
 
     const router = useRouter();
 
@@ -316,7 +317,22 @@ const StoreGroceryList = (props) => {
         }
 
         let html = '';
+        let index = storeList.categorizedList.map(function (e) { return e.notAvailable; }).indexOf(true);
 
+        //
+        // Check the sort order settings and sort appropriately
+        //
+        if (orderIsReversed) {
+            storeList.categorizedList[index].order = -99;
+            storeList.categorizedList = storeList.categorizedList.sort((a, b) => b.order - a.order);
+        } else {
+            storeList.categorizedList[index].order = 99;
+            storeList.categorizedList = storeList.categorizedList.sort((a, b) => a.order - b.order);
+        }
+
+        //
+        // Check the toggle for all categories.  By default only categories with groceries will show.
+        //
         if (!allCategoriesAreVisible) {
             html = storeList.categorizedList.map((c, cIndex) => {
                 return (
@@ -367,15 +383,24 @@ const StoreGroceryList = (props) => {
                 </select>
             </div>}
             {(!storeDropDown || storeDropDown.length == 0) && (!stores) && <div className="placeholder mt-10"></div>}
-            <div className="clickable" onClick={() => { setAlLCategoriesVisible(!allCategoriesAreVisible) }}
-                style={{
-                    paddingTop: '10px',
-                    display: 'flex',
-                    alignItems: 'center'
-                }}>
-                {allCategoriesAreVisible && <FontAwesomeIcon icon={faCheckSquare} />}
-                {!allCategoriesAreVisible && <FontAwesomeIcon icon={faSquare} />}
-                <div style={{ paddingLeft: '12px' }}>Show sections without groceries</div>
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingTop: '10px'
+            }}>
+                <div className="clickable" onClick={() => { setAllCategoriesVisible(!allCategoriesAreVisible) }}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                    {allCategoriesAreVisible && <FontAwesomeIcon icon={faCheckSquare} />}
+                    {!allCategoriesAreVisible && <FontAwesomeIcon icon={faSquare} />}
+                    <div style={{ paddingLeft: '12px' }}>Show sections without groceries</div>
+                </div>
+                <div className="clickable" title="reverse order" onClick={() => { setReverseOrder(!orderIsReversed) }}>
+                    <FontAwesomeIcon icon={faExchangeAlt} />
+                </div>
             </div>
             <div className="grocery-list">
                 <div className="list">
