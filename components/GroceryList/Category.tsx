@@ -99,7 +99,6 @@ const Category = (props) => {
 
         if (category.notAvailable) {
             wrapperClass = 'list-category not-available mt-10';
-            category.name = '*' + category.name + '*'
         }
 
         let emptyStyle = {};
