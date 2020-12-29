@@ -27,6 +27,15 @@
     background-color: $primary;
     color: #fff;
     padding: 1em;
+
+    background-color: #82a8bd;
+    font-size: 23px;
+    font-weight: bold;
+    padding: .5em;
+
+    background-color: #00a4ff;
+    border-bottom: 4px solid #000;
+
     // background-image: url('/images/stores/aldi/aldi_body2_deli.jpg');
 
     // text-shadow: 2px 2px #000;
@@ -39,7 +48,7 @@
 .not-available .list-category-name {
     background-color: #fff3cd;
     color: $primary;
-    border-top: 5px solid $primary;
+    // border-top: 5px solid $primary;
     font-weight: bold;
 }
 

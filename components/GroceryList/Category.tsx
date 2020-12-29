@@ -98,7 +98,8 @@ const Category = (props) => {
         let wrapperClass = 'list-category mt-10';
 
         if (category.notAvailable) {
-            wrapperClass = 'list-category not-available mt-10'
+            wrapperClass = 'list-category not-available mt-10';
+            category.name = '*' + category.name + '*'
         }
 
         let emptyStyle = {};
@@ -125,6 +126,9 @@ const Category = (props) => {
                         <FontAwesomeIcon icon={faSave} />
                     </div>
                 </div>}
+                {/* <div>
+                    <img src="/images/tutorial/add-to-home-iphone.png" />
+                </div> */}
                 <div>
                     {getGroceriesJSX(category.groceries)}
                 </div>
