@@ -125,8 +125,11 @@ const Category = (props) => {
                         <FontAwesomeIcon icon={faSave} />
                     </div>
                 </div>}
-                {/* <div>
-                    <img src="/images/tutorial/add-to-home-iphone.png" />
+                {/* <div style={{
+                    height: '80px',
+                    overflow: 'hidden'
+                }}>
+                    <img src="/images/stores/aldi/back-deli.png" className="w-100" />
                 </div> */}
                 <div>
                     {getGroceriesJSX(category.groceries)}

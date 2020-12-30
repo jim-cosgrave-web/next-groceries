@@ -3,8 +3,9 @@ import { env } from '../util/environment';
 import { myGet } from '../util/myGet';
 import { formatDate } from '../util/formatDate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Confirm from '../components/Shared/Confirm';
+import Link from 'next/link';
 
 import {
     USER_MEAL_API_GET,
@@ -185,6 +186,15 @@ const MealsPage = () => {
 
         return (
             <div>
+                <Link href="/recipes">
+                    <div className="flex clickable large-link">
+
+                        <div className="mr-10">
+                            Go to recipe list
+                        </div>
+                        <FontAwesomeIcon icon={faChevronRight} />
+                    </div>
+                </Link>
                 <div className="list">
                     <div className="item flex space-between">
                         <div className="w-75">
@@ -211,7 +221,7 @@ const MealsPage = () => {
                                             <input type="text" className="w-100" placeholder="Add a note..." onChange={(e) => handleNoteChange(m, e)} defaultValue={m.note} />
                                         </div>
                                     </div>
-                                    {m.recipeLink && m.recipeLink.length > 0 && <div className="mt-10">
+                                    {m.recipeLink && m.recipeLink.length > 0 && <div className="mt-10 large-link">
                                         <a href={m.recipeLink} target="__blank">Recipe Link</a>
                                     </div>}
                                     <div className="mt-10">

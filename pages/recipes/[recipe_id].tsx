@@ -430,7 +430,7 @@ const RecipeByIdPage = () => {
                         <FontAwesomeIcon icon={faEdit} onClick={handleEdit} />
                     </div>
                 </div>
-                {recipe.link && recipe.link.length > 0 && <div>
+                {recipe.link && recipe.link.length > 0 && <div className="large-link">
                     <a href={recipe.link} target="__blank">Recipe Link</a>
                 </div>}
                 <div className="mb-20">
@@ -667,11 +667,11 @@ const RecipeByIdPage = () => {
 
     return (
         <div>
-            <div className="clickable mt-20 mb-20">
+            <div className="clickable mt-20">
                 <Link href="/recipes">
-                    <div className="flex">
+                    <div className="flex large-link">
                         <FontAwesomeIcon icon={faChevronLeft} />
-                        <div className="ml-10 sub-section-title">
+                        <div className="ml-10">
                             Back to recipe list
                         </div>
                     </div>
